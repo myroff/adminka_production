@@ -8,11 +8,11 @@ definiere BASIS_URL als "/myOrder/"
 #ini_set('display_errors', 1);
 
 if ( !defined('BASIS_URL') )
-	define('BASIS_URL', "/2018");
+	define('BASIS_URL', "/production");
 if ( !defined('BASIS_DIR') )
 	define('BASIS_DIR', dirname(__FILE__)); //z.B. D:\www\tut
 if ( !defined('ACTUAL_YEAR') )
-	define('ACTUAL_YEAR', "2018");
+	define('ACTUAL_YEAR', "2019");
 if ( !defined('BASIS_RECHNUNG_URL') )
 	define('BASIS_RECHNUNG_URL', "/".ACTUAL_YEAR."/Public/Rechnungen");
 if ( !defined('BASIS_RECHNUNG_DIR') )

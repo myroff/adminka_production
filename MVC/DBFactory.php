@@ -6,7 +6,7 @@ class DBFactory
 {
 	private static $dbf = NULL;
 	private static $host = "localhost";
-	private static $db = "swiff.crm.2018";
+	private static $db = "swiff.crm.production";
 	private static $username = "swiff_root";
 	private static $password = "4eburashka";
 
