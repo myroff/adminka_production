@@ -1,0 +1,191 @@
+/*
+start horizontal Menu
+*/
+#horizontalMenu
+{
+	background:black;
+	position:fixed;
+	color:white;
+	width:100%;
+	height:auto;
+	top:0px;
+	left:0px;
+	text-align:right;
+	z-index:300;
+}
+#horizontalMenu UL
+{
+	text-decoration:none;
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+#horizontalMenu UL li
+{
+	padding:6px;
+	float:left;
+	display:block;
+	margin-right:10px;
+	font-weight: 700;
+}
+#horizontalMenu UL UL
+{
+	display:none;
+	background:black;
+	text-align:left;
+	padding:0px 5px;
+	margin:0px;
+	border:1px solid white;
+}
+#horizontalMenu li li
+{
+	display:block;
+	float:none;
+	padding:5px 0px;
+	margin:0px;
+	border-bottom:1px solid white;
+	overflow:hidden;
+	height:auto;
+}
+#horizontalMenu li a
+{
+	margin: 0px;
+	padding: 0px;
+	color:white;
+	display:block;
+	text-decoration: none;
+}
+#horizontalMenu li a:hover
+{
+	color:grey;
+}
+#horizontalMenu li:hover UL,
+#horizontalMenu li UL:hover
+{
+	display:block;
+	position:absolute;
+	top:28px;
+}
+/*
+end horizontal Menu
+*/
+#searchPanel{margin-left:5px;}
+/*
+start Main Content
+*/
+#mainContent
+{
+	margin-top: 60px;
+}
+
+#messageBox
+{
+	display:none;
+	border:2px solid #a1a1a1;
+	padding:20px; 
+	background:#dddddd;
+	min-width:450px;
+	border-radius:20px;
+
+	position:fixed;
+	top:200px;
+	left:30%;
+	z-index:100;
+}
+#messageBox_message {overflow:scroll;max-height:300px;}
+
+.messageBox
+{
+	display:none;
+	border:2px solid #a1a1a1;
+	padding:20px; 
+	background:#dddddd;
+	min-width:450px;
+	border-radius:20px;
+
+	position:fixed;
+	top:200px;
+	left:30%;
+	z-index:100;
+}
+
+.decimalSpiner, .timepicker{width: 65px;}
+
+hr {margin:0;background:black;border:1px solid black;}
+/*#kundenResTbl, privateDates table{border-collapse: collapse;}*/
+/*buttons*/
+.info
+{width:30px;height:30px;background-color:transparent;background-image:url(./buttons/info_box_blue.png);background-size:contain;cursor:pointer;float:right;border-radius:7px;content:'&nbsp;';}
+.search
+{width:50px;height:50px;background-color:transparent;background-image:url(./buttons/Search-icon.png);background-size:contain;cursor:pointer;content:'&nbsp;';border-radius:7px;}
+.submit
+{width:60px;height:60px;background-color:transparent;background-image:url(./buttons/check-icon.png);background-size:contain;cursor:pointer;content:'&nbsp;';border-radius:7px;}
+.cancel
+{width:60px;height:60px;background-color:transparent;background-image:url(./buttons/Delete-icon.png);background-size:contain;cursor:pointer;content:'&nbsp;';border-radius:7px;}
+.buttonsOkCancelDiv
+{text-align:center;margin-top:20px;}
+
+.updateKurDateButton{width:40px;height:40px;background-image:url(./buttons/ical_empty.png);background-size:contain;cursor:pointer;border-radius:7px;content:'&nbsp;';}
+.editItemButton{width:30px;height:30px;background-color:transparent;background-image:url(./buttons/system_preferences.png);background-size:contain;cursor:pointer;float:right;border-radius:7px;content:'&nbsp;';}
+.deleteButton{width:40px;height:40px;background-image:url(./buttons/trash-icon.png);background-size:contain;cursor:pointer;float:right;border-radius:7px;content:'&nbsp;';}
+/*Input-Elemente*/
+.inputPreis{width:50px;}
+.quitTable th, .quitTable td{border-right:none;}
+.quitTable tr{border-bottom:1px solid black;}
+.quitTable tr:last-child{border:none;}
+
+/*Bezahlungen Table*/
+#mntListe td {border:1px solid black;vertical-align:top; background:#C2D6D6;}
+
+/* Stundenplan Table*/
+#stnPlnTbl thead{position:sticky;top:40px;}
+#stnPlnTbl td, #stnPlnTbl th{border:1px solid black;vertical-align:top;}
+#stnPlnTbl td {height:240px;width:150px;padding:0;position:relative;}
+#stnPlnTbl tr:nth-child(2n+3){background-color: #ddd;}
+#stnPlnTbl tr:hover {background:#ccc;}
+#stnPlTable tr:nth-child(2n+3){background-color: #ccc;}
+
+#stnPlFlex .headerRaum{width:120px;background:#292929;color:white;font-weight:bold;float:left;}
+#stnPlnTbl .headerWeekday{background:#575757;color:white;font-weight:bold;text-align:left;}
+
+#stnPlnTbl .cursItem{position:absolute;width:parent;overflow:hidden;border-top:1px black solid;border-bottom:1px black solid;z-index:10;width:100%;}
+#stnPlnTbl .cursItem:hover {height:100%;overflow:none;}
+
+#stnPlnTbl .belegt_mit_freien_plaetzen {background:rgba(0,250,0,0.5);}
+#stnPlnTbl .belegt_mit_freien_plaetzen:hover {background:rgba(50,250,50,1);}
+
+#stnPlnTbl .belegt_voll {background:rgba(250,0,0,0.8);}
+#stnPlnTbl .belegt_voll:hover {background:rgba(250,50,50,01);}
+
+.stnPlnTbl-Print{background:white;color:black;}
+.stnPlnTbl-Print td, .stnPlnTbl-Print th{border:1px solid black;padding:0;margin:0;vertical-align:top;}
+.stnPlnTbl-Print .headerWeekday{text-align:left;}
+.stnPlnTbl-Print .cursItem {border-top:1px solid black;padding:2px;}
+
+.standardTable th {margin:0;background:black;border:1px solid black;color:white;}
+.standardTable tr:nth-child(2n+3){background-color: #ddd;}
+.standardTable tr:hover{border:1px solid black;background:#ccc;}
+
+table td, table th {padding: 5px 10px;}
+table{border-collapse: collapse;}
+th {border-bottom:1px solid black;}
+
+/*Kunden-Table */
+.kundenResTbl th{text-align:left;}
+.kundenResTbl tr:nth-child(2n+3){background-color: #ddd;}
+.columnAlter{font-weight:bold;}
+.kundenResTbl .isCashImg{height:50px;}
+.kundenResTbl .columnClientsCurses{font-size:11px;}
+/*KursListe*/
+#kurListe{margin:10px 0px;border:1px solid black;display:table;}
+
+/*Kommentaren */
+#Kommentaren{width:500px;border:1px solid gray;padding:5px;float:left;margin-left:10px;}
+.cmntItem{border-top:1px solid black;}
+#newKndCmntTable{display:none;}
+.cmntDate{float:right;font-style:italic;color:#666;}
+.cmntTxt{clear:both;}
+
+/*
+end Main Content
+*/

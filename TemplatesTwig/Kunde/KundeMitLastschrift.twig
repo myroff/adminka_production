@@ -1,0 +1,130 @@
+{% extends "main.html.twig" %}
+{% block content %}
+  <div id="searchPanel" class="dont-print">
+	<form id="searchFrom" class="col s12" method="POST">
+	  <div class="row">
+		
+		<div class="input-field col s12 m2">
+		  <label for="first_name">Vorname</label>
+		  <input name="vorname" type="text" value="{{ sArr[':vorname'] }}" id="first_name">
+		</div>
+
+		<div class="input-field col s12 m2">
+		  <label for="last_name">Nachname</label>
+		  <input name="name" type="text" value="{{ sArr[':name'] }}" id="last_name">
+		</div>
+		
+		<div class="input-field col s12 m4">
+		  {{ s_lehrId | raw }}
+		</div>
+		
+		<div class="input-field col s12 m2">
+		  {{ wochentag | raw }}
+		</div>
+		
+		<div class="input-field col s12 m2">
+		  <button type="submit" class="waves-effect waves-light btn-small">Suchen</button>
+		</div>
+		
+	  </div>
+	</form>
+  </div>
+  
+  <!-- results -->
+  <div id="anzDerKunden">
+	{{ clients|length }} Kunden
+  </div>
+  
+  <div id="resultsDiv">
+	<table class="kundenResTbl highlight">
+	  <thead>
+	  <tr>
+		<th>
+			Info
+		</th>
+		<th>
+			Bezahlen
+		</th>
+		<th>
+			Kurse
+		</th>
+		<th>
+			Knd.-Nr. <input type="checkbox" class="print_select" name="print_kndnr" />
+		</th>
+		<th>
+			Anrede <input type="checkbox" class="print_select" name="print_anrede" />
+		</th>
+		<th>
+			Vorname <input type="checkbox" class="print_select" name="print_vorname" />
+		</th>
+		<th>
+			Name <input type="checkbox" class="print_select" name="print_name" />
+		</th>
+		<th>
+			Geburtsdatum <input type="checkbox" class="print_select" name="print_geburtsdatum" />
+		</th>
+		<th>
+			Adresse
+		</th>
+		<th>
+			Telefon <input type="checkbox" class="print_select" name="print_telefon" />
+		</th>
+		<th>
+			Handy <input type="checkbox" class="print_select" name="print_handy" />
+		</th>
+		<th>
+			Email <input type="checkbox" class="print_select" name="print_email" />
+		</th>
+	  </tr>
+	  </thead>
+	  <tbody>
+	  {% for client in clients %}
+		
+		<tr >
+		  <td>
+			<a href="{{constant('BASIS_URL')}}/admin/kundeById/{{client.kndId}}">Info</a><br>
+		  </td>
+		  <td>
+			<a href="{{constant('BASIS_URL')}}/admin/bezahlenById/{{client.kndId}}">Bezahlen</a>
+		  </td>
+		  <td class="columnClientsCurses">
+			{{ client.kurse }}
+		  </td>
+		  <td>
+			{{ client.kundenNummer }}
+		  </td>
+		  <td>
+			{{ client.anrede }}
+		  </td>
+		  <td>
+			{{ client.vorname }}
+		  </td>
+		  <td>
+			{{ client.name }}
+		  </td>
+		  <td>
+			{{ client.geburtsdatum|date("d.m.Y") }}
+		  </td>
+		   <td>
+			 {{client.strasse}} {{client.strNr}}<br>
+			 {{client.plz}} {{client.stadt}}
+		  </td>
+		  <td>
+			{{ client.telefon }}
+		  </td>
+		  <td>
+			{{ client.handy }}
+		  </td>
+		  <td>
+			{{ client.email }}
+		  </td>
+		</tr>
+	  {% else %}
+	  <tr>
+		<td colspan="11">Nach Ihrer Anfrage wurden keine Daten gefunden.</td>
+	  </tr>
+	  {% endfor %}
+	  </tbody>
+	</table>
+  </div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "main.html.twig" %}
+{% block content %}
+  <div class="clients_dates col s12 m4">
+	<h5><i class="material-icons">person_pin</i> Kunde</h5>
+	<p class="clients_id">#{{client.kundenNummer}}</p>
+	<p class="clients_name">{{client.anrede}} {{client.vorname}} {{client.name}}</p>
+	<p class="clients_birthday">{{client.geburtsdatum|date("d.m.Y")}}</p>
+	<p class="clients_recommended_by">Emfpohlen durch: {{client.empfohlenDurch}}</p>
+	{% if empfRes %}
+	<p class="client_recommend">
+	  {% for recommends_client in  %}
+		<a href="{{ constant('BASIS_URL') }}/admin/bezahlenById/{{ recommends_client.kndId}}">{{recommends_client.kundenNummer}} {{recommends_client.vorname}} {{recommends_client.name}}</a>
+	  {% endfor %}
+	</p>
+	{% endif %}
+  </div>
+  <div class="clients_dates col s12 m4">
+	<h5><i class="material-icons">contacts</i> Kontakt</h5>
+	<p class="clients_telefon"><i class="material-icons">local_phone</i> {{client.telefon}}</p>
+	<p class="clients_handy"><i class="material-icons">smartphone</i> {{client.handy}}</p>
+	<p class="clients_email"><i class="material-icons">email</i> {{client.email}}</p>
+  </div>
+  <div class="clients_dates col s12 m4">
+	<h5><i class="material-icons">location_city</i> Adresse</h5>
+	<p class="clients_street"><i class="material-icons">local_phone</i> {{client.strasse}} {{client.strNr}}</p>
+	<p class="clients_city"><i class="material-icons">smartphone</i> {{client.plz}} {{client.stadt}}</p>
+  </div>
+  <div class="clients_dates col s12 m4">
+	<h5><i class="material-icons">payment</i> Bezahlen</h5>
+	<p class="clients_street"><i class="material-icons">local_phone</i> {{client.isCash|printZahlungsArt}}</p>
+	<p class="clients_city"><i class="material-icons">smartphone</i> {{client.plz}} {{client.stadt}}</p>
+  </div>
+{% endblock %}

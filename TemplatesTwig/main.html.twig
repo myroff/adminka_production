@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<title>SWIFF: {{pageName}}</title>
+	
+	<link rel="stylesheet" href="{{ constant('BASIS_URL') }}/Public/css/style.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="{{ constant('BASIS_URL') }}/Public/css/style-print.css" type="text/css" media="print" />
+	
+	<script src="{{ constant('BASIS_URL') }}/Public/js/jquery-2.1.1.min.js"></script>
+	{#
+	<script src="{{ constant('BASIS_URL') }}/Public/jquery-ui/jquery-ui.min.js"></script>
+ 
+	<link rel="stylesheet" href="{{ constant('BASIS_URL') }}/Public/jquery-ui/jquery-ui.min.css">
+	
+	<link rel="stylesheet" href="{{ constant('BASIS_URL') }}/Public/bootstrap/css/bootstrap.min.css">
+	<script src="{{ constant('BASIS_URL') }}/Public/bootstrap/js/bootstrap.min.js"></script>
+	#}
+	<link rel="stylesheet" href="{{ constant('BASIS_URL') }}/Public/materialize/css/materialize.min.css">
+	<script src="{{ constant('BASIS_URL') }}/Public/materialize/js/materialize.min.js"></script>
+	
+	{# custom style #}
+	<style>
+	  {{customStyleContent}}
+	</style>
+  </head>
+  <body>
+	
+	  <div id="horizontalMenu" class="nav-wrapper" >
+		  {{getAdminMenu()}}
+	  </div>
+	
+	  <!-- START OF CONTENT -->
+	  <div id="mainContent">
+		<div id="systemMessage">
+		  {{ systemMessage }}
+		</div>
+
+		{% block content %}{% endblock%}
+
+	  </div>
+	
+	  <div id="hiddenFooter">
+		{% block hiddenFooter %}{% endblock%}
+	  </div>
+	
+	  <script>
+		{% block jsFooter %}{% endblock%}
+		  {{customJsFooter}}
+	  </script>
+	</body>
+</html>

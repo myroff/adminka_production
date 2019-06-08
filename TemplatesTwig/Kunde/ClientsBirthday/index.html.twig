@@ -1,0 +1,60 @@
+{% extends "main.html.twig" %} {# constant(TWIG_TEMPLATE_DIR) #}
+{% block content %}
+  {#
+  <div class="filter">
+	<form mehtod="GET" >
+	  <fieldset>
+		<legend>Wählen Sie die Monaten (genaue Datum ist unwichtig))</legend>
+		<label for="start_month" >Von</label>
+		<input type="date" id="start_month" name="start_month" 
+			   value="{{ filter_startMonth }}">
+		<label for="end_month" >Bis</label>
+		<input type="date" id="end_month" name="end_month" 
+			   value="{{ filter_endMonth }}">
+		
+		<button type="submit" >Suchen</button>
+	  </fieldset>
+	</form>
+  </div>
+  #}
+  <table class="table striped table-hover">
+	<thead>
+	  <tr>
+		<th>Knd.-Nr.</th>
+		<th>Anrede</th>
+		<th>Vorname</th>
+		<th>Name</th>
+		<th>Geburtsdatum</th>
+		<th>Email</th>
+	  </tr>
+	</thead>
+	<tbody>
+	{% for client in clients %}
+	<tr>
+	  <td>
+		{{ client.kundenNummer }}
+	  </td>
+	  <td>
+		{{ client.anrede }}
+	  </td>
+	  <td>
+		{{ client.vorname }}
+	  </td>
+	  <td>
+		{{ client.name }}
+	  </td>
+	  <td>
+		{{ client.geburtsdatum }}
+	  </td>
+	  <td>
+		{{ client.email }}
+	  </td>
+	</tr>
+	{% else %}
+		</tbody>
+	  </table>
+	  <p>Keine Kunden mit einem Geburtstag in dem Monat gefunden.</p>
+	{% endfor %}
+	</tbody>
+  </table>
+{% endblock %}

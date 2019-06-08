@@ -1,0 +1,190 @@
+{% extends "main.html.twig" %}
+{% block content %}
+  
+  <div id="meldung">
+	{{ message }}
+  </div>
+
+  <h3>Neuen Kunden hinzufügen</h3>
+  <form method="POST" id="saveNewClientForm" action="{{constant(BASIS_URL)}}/admin/saveNewKunde">
+	<div class="row">
+	  <div class="col s12">
+		<label for="kundenNummer">Kunden-Nummer</label>
+		<input name="kundenNummer" type="text" id="kundenNummer">
+	  </div>
+	</div>
+	
+	<div class="row">
+	  <div class="input-field col m3 s6">
+		{{ anredeSelector|raw }}
+	  </div>
+	  
+	  <div class="input-field col m3 s6">
+		<label for="vorname">Vorname</label>
+		<input name="vorname" type="text" id="vorname" value="">
+	  </div>
+	  
+	  <div class="input-field col m3 s6">
+		<label for="name">Name</label>
+		<input name="name" type="text" id="name">
+	  </div>
+	  
+	  <div class="col m3 s6">
+		<label for="geburtsdatum">Geburtsdatum (dd.mm.yyyy)</label>
+		<input id="geburtsdatum" name="geburtsdatum" type="text" class="datepicker" >
+	  </div>
+	  <script>
+		document.addEventListener('DOMContentLoaded', function() {
+		  var geburtsdatum = document.getElementById('geburtsdatum');
+		  var instancesGeburtsdatum = M.Datepicker.init(geburtsdatum, {'format':'dd.mm.yyyy'});
+		});
+	  </script>
+	</div>
+	
+	<div class="row">
+	  <h4>Kontakt</h4>
+	  <div class="input-field col m3 s6">
+		<label for="telefon">Telefon</label>
+		<input name="telefon" type="text" id="telefon">
+	  </div>
+	  <div class="input-field col m3 s6">
+		<label for="handy">Handy</label>
+		<input name="handy" type="text" id="handy">
+	  </div>
+	  <div class="input-field col m3 s6">
+		<label for="email">Email</label>
+		<input name="email" type="email" id="email">
+	  </div>
+	</div>
+	
+	<div class="row">
+	  <h4>Adresse</h4>
+	  <div class="input-field col m3 s6">
+		<label for="strasse">Strasse</label>
+		<input name="strasse" type="text" id="strasse">
+	  </div>
+	  <div class="input-field col m3 s6">
+		<label for="haus">Hausnummer</label>
+		<input name="haus" type="text" id="haus">
+	  </div>
+	  <div class="input-field col m3 s6">
+		<label for="plz">PLZ</label>
+		<input name="plz" type="text" id="plz">
+	  </div>
+	  <div class="input-field col m3 s6">
+		<label for="stadt">Stadt</label>
+		<input name="stadt" type="text" id="stadt">
+	  </div>
+	</div>
+	
+	<div class="row">
+	  <h4>Weitere Angaben</h4>
+	  <div class="input-field col m3 s6">
+		<label for="istFotoErlaubt">
+		  <input name="istFotoErlaubt" type="checkbox" value="ja" id="istFotoErlaubt">
+		  <span>ist Foto erlaubt?</span>
+		</label>
+	  </div>
+	  <div class="input-field col m3 s6">
+		<label for="muttersprache">Muttersprache</label>
+		<input name="muttersprache" type="text" id="muttersprache">
+	  </div>
+	  <div class="input-field col m3 s6">
+		<label for="geburtsland">Geburtsland</label>
+		<input name="geburtsland" type="text" id="geburtsland">
+	  </div>
+	  <div class="input-field col m3 s6">
+		<label for="empfohlenId">Empfohlen durch</label>
+		<input name="empfohlenId" type="text" id="empfohlenId">
+	  </div>
+	</div>
+	
+	<div class="row">
+	  <h4>Zahlungsdaten</h4>
+	  <div class="input-field col m3 s12">
+		{{ zahlenMitSelector|raw }}
+	  </div>
+	  <div class="input-field col m6 s12">
+		<label for="kontoinhaber">Kontoinhaber (Vorname Nachname)</label>
+		<input name="kontoinhaber" type="text" id="kontoinhaber">
+	  </div>
+	</div>
+	<div class="row">
+	 
+	  <div class="input-field col m3 s6">
+		<label for="zdStrasse">Strasse</label>
+		<input name="zdStrasse" type="text" id="zdStrasse">
+	  </div>
+	  
+	  <div class="input-field col m3 s6">
+		<label for="zdHausnummer">Hausnummer</label>
+		<input name="zdHausnummer" type="text" id="zdHausnummer">
+	  </div>
+	  
+	  <div class="input-field col m3 s6">
+		<label for="zdPlz">PLZ</label>
+		<input name="zdPlz" type="text" id="zdPlz">
+	  </div>
+	  
+	  <div class="input-field col m3 s6">
+		<label for="zdOrt">Ort</label>
+		<input name="zdOrt" type="text" id="zdOrt">
+	  </div>
+	  
+	  <div class="input-field col m3 s6">
+		<label for="zdBankname">Bankname</label>
+		<input name="zdBankname" type="text" id="zdBankname">
+	  </div>
+	  
+	  <div class="input-field col m3 s6">
+		<label for="zdIban">IBAN</label>
+		<input name="zdIban" type="text" id="zdIban">
+	  </div>
+	  
+	  <div class="input-field col m3 s6">
+		<label for="zdBic">BIC</label>
+		<input name="zdBic" type="text" id="zdBic">
+	  </div>
+	</div>
+	
+	<div class="row">
+	  <div class="input-field col m3 s12">
+		<input type='submit' value='Speichern' class="waves-effect waves-light btn-small">
+	  </div>
+	</div>
+  </form>
+  
+  <script>
+	var meldung = $('#meldung');
+	$('#saveNewClientForm').submit(function (e){
+		e.preventDefault();
+		var postData = $(this).serializeArray();
+		
+		$.ajax({
+		  url:'{{constant('BASIS_URL')}}/admin/ajaxSaveNewKunde',
+		  type:'POST',
+		  data:postData,
+		  dataType:'JSON',
+		  success:function(response){
+			  if(typeof response.fehler === 'undefined')
+			  {
+				$("form [name]").css({'background':''});
+				meldung.html(response.info);
+			  }
+			  else
+			  {
+				meldung.html(response.fehler);
+				$("form [name]").css({'background':''});
+				for(i=0; i<response.fehlerInput.length; i++)
+				{
+				  $("form [name="+response.fehlerInput[i]+"]").css({'background':'red'});
+				}
+			  }
+		  },
+		  error:function(errorThrown){
+			  meldung.html(errorThrown);
+		  }
+		});
+	});
+  </script>
+{% endblock %}

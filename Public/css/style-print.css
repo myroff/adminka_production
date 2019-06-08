@@ -1,0 +1,70 @@
+/*
+start horizontal Menu
+*/
+#horizontalMenu, #search-panel, #stnPlTable, .dont-print, .igtranslator-main-div,  button
+{
+	display:none;
+}
+/*
+end horizontal Menu
+*/
+/*
+start Main Content
+*/
+
+hr {margin:0;background:black;border:1px solid black;}
+
+/*buttons*/
+.info
+{width:30px;height:30px;background-color:transparent;background-image:url(./buttons/info_box_blue.png);background-size:contain;cursor:pointer;float:right;border-radius:7px;content:'&nbsp;';}
+.search
+{width:50px;height:50px;background-color:transparent;background-image:url(./buttons/Search-icon.png);background-size:contain;cursor:pointer;content:'&nbsp;';border-radius:7px;}
+.submit
+{width:60px;height:60px;background-color:transparent;background-image:url(./buttons/check-icon.png);background-size:contain;cursor:pointer;content:'&nbsp;';border-radius:7px;}
+.cancel
+{width:60px;height:60px;background-color:transparent;background-image:url(./buttons/Delete-icon.png);background-size:contain;cursor:pointer;content:'&nbsp;';border-radius:7px;}
+.buttonsOkCancelDiv
+{text-align:center;margin-top:20px;}
+
+.updateKurDateButton{width:40px;height:40px;background-image:url(./buttons/ical_empty.png);background-size:contain;cursor:pointer;border-radius:7px;content:'&nbsp;';}
+.editItemButton{width:30px;height:30px;background-color:transparent;background-image:url(./buttons/system_preferences.png);background-size:contain;cursor:pointer;float:right;border-radius:7px;content:'&nbsp;';}
+.deleteButton{width:40px;height:40px;background-image:url(./buttons/trash-icon.png);background-size:contain;cursor:pointer;float:right;border-radius:7px;content:'&nbsp;';}
+/*Input-Elemente*/
+.inputPreis{width:50px;}
+.quitTable th, .quitTable td{border-right:none;}
+.quitTable tr{border-bottom:1px solid black;}
+.quitTable tr:last-child{border:none;}
+
+/* Tables */
+table{border-collapse: collapse;width:auto;page-break-inside:avoid;}
+table td, table th {padding: 1px;border-bottom:1px solid black;text-align:left;width:auto;}
+
+/*Anwesenheitsliste*/
+
+table.resultsDiv td{padding:1px;border:1px solid black;}
+table.Anwesenheitsliste{table-layout:fixed;margin-bottom:0px;/*width:100%;*/}
+table.Anwesenheitsliste col{overflow:hidden;}
+table.Anwesenheitsliste tr{height:30px;}
+
+table.Anwesenheitsliste .fach{font-size:12px;}
+table.Anwesenheitsliste .nr{width:30px !important;}
+table.Anwesenheitsliste .kndNr{width:50px;}
+table.Anwesenheitsliste .vorname, table.Anwesenheitsliste .nachname{width:300px !important;padding:0;margin:0;}
+table.Anwesenheitsliste .dates{width:40px !important;}
+
+/*Bezahlungen Table*/
+#mntListe td {border:1px solid black;vertical-align:top; background:#C2D6D6;}
+
+/* Stundenplan Table*/
+#stnPlnTbl td, #stnPlnTbl th{border:1px solid black;vertical-align:top;}
+
+/*Kunden-Table */
+#kundenResTbl tr:nth-child(2n+3){background-color: #ddd;}
+/*
+end Main Content
+*/
+/* print stundenplan */
+.stnPlnTbl-Print{background:white;color:black;width:100%;font-size: 10px;}
+.stnPlnTbl-Print td, .stnPlnTbl-Print th{border:1px solid black;padding:0;margin:0;vertical-align:top;}
+.stnPlnTbl-Print .headerWeekday{text-align:left;}
+.stnPlnTbl-Print .cursItem {border-top:1px solid black;padding: 1px;}
