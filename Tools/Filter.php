@@ -115,7 +115,7 @@ class Filter {
 	
 	public static function isHausNr($haus)
 	{
-		return preg_match("/^[0-9a-z\s\/\-]+$/", $haus);
+		return preg_match("/^[0-9A-Za-z\s\/\-]+$/", $haus);
 	}
 	
 	public static function isPlz($haus)

@@ -26,4 +26,5 @@ if ( !defined('AJAX_URL') )
 	define('AJAX_URL', '/admin/ajax'); //z.B. D:\www\tut
 */
 
+require_once './MVC/config.php';
 require_once './MVC/MVC.php';

@@ -10,8 +10,10 @@ class ArchivTools {
 	public function copyKunde()
 	{
 		$kndId = "";
-		$toYear = (int)ACTUAL_YEAR+1;#"2016";
-		$fromYear = ACTUAL_YEAR;
+		#$toYear = (int)ACTUAL_YEAR+1;
+		#$fromYear = ACTUAL_YEAR;
+		$toYear = DB_PRODUCTION;
+		$fromYear = (int)ACTUAL_YEAR - 1;
 		$fehler = "";
 		/*
 		if(!empty($_POST['toYear'])){
