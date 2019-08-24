@@ -10,11 +10,11 @@ definiere BASIS_URL als "/myOrder/"
 if ( !defined('BASIS_URL') )
 	define('BASIS_URL', "/production");
 if ( !defined('BASIS_DIR') )
-	define('BASIS_DIR', dirname(__FILE__)); //z.B. D:\www\tut
+	define('BASIS_DIR', __DIR__); //z.B. D:\www\tut
 if ( !defined('ACTUAL_YEAR') )
 	define('ACTUAL_YEAR', "2019");
 if ( !defined('BASIS_RECHNUNG_URL') )
-	define('BASIS_RECHNUNG_URL', "/".ACTUAL_YEAR."/Public/Rechnungen");
+	define('BASIS_RECHNUNG_URL', BASIS_URL."/Public/Rechnungen");
 if ( !defined('BASIS_RECHNUNG_DIR') )
 	define('BASIS_RECHNUNG_DIR', BASIS_DIR."/Public/Rechnungen");
 if ( !defined('TWIG_TEMPLATE_DIR') )
