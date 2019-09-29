@@ -22,7 +22,7 @@ class Authentication
 		if(isset($_COOKIE['uTmpK']) && isset($_COOKIE['uTmpId']))
 		{
 			$currentTmpUser = $this->getTmpUserFrom_uTmpId($_COOKIE['uTmpId']);
-			if($currentTmpUser['mtId']!==$_COOKIE['uTmpId'] && $currentTmpUser['tmpPswd']!==$_COOKIE['uTmpK'])
+			if($currentTmpUser['mtId']!==$_COOKIE['uTmpId'] || $currentTmpUser['tmpPswd']!==$_COOKIE['uTmpK'])
 			{
 				return FALSE;
 			}
