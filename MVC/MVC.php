@@ -14,9 +14,9 @@ if($requestUri !== '')
 	{
 		$requestUri = substr($requestUri, 0, $hasParameterAt);
 	}
-	//Request URL Array
-	$RUArray = explode('/', $requestUri);
-	$RULength = count($RUArray);
+    //Request URL Array
+    $RUArray = explode('/', $requestUri);
+    $RULength = count($RUArray);
 	
 	foreach ($routingList as $key => $value)
 	{

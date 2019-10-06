@@ -104,6 +104,7 @@
 	  </thead>
 	  <tbody>
 	  {% for client in clients %}
+		{% set stl = "" %}
 		{% if client.kndIdInKhk is null %}
 		  {% set stl = "background:yellow;" %}
 		{% elseif client.kndIdInKhk|first == 'i' %}
