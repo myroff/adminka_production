@@ -15,7 +15,7 @@
 <div class="lesson-title">{{ lesson.kurName }}</div>
 <div class="lesson-teacher">{{ lesson.vorname }} {{ lesson.name }}</div>
 <div class="lesson-time">Zeit: {{ lesson.anfang | date('H:i') }} - {{ lesson.ende | date('H:i') }}</div>
-<div class="lesson-duration">Dauer: {{ duration | date('%i') }}</div>
+<div class="lesson-duration">Dauer: {{ durationMinuts }} Min.</div>
 {% if lesson.kurMinAlter %}
 <div class="lesson-ageLimit">
 Alter: {{ lesson.kurMinAlter }}

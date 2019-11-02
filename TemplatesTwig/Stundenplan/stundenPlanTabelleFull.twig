@@ -39,7 +39,8 @@
 							{% set start = date(lesson.anfang) %}
 							{% set end = date(lesson.ende) %}
 							{% set duration = end.diff(start) %}
-							{% set _height = duration | date('%i') * 4 %}
+							{% set durationMinuts = ( duration.format('%i') + (duration.format('%h') * 60)  ) %}
+							{% set _height = durationMinuts * 4 %}
 							{% set _style = "top:"~_top~"px;height:"~_height~"px;" %}
 						<div class="cursItem {{_class}}" style="{{_style}}">
 							{{ include('Stundenplan/LessonInfo.twig') }}
