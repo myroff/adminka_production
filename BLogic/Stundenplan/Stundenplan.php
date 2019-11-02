@@ -4,6 +4,15 @@ use PDO as PDO;
 require_once BASIS_DIR.'/MVC/DBFactory.php';
 use MVC\DBFactory as DBFactory;
 
+//twig
+require_once BASIS_DIR . '/Vendor/autoload.php';
+
+require_once BASIS_DIR.'/Tools/TmplTools.php';
+use Tools\TmplTools as TmplTls;
+
+require_once BASIS_DIR.'/Tools/User.php';
+use Tools\User as User;
+
 class Stundenplan {
 	public function showStundeplan()
 	{
@@ -21,12 +30,52 @@ class Stundenplan {
 		$this->loadTamplate($res, $raum, $sArr);
 		return;
 	}
-	public function loadTamplate($res, $raum, $sArr){
-		include_once  BASIS_DIR.'/Templates/Stundenplan/StundenplanListe.tmpl.php';
+	public function loadTamplate($res, $raum, $sArr)
+	{
+		$vars['pageName']	= "Kundenliste";
+		$vars['sArr']		= $sArr;
+		$vars['stunden']	= $this->sortStundenPlan($res);
+		$vars['raum']		= $raum;
+		$vars['s_kurId']	= TmplTls::getKursSelectorByCourseName("search_kurs", "s_kurId", $sArr[':kurName'], "Kurse", 1);
+		$vars['s_lehrId']	= TmplTls::getLehrerSelector("search_lehrId", "s_lehrId", $sArr[':lehrId'], "Lehrer", 1);
+		$vars['wochentag']	= TmplTls::getWeekdaySelector("search_wochentag", "wochentag", $sArr[':wochentag'], "Tag", 1);
+		$vars['s_raum']		= TmplTls::getRaumSelector("search_raum", "search_raum", $sArr[':raum'], "Raum", 1);
+		$vars['s_klasse']	= TmplTls::getKlasseSelector("search_klasse", "search_klasse", $sArr[':klasse'], "Klasse", 1);
+		$vars['s_alter']	= TmplTls::getAlterSelector("search_alter", "search_alter", $sArr[':alter'], "Alter", 1);
+		$vars['editTerminForm_wochentag']	= TmplTls::getWeekdaySelector("wochentag", "editTerminForm_wochentag", $sArr[':wochentag'], "Tag", 1);
+		
+		$vars['userGroups']	= User::getUserGroup();
+		
+		$options = []; #array('cache' => TWIG_CACHE_DIR);
+		$loader = new \Twig_Loader_Filesystem(TWIG_TEMPLATE_DIR);
+		$twig = new \Twig_Environment($loader, $options);
+		$twigTmpl = $twig->load('/Stundenplan/StundenplanListe.twig');
+		echo $twigTmpl->render($vars);
+		
+		
+		#include_once  BASIS_DIR.'/Templates/Stundenplan/StundenplanListe.tmpl.php';
 	}
+	
+	/* @param array $lessons - array with lessons ordered by: day, hour, room in ASC order.
+	 * @return array: array('week_day' => array('hour' => array('room' =>'lesson info') ));
+	 */
+	public function sortStundenPlan($lessons)
+	{
+		$out = array();
+		
+		foreach($lessons as $stn)
+		{
+			$_d = (int)$stn['wochentag'];
+			$_h = (int)date('G', strtotime($stn['anfang']) );
+			$_r = $stn['raum'];
+			$out[$_d][$_h][$_r][] = $stn;
+		}
+		#var_dump($out);die();
+		return $out;
+	}
+	
 	public function searchDates($searchArr)
 	{
-		require_once BASIS_DIR.'/MVC/DBFactory.php';
 		$dbh = \MVC\DBFactory::getDBH();
 		if(!$dbh)
 		{
@@ -107,7 +156,8 @@ class Stundenplan {
 			return FALSE;
 		}
 		
-		$q = "SELECT DISTINCT(raum) FROM stundenplan"
+		$q = "SELECT raum FROM stundenplan"
+			." GROUP BY raum"
 			." ORDER BY CAST(raum AS UNSIGNED) ASC";
 		
 		try

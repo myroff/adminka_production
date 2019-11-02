@@ -44,7 +44,7 @@ class KurInfo
 			$output = self::infoOutput($res);
 		}
 		
-		header("Content-type: html");
+		header("Content-type: text/plain");
 		exit($output);
 		return $output;
 	}

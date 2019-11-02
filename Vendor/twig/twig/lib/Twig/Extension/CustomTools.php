@@ -11,6 +11,8 @@ class Twig_Extension_CustomTools extends Twig_Extension
 			new Twig_Function('getPhpGlobals', [$this, 'getPhpGlobals'], ['is_safe' => array('all')]),
 			new Twig_Function('getAdminMenu', [$this, 'getAdminMenu'], ['is_safe' => array('all')]),
 			new Twig_Function('printSqlKursTermin', [$this, 'printSqlKursTermin'], ['is_safe' => array('all')]),
+			new Twig_Function('indxToWeekday', [$this, 'indxToWeekday'], ['is_safe' => array('all')]),
+			new Twig_Function('getWeekdayFromInt', [$this, 'getWeekdayFromInt'], ['is_safe' => array('all')]),
 		];
 	}
 
@@ -57,6 +59,13 @@ class Twig_Extension_CustomTools extends Twig_Extension
 		$week = array(1=>"Mo.", 2=>"Di.", 3=>"Mi.", 4=>"Do.",
 			5=>"Fr.", 6=>"Sa.", 7=>"So.");
 		return $week[$ind];
+	}
+	
+	public static function getWeekdayFromInt($n)
+	{
+		$week = array(1=>"Montag", 2=>"Dienstag", 3=>"Mitwoch", 4=>"Donnerstag", 5=>"Freitag", 6=>"Samstag", 7=>"Sonntag");
+		
+		return $week[$n];
 	}
 }
 

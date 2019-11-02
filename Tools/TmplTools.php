@@ -30,7 +30,6 @@ class TmplTools {
 		return $content;
 	}
 
-
 	public static function getLehrerSelector($selectorName="", $selectorId="", $selectedValue="", $label="", $meterializeOn=FALSE)
 	{
 		require_once BASIS_DIR.'/MVC/DBFactory.php';
@@ -50,7 +49,7 @@ class TmplTools {
 		} 
 		catch (Exception $ex) {
 			//print $ex;
-			return $ex;
+			return;
 		}
 		
 		$data = array("" => "");
@@ -94,7 +93,7 @@ class TmplTools {
 		} 
 		catch (Exception $ex) {
 			//print $ex;
-			return $ex;
+			return;
 		}
 		$name = empty($selectorName) ? '' : "name='$selectorName'";
 		$id = empty($selectorId) ? '' : "id='$selectorId'";
@@ -114,24 +113,17 @@ class TmplTools {
 		echo"</select>";
 	}
 	
-	public static function getRaumSelector($selectorName="", $selectorId="", $selectedValue="")
+	public static function getRaumSelector($selectorName="", $selectorId="", $selectedValue="", $label="", $meterializeOn=FALSE)
 	{
-		$startRaum = 2;
-		$endRaum = 10;
+		$data = array("" => "");
 		
-		$name = empty($selectorName) ? '' : "name='$selectorName'";
-		$id = empty($selectorId) ? '' : "id='$selectorId'";
-		$size = empty($size) ? '' : "size='$size'";
-		
-		echo "<select $name $id $size>";
-		echo "<option value='' ></option>";
-		
-		for($i=$startRaum; $i<=$endRaum; ++$i)
+		for($i=2, $endRaum=10; $i<=$endRaum; ++$i)
 		{
-			$sel = $selectedValue == $i ? "selected" : "";
-			echo"<option value='".$i."' $sel >".$i." Klasse</option>";
+			$data[$i] = "R ".$i;
 		}
-		echo"</select>";
+		$content = self::printMaterializeSelector($data, $selectorName, $selectorId, $selectedValue, $label, $meterializeOn);
+		
+		return $content;
 	}
 	
 	public static function getTimeSelectorOld($selectorName="", $selectorId="", $selectedValue="")
@@ -208,7 +200,7 @@ class TmplTools {
 		} 
 		catch (Exception $ex){
 			//print $ex;
-			return $ex;
+			return;
 		}
 		
 		$data = array("" => "");
@@ -221,45 +213,59 @@ class TmplTools {
 		return $content;
 	}
 	
-	public static function getKlasseSelector($selectorName="", $selectorId="", $selectedValue="")
+	public static function getKursSelectorByCourseName($selectorName="", $selectorId="", $selectedValue="", $label="", $meterializeOn=FALSE)
 	{
-		$name = empty($selectorName) ? '' : "name='$selectorName'";
-		$id = empty($selectorId) ? '' : "id='$selectorId'";
+		require_once BASIS_DIR.'/MVC/DBFactory.php';
+		$dbh = \MVC\DBFactory::getDBH();
+		if(!$dbh){
+			return "kein dbh";
+		}
 		
-		?>
-<select <?php echo"$id $name";?> >
-	<option value=""></option>
-	<option value="1" <?=$selectedValue === '1' ? 'selected' : ''?> >1 Klasse</option>
-	<option value="2" <?=$selectedValue === '2' ? 'selected' : ''?> >2 Klasse</option>
-	<option value="3" <?=$selectedValue === '3' ? 'selected' : ''?> >3 Klasse</option>
-	<option value="4" <?=$selectedValue === '4' ? 'selected' : ''?> >4 Klasse</option>
-	<option value="5" <?=$selectedValue === '5' ? 'selected' : ''?> >5 Klasse</option>
-	<option value="6" <?=$selectedValue === '6' ? 'selected' : ''?> >6 Klasse</option>
-	<option value="7" <?=$selectedValue === '7' ? 'selected' : ''?> >7 Klasse</option>
-	<option value="8" <?=$selectedValue === '8' ? 'selected' : ''?> >8 Klasse</option>
-	<option value="9" <?=$selectedValue === '9' ? 'selected' : ''?> >9 Klasse</option>
-</select>
-		<?php
+		$q = "SELECT SUBSTRING_INDEX(kurName, ' ', 1) as course FROM kurse GROUP BY course ORDER BY course ASC";
+		
+		try{
+			$sth = $dbh->prepare($q);
+			$sth->execute();
+			$rs = $sth->fetchAll(PDO::FETCH_ASSOC);			
+		} 
+		catch (Exception $ex){
+			//print $ex;
+			return;
+		}
+		
+		$data = array("" => "");
+		foreach($rs as $r){
+			$data[$r['course']] = $r['course'];
+		}
+		
+		$content = self::printMaterializeSelector($data, $selectorName, $selectorId, $selectedValue, $label, $meterializeOn);
+		
+		return $content;
 	}
 	
-	public static function getAlterSelector($selectorName="", $selectorId="", $selectedValue="")
+	public static function getKlasseSelector($selectorName="", $selectorId="", $selectedValue="", $label="", $meterializeOn=FALSE)
 	{
-		$name = empty($selectorName) ? '' : "name='$selectorName'";
-		$id = empty($selectorId) ? '' : "id='$selectorId'";
+		$data = array("" => "");
 		
-		?>
-<select <?php echo"$id $name";?> >
-	<option value=""></option>
-	<option value="1" <?=$selectedValue === '1' ? 'selected' : ''?> >1 Jahr</option>
-	<option value="2" <?=$selectedValue === '2' ? 'selected' : ''?> >2 Jahren</option>
-	<option value="3" <?=$selectedValue === '3' ? 'selected' : ''?> >3 Jahren</option>
-	<option value="4" <?=$selectedValue === '4' ? 'selected' : ''?> >4 Jahren</option>
-	<option value="5" <?=$selectedValue === '5' ? 'selected' : ''?> >5 Jahren</option>
-	<option value="6" <?=$selectedValue === '6' ? 'selected' : ''?> >6 Jahren</option>
-	<option value="7" <?=$selectedValue === '7' ? 'selected' : ''?> >7 Jahren</option>
-	<option value="8" <?=$selectedValue === '8' ? 'selected' : ''?> >8 Jahren</option>
-	<option value="9" <?=$selectedValue === '9' ? 'selected' : ''?> >9 Jahren</option>
-</select>
-		<?php
+		for($i=1, $end=10; $i<=$end; ++$i)
+		{
+			$data[$i] = $i." Klasse";
+		}
+		$content = self::printMaterializeSelector($data, $selectorName, $selectorId, $selectedValue, $label, $meterializeOn);
+		
+		return $content;
+	}
+	
+	public static function getAlterSelector($selectorName="", $selectorId="", $selectedValue="", $label="", $meterializeOn=FALSE)
+	{
+		$data = array("" => "", 1 => "1 Jahr");
+		
+		for($i=2, $end=10; $i<=$end; ++$i)
+		{
+			$data[$i] = $i." Jahren";
+		}
+		$content = self::printMaterializeSelector($data, $selectorName, $selectorId, $selectedValue, $label, $meterializeOn);
+		
+		return $content;
 	}
 }

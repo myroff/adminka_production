@@ -1,0 +1,255 @@
+{% extends "main.html.twig" %}
+{% block content %}
+<!-- search-panel -->
+<div id="search-panel" class="dont-print">
+	<form method="GET" action="">
+		<div class="col s12">
+			<div class="row">
+				<div class="input-field col s12 m1">
+					<button type="submit" class="waves-effect waves-light btn-small">Suchen</button>
+				</div>
+				<div class="input-field col s12 m1">
+					{{ s_kurId | raw }}
+				</div>
+				<div class="input-field col s12 m1">
+				{{ wochentag | raw }}
+				</div>
+				<div class="input-field col s12 m1">
+					{{ s_raum | raw }}
+				</div>
+				
+				<div class="input-field col s12 m2">
+					{{ s_lehrId | raw }}
+				</div>
+				<div class="input-field col s12 m1">
+					{{ s_klasse | raw }}
+				</div>
+				<div class="input-field col s12 m1">
+					{{ s_alter | raw }}
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="row">
+		{% if 'Administrator' in userGroups %}
+			<div class="col s12 m2">
+				<label for="upload_stundenplan">Upload Stundenplan zu Website</label>
+				<button id="upload_stundenplan" class="waves-effect waves-light btn"
+						onclick="uploadStundenplan();">
+					<i class="material-icons left" >file_upload</i>
+					Upload
+				</button>
+			</div>
+		{% endif %}
+	</div>
+</div>
+<div id="stundenPlan">
+	{%  include 'Stundenplan/stundenPlanTabelleFull.twig' %}
+</div>
+
+<!-- Main Content Ende -->
+<!-- Kursinfo -->
+<div id="modalPopup" class="modal modal-fixed-footer">
+	<div class="modal-content">
+		<h3 id="modalPopup_header">Info</h3>
+		<div id="modalPopup_content"></div>
+	</div>
+	<div class="modal-footer" >
+		<button id="modalCloseButton" class="modal-close btn waves-effect grey darken-3" >
+			OK
+		</button>
+	</div>
+</div>
+
+<div id="editTermin" class="modal modal-fixed-footer">
+	<div class="modal-content">
+		<h3>Termin bearbeiten
+			<button class="deleteButton" id="deleteButton_Termin" stnPlId="" style="float:right;">
+				
+			</button>
+		</h3>
+	<form id="editTerminForm" method="post" action="">
+		<input type="hidden" name="stnPlId" value="" id="editTerminForm_stnPlId"/>
+		<table>
+			<tr>
+				<th>
+					Raum
+				</th>
+				<td>
+					<input name="raum" type="text" id="editTerminForm_raum"/>
+				</td>
+			</tr>
+			<tr>
+				<th>
+					Tag
+				</th>
+				<td>
+					{{ editTerminForm_wochentag | raw }}
+				</td>
+			</tr>
+			<tr>
+				<th>
+					Zeit<br>(format: hh:mm)
+				</th>
+				<td>
+					von <input name="anfang" type="time" class='timepicker'id="editTerminForm_anfang" />
+					bis <input name="ende" type="time" class='timepicker' id="editTerminForm_ende" />
+				</td>
+			</tr>
+		</table>
+	</form>
+	</div>
+	<div class="modal-footer" >
+		<button id="submitEditTerminForm" class="modal-close btn-floating waves-effect waves-light green darken-2">
+			<i class="material-icons" 
+			   style="font-size: 40px;"
+			>
+				done
+			</i>
+		</button>
+		<button id="closeEditTermin" class="modal-close btn-floating waves-effect waves-light grey lighten-5" >
+			<i class="material-icons red-text darken-3 accent-3" 
+			   style="font-size: 40px;"
+			>
+				do_not_disturb
+			</i>
+		</button>
+	</div>
+</div>
+
+{% block javascript %}
+<script>
+var modalPopup = document.getElementById('modalPopup');
+var modalHeader = document.getElementById('modalPopup_header');
+var modalContent = document.getElementById('modalPopup_content');
+
+var editTerminPopup = document.getElementById('editTermin');
+
+//submit form from modal footer buttons
+document.getElementById('submitEditTerminForm').onclick = function(){
+	
+	//var submit = new Event('submit');
+	//document.getElementById('editTerminForm').dispatchEvent(submit, {bubbles:true});
+	var postData = $('#editTerminForm').serializeArray();
+	
+	$.ajax({
+		url:'{{constant('BASIS_URL')}}/admin/ajaxUpdateTermin',
+		type:'POST',
+		data:postData,
+		dataType:'JSON',
+		success:function(response){
+			if(response.status === 'ok')
+			{
+				alert(response.status);
+				location.reload();
+			}
+			else
+			{
+				alert("Fehler: "+response.status);
+			}
+		},
+		error:function(errorThrown){
+			alert(errorThrown);
+		}
+	});
+};
+
+//edit Termin
+$('.editTerminButton').click(function(){
+	$('#deleteButton_Termin').attr('stnPlId', this.dataset.stnplid);
+	
+	$('#editTerminForm_stnPlId').val(this.dataset.stnplid);
+	$('#editTerminForm_raum').val(this.dataset.raum);
+	$('#editTerminForm_wochentag').val(this.dataset.wtag);
+	$('#editTerminForm_anfang').val(this.dataset.anf);
+	$('#editTerminForm_ende').val(this.dataset.end);
+	
+	var modalInstance = M.Modal.init(editTerminPopup);
+	modalInstance.open();
+});
+
+//delete Termin
+$('#deleteButton_Termin').click(function(){
+	if(confirm('Wollen Sie wirklich diesen Termin löschen?')){
+		stnId = $(this).attr('stnPlId');
+		$.ajax({
+			url:'{{constant('BASIS_URL')}}/admin/ajaxDeleteTermin',
+			type:'POST',
+			data:{stnPlId:stnId},
+			dataType:'JSON',
+			success:function(response){
+				if(response.status === 'ok')
+				{
+					alert(response.status);
+					location.reload();
+				}
+				else
+				{
+					alert("Fehler: "+response.status);
+				}
+			},
+			error:function(errorThrown){
+				meldung.html(errorThrown);
+			}
+		});
+	}
+	else{
+
+	}
+});
+
+//get info
+$('.get_info').click(function(){
+	kurId = $(this).attr('kurId');
+	$.ajax({
+		url:'{{constant('BASIS_URL')}}/admin/ajaxStnPlKurInfo/'+kurId,
+		//type:'POST',
+		//data:postData,
+		dataType:'text',
+		success:function(response){
+			//console.log(response);
+			modalHeader.textContent = "Info";
+			modalContent.innerHTML = response;
+			var modalInstance = M.Modal.init(modalPopup);
+			modalInstance.open();
+		},
+		error:function(xhr, ajaxOptions, thrownError){
+			
+			//alert(xhr.status);
+			alert(thrownError);
+		}
+	});
+});
+
+$('.printButton').click(function(){
+	div = $(this).attr('printDiv');
+	
+	w=window.open();
+	//doc = document.implementation.createHTMLDocument("Test Print");
+	//doc.innerHTML = $('#'+div).html();
+	//w.document.write(doc);
+	
+	w.document.write('<link rel="stylesheet" href="{{constant('BASIS_URL')}}/Public/css/style.css" type="text/css" />');
+	w.document.write($('#'+div).html());
+	//w.print();
+	//w.close();
+});
+
+function uploadStundenplan(){
+	
+	alert("у вас недостаточно средств на счету.");
+	return;
+	var ajax = new XMLHttpRequest();
+	ajax.onreadystatechange = function(){
+		
+	};
+	
+	ajax.open("GET", '"{{constant('BASIS_URL')}}/admin/ajaxUploadStundenplan/');
+	ajax.send(null);
+	
+}
+
+</script>
+{% endblock %}
+
+{% endblock %}

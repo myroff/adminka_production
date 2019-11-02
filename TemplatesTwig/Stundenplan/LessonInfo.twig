@@ -1,0 +1,35 @@
+{% set start = date(lesson.anfang) %}
+{% set end = date(lesson.ende) %}
+<div>
+<i class="get_info cursItem-button material-icons light-blue-text accent-3" kurId="{{lesson.kurId}}">info</i>
+<i class="editTerminButton cursItem-button material-icons light-blue-text accent-3" 
+   data-stnPlId="{{lesson.stnPlId}}"
+   data-anf="{{lesson.anfang}}"
+   data-end="{{lesson.ende}}"
+   data-raum="{{lesson.raum}}"
+   data-wTag="{{lesson.wochentag}}"
+>
+	update
+</i>
+</div>
+<div class="lesson-title">{{ lesson.kurName }}</div>
+<div class="lesson-teacher">{{ lesson.vorname }} {{ lesson.name }}</div>
+<div class="lesson-time">Zeit: {{ lesson.anfang | date('H:i') }} - {{ lesson.ende | date('H:i') }}</div>
+<div class="lesson-duration">Dauer: {{ duration | date('%i') }}</div>
+{% if lesson.kurMinAlter %}
+<div class="lesson-ageLimit">
+Alter: {{ lesson.kurMinAlter }}
+	{% if lesson.kurMaxAlter and lesson.kurMaxAlter != lesson.kurMinAlter %}
+	- {{ lesson.kurMaxAlter }}
+	{% endif %}
+</div>
+{% endif %}
+{% if lesson.kurMinKlasse %}
+<div class="lesson-ageLimit">
+Klasse: {{ lesson.kurMinKlasse }}
+	{% if lesson.kurMaxKlasse and lesson.kurMaxKlasse != lesson.kurMinKlasse %}
+	- {{ lesson.kurMaxKlasse }}
+	{% endif %}
+</div>
+{% endif %}
+<div class="lesson-members">Teilnehmer: {{ lesson.countKnd }}/{{ lesson.maxKnd }}</div>

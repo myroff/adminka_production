@@ -1,0 +1,57 @@
+<h3>Stundenplan</h3>
+<table id="stnPlnTbl">
+	<thead class="grey darken-3" style="color:white;">
+		<tr>
+			<th style="width:100px;">Zeit/Raum</th>
+			{% for r in raum %}
+			<th>{{ r.raum }}</th>
+			{% endfor %}
+		</tr>
+	</thead>
+	<tbody>
+{% set _colspan = raum|length + 1 %}
+{% for day in 1..7 %}
+	{% if stunden[day] is not empty %}
+		<tr><th colspan="{{ _colspan }}">{{ getWeekdayFromInt(day) }}</th></tr>
+		{% set lessonsEndHour = -1 %}
+		{% for hour in 0..24 %}
+			{% if stunden[day][hour] is not empty 
+				or hour <= lessonsEndHour
+			%}
+				<tr>
+					<th>{{ hour }}:00</th>
+					{% for r in raum %}
+					<td> 
+					{% if stunden[day][hour][r.raum] is not empty %}
+						{% for lesson in stunden[day][hour][r.raum] %}
+							{% set _EndHour = date(lesson.ende) | date('H') %}
+							{% if lessonsEndHour < _EndHour %}
+								{% set lessonsEndHour = _EndHour %}
+							{% endif %}
+							{% if lesson.countKnd > 0 and lesson.countKnd < lesson.maxKnd %}
+								{% set _class = "light-green lighten-3" %}
+							{% elseif lesson.countKnd >= lesson.maxKnd %}
+								{% set _class = "deep-orange darken-3" %}
+							{% else %}
+								{% set _class = "grey lighten-3" %}
+							{% endif %}
+							{% set _top = date(lesson.anfang) | date('i') * 4 %}
+							{% set start = date(lesson.anfang) %}
+							{% set end = date(lesson.ende) %}
+							{% set duration = end.diff(start) %}
+							{% set _height = duration | date('%i') * 4 %}
+							{% set _style = "top:"~_top~"px;height:"~_height~"px;" %}
+						<div class="cursItem {{_class}}" style="{{_style}}">
+							{{ include('Stundenplan/LessonInfo.twig') }}
+						</div>
+						{% endfor %}
+					{% endif %}
+					</td>
+					{% endfor %}
+				</tr>
+			{% endif %}
+		{% endfor %}
+	{% endif %}
+{% endfor %}
+	</tbody>
+</table>

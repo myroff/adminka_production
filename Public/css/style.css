@@ -138,18 +138,19 @@ hr {margin:0;background:black;border:1px solid black;}
 #mntListe td {border:1px solid black;vertical-align:top; background:#C2D6D6;}
 
 /* Stundenplan Table*/
-#stnPlnTbl thead{position:sticky;top:40px;}
-#stnPlnTbl td, #stnPlnTbl th{border:1px solid black;vertical-align:top;}
+#stnPlnTbl thead{position:sticky;top:40px;z-index:5;}
+#stnPlnTbl td, #stnPlnTbl th{border:1px solid rgba(0,0,0,0.12);vertical-align:top;}
 #stnPlnTbl td {height:240px;width:150px;padding:0;position:relative;}
 #stnPlnTbl tr:nth-child(2n+3){background-color: #ddd;}
-#stnPlnTbl tr:hover {background:#ccc;}
+#stnPlnTbl tr:hover {/*background:#ccc;*/}
 #stnPlTable tr:nth-child(2n+3){background-color: #ccc;}
 
 #stnPlFlex .headerRaum{width:120px;background:#292929;color:white;font-weight:bold;float:left;}
 #stnPlnTbl .headerWeekday{background:#575757;color:white;font-weight:bold;text-align:left;}
 
-#stnPlnTbl .cursItem{position:absolute;width:parent;overflow:hidden;border-top:1px black solid;border-bottom:1px black solid;z-index:10;width:100%;}
-#stnPlnTbl .cursItem:hover {height:100%;overflow:none;}
+#stnPlnTbl .cursItem{position:absolute;overflow:hidden;border-radius:5px;z-index:1;width:100%;margin:0;padding:0px 3px;}
+#stnPlnTbl .cursItem:hover {height:auto;overflow:none;z-index:10;}
+#stnPlnTbl .cursItem-button {cursor:pointer;}
 
 #stnPlnTbl .belegt_mit_freien_plaetzen {background:rgba(0,250,0,0.5);}
 #stnPlnTbl .belegt_mit_freien_plaetzen:hover {background:rgba(50,250,50,1);}

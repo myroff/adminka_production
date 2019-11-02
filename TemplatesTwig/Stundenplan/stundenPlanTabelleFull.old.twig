@@ -1,0 +1,40 @@
+<h3>Stundenplan</h3>
+<table>
+{% set curRoom = 1 %}
+{% for stn in stunden %}
+	{% if curDay != stn.wochentag %}
+	<tr><th colspan="3">{{ getWeekdayFromInt(stn.wochentag) }}</th></tr>
+		{% set curDay = stn.wochentag %}
+	<tr>
+		<th>Zeit/Raum</th>
+		{% for r in raum %}
+		<th>{{ r.raum }}</th>
+		{% endfor %}
+	</tr>
+	{% endif %}
+	{% if curHour != stn.anfang|date('G') or curDay != stn.wochentag %}
+		{% set curRoom = 1 %}
+	<tr>
+		<td>{{ stn.anfang|date('G:00') }}</td>
+	{% endif %}
+	{% set diffRoom = (stn.raum-1)-(curRoom+1) %}
+	{% for r in (curRoom+1)..(stn.raum-1) if (curRoom+1) < (stn.raum) %}
+		<td>{{ r }}</td>
+	{% endfor %}
+	{% if curRoom != stn.raum %}
+	<td>
+	{% endif %}
+		{{ stn.kurName }}<br>
+		Raum {{ stn.raum }}<br>
+		curRaum {{ curRoom }}<br>
+		Anfang {{ stn.anfang }}<br>
+		<br>
+	{% if stunden[loop.index].raum != stn.raum %}
+	</td>
+	{% endif %}
+	
+	{% set curDay = stn.wochentag %}
+	{% set curHour = stn.anfang|date('G') %}
+	{% set curRoom = stn.raum %}
+{% endfor %}
+</table>
