@@ -8,11 +8,12 @@ class Twig_Extension_CustomTools extends Twig_Extension
 	public function getFunctions()
 	{
 		return [
-			new Twig_Function('getPhpGlobals', [$this, 'getPhpGlobals'], ['is_safe' => array('all')]),
-			new Twig_Function('getAdminMenu', [$this, 'getAdminMenu'], ['is_safe' => array('all')]),
-			new Twig_Function('printSqlKursTermin', [$this, 'printSqlKursTermin'], ['is_safe' => array('all')]),
-			new Twig_Function('indxToWeekday', [$this, 'indxToWeekday'], ['is_safe' => array('all')]),
-			new Twig_Function('getWeekdayFromInt', [$this, 'getWeekdayFromInt'], ['is_safe' => array('all')]),
+			new Twig_Function('getPhpGlobals',		[$this, 'getPhpGlobals'], ['is_safe' => array('all')]),
+			new Twig_Function('getAdminMenu',		[$this, 'getAdminMenu'], ['is_safe' => array('all')]),
+			new Twig_Function('printSqlKursTermin',	[$this, 'printSqlKursTermin'], ['is_safe' => array('all')]),
+			new Twig_Function('indxToWeekday',		[$this, 'indxToWeekday'], ['is_safe' => array('all')]),
+			new Twig_Function('getWeekdayFromInt',	[$this, 'getWeekdayFromInt'], ['is_safe' => array('all')]),
+			new Twig_Function('printSqlTermin',		[$this, 'printSqlTermin'], ['is_safe' => array('all')]),
 		];
 	}
 
@@ -66,6 +67,22 @@ class Twig_Extension_CustomTools extends Twig_Extension
 		$week = array(1=>"Montag", 2=>"Dienstag", 3=>"Mitwoch", 4=>"Donnerstag", 5=>"Freitag", 6=>"Samstag", 7=>"Sonntag");
 		
 		return $week[$n];
+	}
+	
+	public static function printSqlTermin($sqlStr)
+	{
+		$out = "";
+		$sql = "[".$sqlStr."]";
+		$termin = json_decode($sql,true);
+		
+		foreach ($termin as $i=>$t)
+		{
+			#$out .= "<br>";
+			$out .= self::indxToWeekday(trim($t['wochentag']));
+			$out .= " ".$t['time'];
+		}
+		
+		return $out;
 	}
 }
 

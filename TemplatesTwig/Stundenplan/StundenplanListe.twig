@@ -3,44 +3,45 @@
 <!-- search-panel -->
 <div id="search-panel" class="dont-print">
 	<form method="GET" action="">
-		<div class="col s12">
-			<div class="row">
-				<div class="input-field col s12 m1">
-					<button type="submit" class="waves-effect waves-light btn-small">Suchen</button>
-				</div>
-				<div class="input-field col s12 m1">
-					{{ s_kurId | raw }}
-				</div>
-				<div class="input-field col s12 m1">
-				{{ wochentag | raw }}
-				</div>
-				<div class="input-field col s12 m1">
-					{{ s_raum | raw }}
-				</div>
-				
-				<div class="input-field col s12 m2">
-					{{ s_lehrId | raw }}
-				</div>
-				<div class="input-field col s12 m1">
-					{{ s_klasse | raw }}
-				</div>
-				<div class="input-field col s12 m1">
-					{{ s_alter | raw }}
-				</div>
+		<div class="row">
+			<div class="input-field col s12 m1">
+				<button type="submit" class="waves-effect waves-light btn-small">Suchen</button>
+			</div>
+			<div class="input-field col s12 m2">
+				{{ s_season | raw }}
+			</div>
+			<div class="input-field col s12 m1">
+				{{ s_kurId | raw }}
+			</div>
+			<div class="input-field col s12 m1">
+			{{ wochentag | raw }}
+			</div>
+			<div class="input-field col s12 m1">
+				{{ s_raum | raw }}
+			</div>
+
+			<div class="input-field col s12 m2">
+				{{ s_lehrId | raw }}
+			</div>
+			<div class="input-field col s12 m1">
+				{{ s_klasse | raw }}
+			</div>
+			<div class="input-field col s12 m1">
+				{{ s_alter | raw }}
 			</div>
 		</div>
 	</form>
 	<div class="row">
-		{% if 'Administrator' in userGroups %}
-			<div class="col s12 m2">
-				<label for="upload_stundenplan">Upload Stundenplan zu Website</label>
-				<button id="upload_stundenplan" class="waves-effect waves-light btn"
-						onclick="uploadStundenplan();">
-					<i class="material-icons left" >file_upload</i>
-					Upload
-				</button>
-			</div>
-		{% endif %}
+	{% if 'Administrator' in userGroups %}
+		<div class="col s12 m2">
+			<label for="upload_stundenplan">Upload Stundenplan zu Website</label>
+			<button id="upload_stundenplan" class="waves-effect waves-light btn"
+					onclick="uploadStundenplan();">
+				<i class="material-icons left" >file_upload</i>
+				Upload
+			</button>
+		</div>
+	{% endif %}
 	</div>
 </div>
 <div id="stundenPlan">
@@ -237,14 +238,14 @@ $('.printButton').click(function(){
 
 function uploadStundenplan(){
 	
-	alert("у вас недостаточно средств на счету.");
-	return;
 	var ajax = new XMLHttpRequest();
 	ajax.onreadystatechange = function(){
-		
+		if(ajax.readyState > 3 && ajax.status == 200){
+			alert(ajax.responseText);
+		}
 	};
 	
-	ajax.open("GET", '"{{constant('BASIS_URL')}}/admin/ajaxUploadStundenplan/');
+	ajax.open("GET", '{{constant('BASIS_URL')}}/admin/ajaxUploadStundenplan');
 	ajax.send(null);
 	
 }

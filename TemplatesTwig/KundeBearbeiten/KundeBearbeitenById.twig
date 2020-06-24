@@ -1,0 +1,1116 @@
+{% extends "main.html.twig" %}
+{% block content %}
+<style>
+	.modal-trigger i {font-size:14px;cursor:pointer;}
+	
+	#updateItemTable, #addKursTable, #updateItem_Anrede, #UpdateKur_Table, #Zahlungsformular, #updateItem_istFotoErlaubt, 
+	#updateBankDates, #updateBankDates_isCash, #editSonderPreis_Table, #editKundenKursKomm_Table, #changeKurs_Table, #changeKursConfirm_Table
+	{
+		display:none;
+		border:2px solid #a1a1a1;
+		padding:20px; 
+		background:#dddddd;
+		min-width:450px;
+		border-radius:20px;
+
+		position:fixed;
+		top:200px;
+		left:30%;
+		z-index:100;
+	}
+</style>
+	<div id="meldung">
+		{% if meldung is not empty %}
+		{{ meldung }}
+		{% endif %}
+	</div>
+	<div class="row">
+		<div class="col s12">
+			Erstellt von {{ client.mitarbeiter }} {{ client.erstelltAm|date("d.m.Y H:i") }}
+		</div>
+		<div class="col s12">
+			<button type="button" id="kundeLoeschenBtn" class="waves-effect waves-light btn-small">Kunden löschen</button>
+		</div>
+	</div>
+	<div class="divider"></div>
+	<h5>Kunde</h5>
+	<div class="row">
+		<div class="col s12 m1">
+			<p class="itemName">
+				Kunden-Nummer
+			</p>
+			<p>
+				<span class="itemValue">{{ client.kundenNummer }}</span>
+				<a class="modal-trigger" href="#edit_item"><i class="material-icons blue-text lighten-1-text editItem">edit</i></a>
+			</p>
+		</div>
+		<div class="col s12 m1">
+			<p>
+				Anrede
+			</p>
+			<p>
+				{{ client.anrede }}
+				<a class="modal-trigger" href="#edit_anrede"><i class="material-icons blue-text lighten-1-text">edit</i></a>
+			</p>
+		</div>
+		<div class="col s12 m1">
+			<p class="itemName">
+				Vorname
+			</p>
+			<p>
+				<span class="itemValue">{{ client.vorname }}</span>
+				<a class="modal-trigger" href="#edit_item"><i class="material-icons blue-text lighten-1-text editItem">edit</i></a>
+			</p>
+		</div>
+		<div class="col s12 m1">
+			<p class="itemName">
+				Name
+			</p>
+			<p>
+				<span class="itemValue">{{ client.name }}</span>
+				<a class="modal-trigger" href="#edit_item"><i class="material-icons blue-text lighten-1-text editItem">edit</i></a>
+			</p>
+		</div>
+		<div class="col s12 m2">
+			<p class="itemName">
+				Geburtsdatum (dd.mm.yyyy)
+			</p>
+			<p>
+				<span class="itemValue">{{ client.geburtsdatum }}</span>
+				<a class="modal-trigger" href="#edit_item"><i class="material-icons blue-text lighten-1-text editItem">edit</i></a>
+			</p>
+		</div>
+	</div>
+	<div class="divider"></div>
+	<h5>Kontakt</h5>
+	<div class="row">
+		<div class="col s12 m2">
+			<p class="itemName">
+				Telefon
+			</p>
+			<p>
+				<span class="itemValue">{{ client.telefon }}</span>
+				<a class="modal-trigger" href="#edit_item"><i class="material-icons blue-text lighten-1-text editItem">edit</i></a>
+			</p>
+		</div>
+		<div class="col s12 m2">
+			<p class="itemName">
+				Handy
+			</p>
+			<p>
+				<span class="itemValue">{{ client.handy }}</span>
+				<a class="modal-trigger" href="#edit_item"><i class="material-icons blue-text lighten-1-text editItem">edit</i></a>
+			</p>
+		</div>
+		<div class="col s12 m2">
+			<p class="itemName">
+				Email
+			</p>
+			<p>
+				<span class="itemValue">{{ client.email }}</span>
+				<a class="modal-trigger" href="#edit_item"><i class="material-icons blue-text lighten-1-text editItem">edit</i></a>
+			</p>
+		</div>
+	</div>
+	<div class="divider"></div>
+	<h5>Adresse</h5>
+	<div class="row">
+		<div class="col s12 m2">
+			<p class="itemName">
+				Strasse
+			</p>
+			<p>
+				<span class="itemValue">{{ client.strasse }}</span>
+				<a class="modal-trigger" href="#edit_item"><i class="material-icons blue-text lighten-1-text editItem">edit</i></a>
+			</p>
+		</div>
+		<div class="col s12 m1">
+			<p class="itemName">
+				Haus
+			</p>
+			<p>
+				<span class="itemValue">{{ client.strNr }}</span>
+				<a class="modal-trigger" href="#edit_item"><i class="material-icons blue-text lighten-1-text editItem">edit</i></a>
+			</p>
+		</div>
+		<div class="col s12 m1">
+			<p class="itemName">
+				PLZ
+			</p>
+			<p>
+				<span class="itemValue">{{ client.plz }}</span>
+				<a class="modal-trigger" href="#edit_item"><i class="material-icons blue-text lighten-1-text editItem">edit</i></a>
+			</p>
+		</div>
+		<div class="col s12 m1">
+			<p class="itemName">
+				Stadt
+			</p>
+			<p>
+				<span class="itemValue">{{ client.stadt }}</span>
+				<a class="modal-trigger" href="#edit_item"><i class="material-icons blue-text lighten-1-text editItem">edit</i></a>
+			</p>
+		</div>
+	</div>
+	<div class="divider"></div>
+	<h5>Weitere Info</h5>
+	<div class="row">
+		<div class="col s12 m2">
+			<p class="itemName">
+				Geburtsland
+			</p>
+			<p>
+				<span class="itemValue">{{ client.geburtsland }}</span>
+				<a class="modal-trigger" href="#edit_item"><i class="material-icons blue-text lighten-1-text editItem">edit</i></a>
+			</p>
+		</div>
+		<div class="col s12 m2">
+			<p class="itemName">
+				Muttersprache
+			</p>
+			<p>
+				<span class="itemValue">{{ client.muttersprache }}</span>
+				<a class="modal-trigger" href="#edit_item"><i class="material-icons blue-text lighten-1-text editItem">edit</i></a>
+			</p>
+		</div>
+		<div class="col s12 m2">
+			<p class="itemName">
+				ist Foto erlaubt?
+			</p>
+			<p>
+				<span class="itemValue">{{ client.istFotoErlaubt ? 'ja' : 'nein' }}</span>
+				<a class="modal-trigger" href="#edit_istFotoErlaubt"><i class="material-icons blue-text lighten-1-text editItem">edit</i></a>
+			</p>
+		</div>
+		<div class="col s12 m2">
+			<p class="itemName">
+				Empfohlen durch
+			</p>
+			<p>
+				<span class="itemValue">{{ client.empfohlenDurch }}</span>
+			</p>
+			<div>{{ empfohlenDurchSelector | raw }}</div>
+			<div><button type="button" id="empfohlenIdSpeichern">Speichern</button></div>
+		</div>
+	</div>
+	<div class="divider"></div>
+	<h5>Zahlungsinfo</h5>
+	<div class="row">
+		<div class="col s12 m2">
+			<p class="itemName">
+				Zahlungsart
+			</p>
+			<p>
+				<span class="itemValue">{{ client.printZahlungsArt }}</span>
+				<a class="modal-trigger" href="#edit_isCash"><i class="material-icons blue-text lighten-1-text">edit</i></a>
+			</p>
+		</div>
+		<div class="col s12 m2">
+			<p class="itemName">
+				Kontoinhaber
+			</p>
+			<p>
+				<span class="itemValue">{{ client.kontoinhaber }}</span>
+				<a class="modal-trigger" href="#updateBankDates"><i class="material-icons blue-text lighten-1-text editBankDates">edit</i></a>
+			</p>
+		</div>
+		<div class="col s12 m2">
+			<p class="itemName">
+				Bank
+			</p>
+			<p>
+				<span class="itemValue">{{ client.bankName }}</span>
+				<a class="modal-trigger" href="#updateBankDates"><i class="material-icons blue-text lighten-1-text editBankDates">edit</i></a>
+			</p>
+		</div>
+		<div class="col s12 m2">
+			<p class="itemName">
+				IBAN
+			</p>
+			<p>
+				<span class="itemValue">{{ client.iban }}</span>
+				<a class="modal-trigger" href="#updateBankDates"><i class="material-icons blue-text lighten-1-text editBankDates">edit</i></a>
+			</p>
+		</div>
+		<div class="col s12 m2">
+			<p class="itemName">
+				BIC
+			</p>
+			<p>
+				<span class="itemValue">{{ client.bic }}</span>
+				<a class="modal-trigger" href="#updateBankDates"><i class="material-icons blue-text lighten-1-text editBankDates">edit</i></a>
+			</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col s12 m2">
+			<p class="itemName">
+				Strasse
+			</p>
+			<p>
+				<span class="itemValue">{{ client.zdStrasse }}</span>
+				<a class="modal-trigger" href="#updateBankDates"><i class="material-icons blue-text lighten-1-text editBankDates">edit</i></a>
+			</p>
+		</div>
+		<div class="col s12 m2">
+			<p class="itemName">
+				Hausnummer
+			</p>
+			<p>
+				<span class="itemValue">{{ client.zdHausnummer }}</span>
+				<a class="modal-trigger" href="#updateBankDates"><i class="material-icons blue-text lighten-1-text editBankDates">edit</i></a>
+			</p>
+		</div>
+		<div class="col s12 m2">
+			<p class="itemName">
+				Ort
+			</p>
+			<p>
+				<span class="itemValue">{{ client.zdOrt }}</span>
+				<a class="modal-trigger" href="#updateBankDates"><i class="material-icons blue-text lighten-1-text editBankDates">edit</i></a>
+			</p>
+		</div>
+		<div class="col s12 m2">
+			<p class="itemName">
+				PLZ
+			</p>
+			<p>
+				<span class="itemValue">{{ client.zdPlz }}</span>
+				<a class="modal-trigger" href="#updateBankDates"><i class="material-icons blue-text lighten-1-text editBankDates">edit</i></a>
+			</p>
+		</div>
+	</div>
+	<div class="divider"></div>
+	<h5>Kurse wählen</h5>
+	<div class="row">
+		<div id="chooseKurs" class="col s12 m5">
+			{{ kursSelector | raw }}
+			<button onclick="addKurs()">Hinzufügen</button>
+		</div>
+	</div>
+	
+<!-- Kommentaren -->
+	<div class="divider"></div>
+	<div class="row">
+		<div id="Kommentaren">
+			<p><b>Kommentaren</b> <button id="newKndCmntTable_Open">Neuen Kommentar hinzufügen</button></p>
+			<div id='newKndCmntTable'>
+				{{ newCommentsForm | raw }}
+				<div>
+					<button id="newKndCmntTable_Close">Schliessen</button>
+				</div>
+			</div>
+			<div>
+				{{ comments | raw }}
+			</div>
+		</div>
+	</div>
+<!-- Kurse -->
+	<div class="divider"></div>
+	<div class="row">
+		<div id="kurListe">
+			<table id="kundenResTbl">
+				<tr>
+					<th>
+						Kurs
+					</th>
+					<th>
+						Lehrer
+					</th>
+					<th>
+						Preis
+					</th>
+					<th>
+						Sonderpreis
+					</th>
+					<th>
+						Beschreibung
+					</th>
+					<th>
+						Kommentar
+					</th>
+					<th>
+						Alter
+					</th>
+					<th>
+						Klassen
+					</th>
+					<th>
+						Von
+					</th>
+					<th>
+						Bis
+					</th>
+					<th>
+						Entfernen
+					</th>
+				</tr>
+			{% if lessons is empty %}
+				<tr>
+					<td colspan="13">Nach Ihrer Anfrage wurden keine Daten gefunden.</td>
+				</tr>
+			{% else %}
+				{% for lesson in lessons %}
+				<tr>
+					<td>{{ lesson.kurName }}<br>
+						{{  printSqlTermin(lesson.termin) }}
+						<br><button class='changeKursButton'  kurId="{{lesson.kurId}}" eintrId="{{lesson.eintrId}}">Ändern</button>
+					</td>
+					<td>{{lesson.vorname}} {{lesson.name}}</td>
+					<td>{{lesson.kurPreis}} {{ lesson.kurIsStdPreis ? 'pro Stunde' : 'pro Monat' }}</td>
+					<td>
+						{% if lesson.sonderPreis %}
+							{{ lesson.sonderPreis }} {{ lesson.khkIsStdPreis ? 'pro Stunde' : 'pro Monat' }}
+						{% endif %}
+						<button class='editItemButton editSonderPreis' eintrId="{{ lesson.eintrId }}" kurName="{{ lesson.kurName }}"></button>
+					</td>
+					<td>
+						{{ lesson.kurBeschreibung }}
+					</td>
+					<td>
+						{{ lesson.khkKomm }} <button class='editItemButton editBeschreibung' eintrId="{{ lesson.eintrId }}" kurName="{{ lesson.kurName }}"></button>
+					</td>
+					<td>
+						{{ lesson.kurMinAlter }}
+						{% if lesson.kurMinAlter < lesson.kurMaxAlter %}
+							bis {{ lesson.kurMaxAlter }}
+						{% endif %}
+					</td>
+					<td>
+						{{ lesson.kurMinKlasse }}
+						{% if lesson.kurMinKlasse < lesson.kurMaxKlasse %}
+							bis {{ lesson.kurMaxKlasse }}
+						{% endif %}
+					</td>
+					<td>
+						{{ lesson.von | date("d.m.Y") }}
+						<button class='updateKurDateButton' kurId="{{ lesson.kurId }}" kurName="{{ lesson.kurName }}" kurDateType="von" dateVal="{{ lesson.von | date("d.m.Y") }}" 
+						eintrId="{{ lesson.eintrId }}" ></button>
+					</td>
+					<td>
+						{{ lesson.bis | date("d.m.Y") }}
+						<button class="updateKurDateButton" kurId="{{ lesson.kurId }}" kurName="{{ lesson.kurName }}" kurDateType="bis" dateVal="{{ lesson.von | date("d.m.Y") }}"
+						eintrId="{{ lesson.eintrId }}" ></button>
+					</td>
+					<td>
+						<button class="kurEntfernenButton" eintrId="{{ lesson.eintrId }}" >Löschen</button>
+					</td>
+				</tr>
+				{% endfor %}
+			{% endif %}
+			</table>
+		</div>
+	</div>
+	
+<!-- Update Anrede -->
+	<div id="edit_anrede" class="modal">
+		<form id="edit_anrede_form" method="post" action="{{ requestUri }}">
+			<div class="modal-content">
+				<h4>Anrede</h4>
+				<div>
+					<input type="hidden" name="updateItemTable_Form_Name" value="Anrede"/>
+					<div>
+						<select name="updateItemTable_Form_Value" class="browser-default">
+							<option value="Frau">Frau</option>
+							<option value="Herr">Herr</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</form>
+		<div class="modal-footer">
+			<button form="edit_anrede_form" class="waves-effect waves-green btn" type='submit' >Speichern</button>
+			<a href="#!" class="modal-close waves-effect waves-red btn red">Abbrechen</a>
+		</div>
+	</div>
+<!-- Update default item -->
+	<div id="edit_item" class="modal">
+		<form id="edit_item_form" method="post" action="{{ requestUri }}">
+			<div class="modal-content">
+				<h4 id="edit_item_label"></h4>
+				<input type="hidden" id="input_value_name" name="updateItemTable_Form_Name" value="hiddenValue"/>
+				<div id="upateItemTable_Form_ValueContainer">
+					<input type="text" id="input_value_value" name="updateItemTable_Form_Value"/>
+				</div>
+			</div>
+		</form>
+		<div class="modal-footer">
+			<button form="edit_item_form" class="waves-effect waves-green btn" type='submit' >Speichern</button>
+			<a href="#!" class="modal-close waves-effect waves-red btn red">Abbrechen</a>
+		</div>
+	</div>
+<!-- Update istFotoErlaubt -->
+	<div id="edit_istFotoErlaubt" class="modal">
+		<form id="edit_istFotoErlaubt_form" method="post" action="{{ requestUri }}">
+			<div class="modal-content">
+				<h4>Ist Foto Erlaubt?</h4>
+				<input type="hidden" name="updateItemTable_Form_Name" value="istFotoErlaubt"/>
+				<div>
+					<select name="updateItemTable_Form_Value" class="browser-default">
+						<option value="ja">Ja</option>
+						<option value="nein">Nein</option>
+					</select>
+				</div>
+			</div>
+		</form>
+		<div class="modal-footer">
+			<button form="edit_istFotoErlaubt_form" class="waves-effect waves-green btn" type='submit' >Speichern</button>
+			<a href="#!" class="modal-close waves-effect waves-red btn red">Abbrechen</a>
+		</div>
+	</div>
+<!-- Update isCash -->
+	<div id="edit_isCash" class="modal">
+		<form id="edit_isCash_form" class="updateBankDates_Form" method="post" action="">
+			<div class="modal-content">
+				<h4>Zahlungsart</h4>
+				<input type="hidden" name="updateBankDates_Form_Name" value="isCash"/>
+				<input type="hidden" name="kndId" value="{{ client.kndId}}"/>
+				<div>
+					<select name="updateBankDates_Form_Value" class="browser-default">
+						<option value="bar">Bar</option>
+						<option value="lastschrift">Lastschrift</option>
+						<option value="bamf">BAMF</option>
+						<option value="zuzahler">Zuzahler</option>
+						<option value="selbstzahler">Selbstzahler</option>
+					</select>
+				</div>
+			</div>
+		</form>
+		<div class="modal-footer">
+			<button form="edit_isCash_form" class="waves-effect waves-green btn" type='submit' >Speichern</button>
+			<a href="#!" class="modal-close waves-effect waves-red btn red">Abbrechen</a>
+		</div>
+	</div>
+<!-- Update Bankdaten -->
+	<div id="updateBankDates" class="modal">
+		<form id="updateBankDates_Form" class="updateBankDates_Form" method="post" action="">
+			<div class="modal-content">
+				<h4 id="updateBankDates_Title"></h4>
+				<input type="hidden" id="updateBankDates_Form_Name" name="updateBankDates_Form_Name" value=""/>
+				<input type="hidden" name="kndId" value="{{ client.kndId}}"/>
+				<div>
+					<input type="text" id="updateBankDates_Form_Value" name="updateBankDates_Form_Value"/>
+				</div>
+			</div>
+		</form>
+		<div class="modal-footer">
+			<button form="updateBankDates_Form" class="waves-effect waves-green btn" type='submit' >Speichern</button>
+			<a href="#!" class="modal-close waves-effect waves-red btn red">Abbrechen</a>
+		</div>
+	</div>
+<!-- Kurs hinzufügen -->
+	<div id="addKursTable">
+		<div>Kurs hinzufügen</div>
+		<div id="addKursTable_KurName"></div>
+		<div>
+			<form id="addKursTable_Form" method="post" action="<?=$_SERVER['REQUEST_URI']?>">
+				<input type="hidden" id="addKursTable_Form_kndId" name="kndId" value=""/>
+				<input type="hidden" id="addKursTable_Form_kurId" name="kurId" value=""/>
+				von <input type="text" id="addKursTable_Form_von" name="von" class="zebra_datepicker_dmy" />
+				bis <input type="text" id="addKursTable_Form_von" name="bis" class="zebra_datepicker_dmy" />
+				<div>
+					<b>Sonderpreis</b> <input type="checkbox" name="isSonderPreisSet" value="1"/><br>
+					Preis <input style="width:40px;" type="text" name="sonderPreis" />
+					<select id="updateItemTable_Form_Value" name="khkIsStdPreis" >
+						<option value="proMonat">pro Monat</option>
+						<option value="proStunde">pro Stunde</option>
+					</select>
+				</div>
+				<div>
+					Kommentar<br>
+					<textarea name="khkKomm"></textarea>
+				</div>
+				<div class="buttonsOkCancelDiv">
+					<input class="submit" id="addKursTable_Form_ButtonSpeichern" type='submit' value='' />
+					<button class="cancel" id="addKursTable_Form_ButtonAbbrechen" ></button>
+				</div>
+			</form>
+		</div>
+	</div>
+<!-- change Kurs -->
+	<div id="changeKurs_Table">
+		<input type="hidden" id="changeKurs_oldKurId" />
+		<input type="hidden" id="changeKurs_eintrId" />
+		{{ changeCourseSelector | raw }}
+		<div class="buttonsOkCancelDiv">
+			<button class="submit" id="changeKurs_Table_ButtonSpeichern" ></button>
+			<button class="cancel" id="changeKurs_Table_ButtonAbbrechen" ></button>
+		</div>
+	</div>
+	<div id="changeKursConfirm_Table" style="z-index:150;">
+		<table>
+			<tr>
+				<td><span id="changeKursConfirm_Table_oldKurName"></span></td>
+				<td>--></td>
+				<td><span id="changeKursConfirm_Table_newKurName"></span></td>
+			</tr>
+		</table>
+		<form id="changeKursConfirm_Form">
+			<input type="hidden" id="changeKursConfirm_Form_kndId" name="kndId"/>
+			<input type="hidden" id="changeKursConfirm_Form_eintrId" name="eintrId"/>
+			<input type="hidden" id="changeKursConfirm_Form_oldKurId" name="oldKurId"/>
+			<input type="hidden" id="changeKursConfirm_Form_newKurId" name="newKurId"/>
+			<div class="buttonsOkCancelDiv">
+				<input class="submit" id="changeKursConfirm_Form_ButtonSpeichern" type='submit' value='' />
+				<button class="cancel" id="changeKursConfirm_Form_ButtonAbbrechen" ></button>
+			</div>
+		</form>
+	</div>
+<!-- Update Sonderpreis -->
+	<div id="editSonderPreis_Table">
+		<div id="editSonderPreis_Titel"><button id="deleteSonderPreisButton" class="deleteButton" ></button>Sonderpreis bearbeiten. </div>
+		<div>
+			<form id="editSonderPreis_Form" method="post" action="<?=$_SERVER['REQUEST_URI']?>">
+				<input type="hidden" id="editSonderPreis_eintrId" name="eintrId" value=""/>
+				<div>
+					SonderPreis: <input type="text" id="editSonderPreis_sonderPreis" name="sonderPreis" size="5"/>
+					<select id="editSonderPreis_khkIsStdPreis" name="khkIsStdPreis" >
+						<option value="proMonat">pro Monat</option>
+						<option value="proStunde">pro Stunde</option>
+					</select>
+				</div>
+				<div class="buttonsOkCancelDiv">
+					<input class="submit" id="editSonderPreis_Form_ButtonSpeichern" type='submit' value=""/>
+					<button class="cancel" id="editSonderPreis_Form_ButtonAbbrechen" ></button>
+				</div>
+			</form>
+		</div>
+	</div>
+<!-- Update KundenKurs-Kommentar -->
+	<div id="editKundenKursKomm_Table">
+		<div id="editKundenKursKomm_Titel"></div>
+		<form id="editKundenKursKomm_Form" method="post" action="<?=$_SERVER['REQUEST_URI']?>">
+			<input type="hidden" id="editKundenKursKomm_eintrId" name="eintrId"/>
+			<div><textarea id="KursBeschreibung_Form_Textarea" name="khkKomm"></textarea></div>
+			<div class="buttonsOkCancelDiv">
+				<input class="submit" id="editKundenKursKomm_Form_ButtonSpeichern" type='submit' value="" />
+				<button class="cancel" id="editKundenKursKomm_Form_ButtonAbbrechen" ></button>
+			</div>
+		</form>
+	</div>
+<!-- Update Kurs von/bis -->
+	<div id="UpdateKur_Table">
+		<div id="UpdateKur_Title"></div>
+		<div id="UpdateKur_FormDiv">
+			<form id="UpdateKur_Form" method="post" action="<?=BASIS_URL?>/admin/ajaxUpdateKurToKunde">
+				<input type="hidden" id="UpdateKur_kndId" name="kndId" value=""/>
+				<input type="hidden" id="UpdateKur_eintrId" name="eintrId" value=""/>
+				<input type="hidden" id="UpdateKur_kurId" name="kurId" value=""/>
+				<input type="hidden" id="UpdateKur_TypeVal" name="typeVal" value=""/>
+				<input type="text" id="UpdateKur_Val" name="dateVal" value="" class="zebra_datepicker_dmy"/>
+				<div class="buttonsOkCancelDiv">
+					<input class="submit" id="UpdateKur_ButtonSpeichern" type='submit' value='' />
+					<button class="cancel" id="UpdateKur_ButtonAbbrechen" class="cancel"></button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+{% block javascript %}
+<script>
+	var kndId = {{client.kndId}};
+	var meldung = $('#meldung');
+	
+	document.addEventListener('DOMContentLoaded', function() {
+		
+		var elems = document.querySelectorAll('.modal');
+		var instances = M.Modal.init(elems);
+		
+		var editItemLabel	= document.getElementById('edit_item_label');
+		var inputValueName	= document.getElementById('input_value_name');
+		var inputValueValue	= document.getElementById('input_value_value');
+		
+		editButtonList = document.getElementsByClassName('editItem');
+		
+		for(var i=0; i<editButtonList.length; i++) {
+		
+			editButtonList[i].onclick = function(e){
+				var parent		= e.currentTarget.parentNode.parentNode.parentNode;
+				var itemName	= parent.getElementsByClassName('itemName')[0].textContent.replace(/\s+/, ' ').trim();
+				var itemValue	= parent.getElementsByClassName('itemValue')[0].textContent.trim();
+				
+				console.log('itemName = '+itemName);
+				console.log('itemValue = '+itemValue);
+				
+				editItemLabel.textContent	= itemName;
+				inputValueName.value		= itemName;
+				inputValueValue.value		= itemValue;
+			};
+		}
+		
+		//update empfohlenId
+		document.getElementById("empfohlenIdSpeichern").onclick = function(){
+			
+			inputValueValue.value = document.getElementById("empfohlenKndIdInput").value.trim();
+			inputValueName.value = "empfohlenId";
+			
+			document.getElementById("edit_item_form").submit();
+		};
+		
+	});
+	
+	$('#updateItem_Anrede_ButtonAbbrechen').click(function(e){
+		e.preventDefault();
+		$('#updateItem_Anrede').slideUp('slow');
+	});
+	
+//edit Bankdaten
+	$('.editBankDates').click(function()
+	{
+		bitemName = $(this).parent().parent().parent().children('.itemName').text().trim().toLowerCase();
+		bitemName = bitemName.replace(/\s+/, ' ');
+		var bitemValue = $(this).parent().parent().children('p>.itemValue').text().trim();
+
+		$('#updateBankDates_Title').text(bitemName);
+		$('#updateBankDates_Form_Name').val(bitemName);
+		$('#updateBankDates_Form_Value').val(bitemValue);
+
+	});
+	
+	//update BankDates
+	$('.updateBankDates_Form').submit(function (e){
+		e.preventDefault();
+		var postData = $(this).serializeArray();
+
+		$.ajax({
+			url:'{{ constant('BASIS_URL') }}/admin/ajaxBankDatesUpdate',
+			type:'POST',
+			data:postData,
+			dataType:'JSON',
+			success:function(response){
+				if(response.status == 'ok')
+				{
+					alert(response.status);
+					window.location.reload(true);
+				}
+				else
+				{
+					alert(response.status);
+				}
+				meldung.html(response.info);//response.dataPost
+			},
+			error:function(errorThrown){
+				meldung.html(errorThrown);
+			}
+		});
+	});
+	
+	//Kommentaren newKndCmntTable
+	$('#newKndCmntTable_Open').click(function(){
+		$('#newKndCmntTable').slideToggle(1000);
+	});
+	$('#newKndCmntTable_Close').click(function(){
+		$('#newKndCmntTable').slideUp(1000);
+	});
+	//KommentarFunktionen
+	{{ commentsJs | raw }}
+
+//unterricht hinzufügen
+	function addKurs()
+	{
+		var kurId = $('#k_kurId').val();
+		var text = $('#k_kurId option:selected').text();
+
+		$('#addKursTable_KurName').html(text);
+		$('#addKursTable_Form_kndId').val(kndId);
+		$('#addKursTable_Form_kurId').val(kurId);
+
+		$('#addKursTable').slideDown('slow');
+	}
+
+	$('#addKursTable_Form_ButtonAbbrechen').click(function(e){
+		e.preventDefault();
+		$('#addKursTable').slideUp('slow');
+	});
+			
+	$('#addKursTable_Form').submit(function(e){
+		e.preventDefault();
+		var postData = $(this).serializeArray();
+
+		$.ajax({
+			url:'{{ constant('BASIS_URL') }}/admin/ajaxAddKursToKunde',
+			type:'POST',
+			data:postData,
+			dataType:'JSON',
+			success:function(response){
+				if(response.status == 'ok')
+				{
+					alert(response.status);
+					window.location.reload(true);
+				}
+				else
+				{
+					alert(response.status);
+				}
+				meldung.html(response.info);//response.dataPost
+			},
+			error:function(errorThrown){
+				meldung.html(errorThrown);
+			}
+		});
+	});
+
+//change Kurs
+			
+	$('.changeKursButton').click(function(){
+		kurId = $(this).attr('kurid');
+		eintrId = $(this).attr('eintrid');
+		$('#changeKurs_oldKurId').val(kurId);
+		$('#changeKurs_eintrId').val(eintrId);
+		$('#changeKurs_Table').slideDown('slow');
+	});
+			
+			$('#changeKurs_Table_ButtonAbbrechen').click(function(e){
+				e.preventDefault();
+				$('#changeKurs_Table').slideUp('slow');
+			});
+			
+			$('#changeKurs_Table_ButtonSpeichern').click(function(e){
+				eintrId = $('#changeKurs_eintrId').val();
+				oldKurId = $('#changeKurs_oldKurId').val();
+				newKurId = $('#changeKurs_newKurId option:selected').val();
+				
+				//<input type="hidden" id="changeKursConfirm_Form_kndId" name="kndId"/>
+				//<input type="hidden" id="changeKursConfirm_Form_oldKurId" name="oldKurId"/>
+				
+				$('#changeKursConfirm_Form_oldKurId').val(oldKurId);
+				$('#changeKursConfirm_Form_eintrId').val(eintrId);
+				$('#changeKursConfirm_Form_newKurId').val(newKurId);
+				$('#changeKursConfirm_Form_kndId').val(kndId);
+				
+				$.ajax({
+					url:'{{ constant('BASIS_URL') }}/admin/ajaxChangeKursInfo',
+					type:'POST',
+					data:{ oldKurId: oldKurId, newKurId: newKurId, eintrId:eintrId },
+					dataType:'JSON',
+					success:function(response){
+						if(response.status == 'ok')
+						{
+							//kur = JSON.parse(response.message);
+							$('#changeKursConfirm_Table_oldKurName').html(response.message.oldKur);
+							$('#changeKursConfirm_Table_newKurName').html(response.message.newKur);
+							
+							//alert(response.message.oldKur);
+						}
+						else
+						{
+							alert(response.message);
+						}
+						meldung.html(response.message);//response.dataPost
+					},
+					error:function(errorThrown){
+						meldung.html(errorThrown);
+					}
+				});
+				
+				$('#changeKursConfirm_Table').slideDown('slow');
+			});
+			
+			$('#changeKursConfirm_Form_ButtonAbbrechen').click(function(e){
+				e.preventDefault();
+				$('#changeKursConfirm_Table').slideUp('slow');
+			});
+			
+			$('#changeKursConfirm_Form').submit(function(e){
+				e.preventDefault();
+				var postData = $(this).serializeArray();
+				
+				$.ajax({
+					url:'{{ constant('BASIS_URL') }}/admin/ajaxChangeKursReallyDo',
+					type:'POST',
+					data:postData,
+					dataType:'JSON',
+					success:function(response){
+						if(response.status == 'ok')
+						{
+							alert(response.message);
+							window.location.reload(true);
+						}
+						else
+						{
+							alert(response.message);
+						}
+						meldung.html(response.message);
+					},
+					error:function(errorThrown){
+						meldung.html(errorThrown);
+					}
+				});
+			});
+			
+		//update Kurs
+			
+			$('.updateKurDateButton').click(function()
+			{
+				kurDateType = $(this).attr('kurDateType').trim();
+				kurId = $(this).attr('kurId');
+				date = $(this).attr('dateVal').trim();
+				eintrId = $(this).attr('eintrId');
+				
+				$('#UpdateKur_eintrId').val(eintrId);
+				$('#UpdateKur_kndId').val(kndId);
+				$('#UpdateKur_kurId').val(kurId);
+				$('#UpdateKur_TypeVal').val(kurDateType);
+				$('#UpdateKur_Val').val(date);
+				$('#UpdateKur_Title').text(kurDateType);
+				$('#UpdateKur_Table').slideDown('slow');
+			});
+			
+			$('#UpdateKur_Form').submit(function(e){
+				e.preventDefault();
+				var postData = $(this).serializeArray();
+				
+				$.ajax({
+					url:'{{ constant('BASIS_URL') }}/admin/ajaxUpdateKursToKunde',
+					type:'POST',
+					data:postData,
+					dataType:'JSON',
+					success:function(response){
+						if(typeof response.fehler === 'undefined')
+						{
+							window.location.reload(true);
+						}
+						else
+						{
+							alert(response.fehler);
+						}
+					},
+					error:function(errorThrown){
+						meldung.html(errorThrown);
+					}
+				});
+				
+				$('#UpdateKur_Table').slideUp('slow');
+			});
+			
+			$('#UpdateKur_ButtonAbbrechen').click(function(e){
+				e.preventDefault();
+				$('#UpdateKur_Table').slideUp('slow');
+			});
+			
+		//Bezahlungsformular
+			
+			$('.kurBezahlenButton').click(function()
+			{
+				untName = $(this).attr('kurName').trim();
+				kurId = $(this).attr('kurId');
+				eintrId = $(this).attr('eintrId');
+				
+				$('#zfEintrId').val(eintrId);
+				$('#zfKndId').val(kndId);
+				$('#zfKurId').val(kurId);
+				$('#zfKurName').html(untName);
+				$('#Zahlungsformular').slideDown('slow');
+			});
+			
+			$('#zfButtonAbbrechen').click(function(e){
+				e.preventDefault();
+				$('#Zahlungsformular').slideUp('slow');
+			});
+			
+			$('#zfForm').submit(function(e){
+				e.preventDefault();
+				var postData = $(this).serializeArray();
+				
+				$.ajax({
+					url:'{{ constant('BASIS_URL') }}/admin/ajaxKurBezahlen',
+					type:'POST',
+					data:postData,
+					dataType:'JSON',
+					success:function(response){
+						if(typeof response.fehler === 'undefined')
+						{
+							//window.location.reload(true);
+							alert(response.info);
+						}
+						else
+						{
+							alert(response.fehler);
+						}
+					},
+					error:function(errorThrown){
+						meldung.html(errorThrown);
+					}
+				});
+				
+				//$('#Zahlungsformular').slideUp('slow');
+			});
+		//Kurs entfernen
+			$('.kurEntfernenButton').click(function()
+			{
+				eintrId = $(this).attr('eintrId');
+				
+				if (confirm('Wollen Sie wirklich diesen Kurs von dem Kunde entfernen?')) {
+					$.ajax({
+						url:'{{ constant('BASIS_URL') }}/admin/ajaxKursVomKundeEntfernen',
+						type:'POST',
+						data:{eintrId:eintrId},
+						dataType:'JSON',
+						success:function(response){
+							if(typeof response.fehler === 'undefined')
+							{
+								alert(response.info);
+								window.location.reload(true);
+							}
+							else
+							{
+								alert(response.fehler);
+							}
+						},
+						error:function(errorThrown){
+							meldung.html(errorThrown);
+						}
+					});
+				} else {
+					// Do nothing!
+				}
+			});
+//edit SonderPreis deleteSonderPreisButton
+			$('.editSonderPreis').click(function(){
+				eId = $(this).attr('eintrId');
+				$('#editSonderPreis_Titel').prepend($(this).attr('kurName')+': ');
+				$('#editSonderPreis_eintrId').val(eId);
+				
+			//prepare deleteButton
+				$('#deleteSonderPreisButton').attr({eintrId:eId});
+				
+				$('#editSonderPreis_Table').slideDown(1000);
+			});
+			
+			$('#editSonderPreis_Form_ButtonAbbrechen').click(function(e){
+				e.preventDefault();
+				$('#editSonderPreis_Table').slideUp('slow');
+			});
+			
+			$('#editSonderPreis_Form').submit(function(e){
+				e.preventDefault();
+				var postData = $(this).serializeArray();
+				
+				$.ajax({
+					url:'{{ constant('BASIS_URL') }}/admin/ajaxEditSonderPreis',
+					type:'POST',
+					data:postData,
+					dataType:'JSON',
+					success:function(response){
+						if(response.status == 'ok')
+						{
+							alert(response.status);
+							window.location.reload(true);
+						}
+						else
+						{
+							alert(response.status);
+						}
+						meldung.html(response.info);//response.dataPost
+					},
+					error:function(errorThrown){
+						meldung.html(errorThrown);
+					}
+				});
+			});
+			
+			$('#deleteSonderPreisButton').click(function(){
+				eId = $(this).attr('eintrId');
+				
+				$.ajax({
+					url:'{{ constant('BASIS_URL') }}/admin/ajaxDeleteSonderPreis',
+					type:'POST',
+					data:{eintrId:eId},
+					dataType:'JSON',
+					success:function(response){
+						if(response.status == 'ok')
+						{
+							alert(response.status);
+							window.location.reload(true);
+						}
+						else
+						{
+							alert(response.status);
+						}
+						meldung.html(response.info);//response.dataPost
+					},
+					error:function(errorThrown){
+						meldung.html(errorThrown);
+					}
+				});
+			});
+			
+	//edit Beschreibung
+			$('.editBeschreibung').click(function(){
+				$('#KursBeschreibung_Form_Textarea').val($(this).parent().text());
+				
+				eId = $(this).attr('eintrId');
+				$('#editKundenKursKomm_eintrId').val(eId);
+				
+				$('#editKundenKursKomm_Titel').text("Kommentar: "+$(this).attr('kurName'));
+				
+				$('#editKundenKursKomm_Table').slideDown(1000);
+			});
+			
+			$('#editKundenKursKomm_Form_ButtonAbbrechen').click(function(e){
+				e.preventDefault();
+				$('#editKundenKursKomm_Table').slideUp(1000);
+			});
+			
+			//admin/ajaxUpdateKhkKomm
+			$('#editKundenKursKomm_Form').submit(function(e){
+				e.preventDefault();
+				var postData = $(this).serializeArray();
+				
+				$.ajax({
+					url:'{{ constant('BASIS_URL') }}/admin/ajaxUpdateKhkKomm',
+					type:'POST',
+					data:postData,
+					dataType:'JSON',
+					success:function(response){
+						if(response.status == 'ok')
+						{
+							alert(response.status);
+							window.location.reload(true);
+						}
+						else
+						{
+							alert(response.status);
+						}
+						meldung.html(response.info);//response.dataPost
+					},
+					error:function(errorThrown){
+						meldung.html(errorThrown);
+					}
+				});
+			});
+//Kunde Löschen
+		$('#kundeLoeschenBtn').click(function(){
+			if(confirm('Wollen Sie wirklich diesen Kunden aus der Datenbank entfernen?'))
+			{
+				$.ajax({
+					url:'{{ constant('BASIS_URL') }}/admin/ajaxDeleteKunde',
+					type:'POST',
+					data:{kndId:kndId},
+					dataType:'JSON',
+					success:function(response){
+						if(response.status === 'ok')
+						{
+							alert(response.message);
+							self.location = "{{ constant('BASIS_URL') }}/admin/kundenBearbeitenListe";
+						}
+						else
+						{
+							$('#messageBox_message').html(response.message);
+							$('#messageBox').slideDown(1000);
+							//alert("<b>Fehler1:</b> "+response.message);
+						}
+					},
+					error:function(errorThrown){
+						meldung.html(errorThrown);
+					}
+				});
+			}
+			else{
+
+			}
+		});
+</script>
+{% endblock %}
+
+{% endblock %}

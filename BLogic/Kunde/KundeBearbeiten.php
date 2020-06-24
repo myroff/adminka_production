@@ -3,8 +3,15 @@ namespace Kunde;
 use PDO as PDO;
 require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
+require_once BASIS_DIR.'/BLogic/Kunde/Empfohlen.php';
+use Kunde\Empfohlen as Empf;
+require_once BASIS_DIR.'/BLogic/Kurse/KursSelector.php';
+use Kurse\KursSelector as KurSel;
+require_once BASIS_DIR.'/BLogic/Kunde/CommentToolsHtml.php';
+use Kunde\CommentToolsHtml as CmntTlsHtml;
 
-
+//twig
+require_once BASIS_DIR . '/Vendor/autoload.php';
 
 class KundeBearbeiten
 {
@@ -91,7 +98,8 @@ class KundeBearbeiten
 		}
 		
 		$q = "SELECT k.*, z.*, GROUP_CONCAT(m.anrede,' ',m.vorname,' ',m.name) as mitarbeiter, GROUP_CONCAT(empf.vorname,' ', empf.name) as empfohlenDurch"
-				." FROM kunden as k LEFT JOIN zahlungsdaten as z USING(kndId)"
+				." FROM kunden as k"
+				." LEFT JOIN zahlungsdaten as z USING(kndId)"
 				." LEFT JOIN mitarbeiter as m ON k.erstelltVom = m.mtId"
 				." LEFT JOIN kunden as empf ON empf.kndId=k.empfohlenId"
 				." WHERE k.kndId=:kndId";
@@ -123,8 +131,28 @@ class KundeBearbeiten
 		}
 		//set Geburtsdatum to string format
 		$res['geburtsdatum'] = Fltr::sqlDateToStr($res['geburtsdatum']);
+		$res['printZahlungsArt'] = Fltr::printZahlungsArt($res['isCash']);
 		
-		include_once BASIS_DIR .'/Templates/KundeBearbeiten/KundeBearbeitenById.tmpl.php';
+		$vars['pageName']	= "Kunde bearbeiten";
+		$vars['client']		= $res;
+		$vars['lessons']	= $ures;
+		$vars['meldung']	= $meldung;
+		$vars['requestUri']	= $_SERVER['REQUEST_URI'];
+		
+		$vars['kursSelector']			= KurSel::getKursSelector("kurId", 'k_kurId', "10", "/admin/ajaxKursSelectorUpdate", 1);
+		$vars['empfohlenDurchSelector']	= Empf::setButton("empfohlenId", 1);
+		$vars['newCommentsForm']		= CmntTlsHtml::newCommentsForm($kndId);
+		$vars['comments']				= CmntTlsHtml::showComments($kndId);
+		$vars['commentsJs']				= CmntTlsHtml::newCommentsJsFnct($kndId);
+		$vars['changeCourseSelector']	= KurSel::getKursSelector("newKurId", "changeKurs_newKurId",  "10", "/admin/ajaxKursSelectorUpdate", 1);
+		
+		$options = []; #array('cache' => TWIG_CACHE_DIR);
+		$loader = new \Twig_Loader_Filesystem(TWIG_TEMPLATE_DIR);
+		$twig = new \Twig_Environment($loader, $options);
+		$twigTmpl = $twig->load('/KundeBearbeiten/KundeBearbeitenById.twig');
+		echo $twigTmpl->render($vars);
+		/**/
+		#include_once BASIS_DIR .'/Templates/KundeBearbeiten/KundeBearbeitenById.tmpl.php';
 		return;
 	}
 	

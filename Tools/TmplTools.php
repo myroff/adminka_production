@@ -8,8 +8,9 @@ class TmplTools {
 	{
 		$name	= empty($selectorName)	? '' : "name='$selectorName'";
 		$id		= empty($selectorId)	? '' : "id='$selectorId'";
+		$class = $meterializeOn ? '' : 'class="browser-default"';
 		
-		$content = "<select $name $id>";
+		$content = "<select $name $id $class>";
 		
 		foreach($data as $val => $txt){
 			$isSel = $selectedValue == $val ? 'selected="selected"' : '';
@@ -264,6 +265,35 @@ class TmplTools {
 		{
 			$data[$i] = $i." Jahren";
 		}
+		$content = self::printMaterializeSelector($data, $selectorName, $selectorId, $selectedValue, $label, $meterializeOn);
+		
+		return $content;
+	}
+	
+	public static function getSeasonsSelector($selectorName="", $selectorId="", $selectedValue="", $label="", $meterializeOn=FALSE)
+	{
+		require_once BASIS_DIR.'/MVC/DBFactory.php';
+		$dbh = \MVC\DBFactory::getDBH();
+		
+		$q = "SELECT * FROM seasons ORDER BY season_name";
+		
+		try
+		{
+			$sth = $dbh->prepare($q);
+			$sth->execute();
+			$rs = $sth->fetchAll(PDO::FETCH_ASSOC);			
+		} 
+		catch (Exception $ex) {
+			//print $ex;
+			return;
+		}
+		
+		$data = array("" => "");
+		
+		foreach($rs as $r){
+			$data[$r['season_id']] = $r['season_name']." (".$r['date_start']."-".$r['date_end'].")";
+		}
+		
 		$content = self::printMaterializeSelector($data, $selectorName, $selectorId, $selectedValue, $label, $meterializeOn);
 		
 		return $content;

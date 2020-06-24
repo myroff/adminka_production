@@ -921,7 +921,7 @@ $nextYear = ACTUAL_YEAR + 1;
 				$('#changeKursConfirm_Form_oldKurId').val(oldKurId);
 				$('#changeKursConfirm_Form_eintrId').val(eintrId);
 				$('#changeKursConfirm_Form_newKurId').val(newKurId);
-				$('#changeKursConfirm_Form_kndId').val(kndId)
+				$('#changeKursConfirm_Form_kndId').val(kndId);
 				
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/ajaxChangeKursInfo',

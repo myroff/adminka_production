@@ -7,7 +7,7 @@ require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
 
 class KursSelector {
-	static public function getKursSelector($selectorName="", $selectorId="", $size="", $update_url="")
+	static public function getKursSelector($selectorName="", $selectorId="", $size="", $update_url="", $asString=FALSE)
 	{
 		$sArr = array();
 		$sArr[':kurName'] = empty($_POST['kurName']) ? '' : $_POST['kurName'];
@@ -23,11 +23,18 @@ class KursSelector {
 		
 		$SearchPanel_formId = $selectorName."_searchPanel";
 		
+		if($asString)
+		{
+			ob_start();
+		}
 ?>
 <div id="searchPanel">
 	<form method="POST" id="<?=$SearchPanel_formId?>"><!--id="u_kurSearch"-->
 		<table>
 			<tr>
+				<th>
+					Saison
+				</th>
 				<th>
 					Kursname
 				</th>
@@ -46,6 +53,9 @@ class KursSelector {
 			</tr>
 			<tr>
 				<td>
+					<?php echo TmplTls::getSeasonsSelector("search_season", "s_season_id", '', "Saisons", 0); ?>
+				</td>
+				<td>
 					<input name="kurName" type="text" value="<?=$sArr[':kurName']?>" />
 				</td>
 				<td>
@@ -62,7 +72,7 @@ class KursSelector {
 	</form>
 </div>
 <div>
-	<select <?=$name?> <?=$id?> <?=$size?> >
+	<select <?=$name?> <?=$id?> <?=$size?>  class="browser-default" style="height: 200px;">
 	<?php
 		foreach($res as $r)
 		{
@@ -77,6 +87,7 @@ class KursSelector {
 			//echo"<option value='".$r['kurId']."'>".$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."</option>";
 			
 			echo"<option value='".$r['kurId']."'>".$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."<br>"
+					. " ".$r['season_name']
 					. " Termine: <br>"
 					. Fltr::printSqlTermin($r['termin'], ";", "->", "<br>")
 					. " </option>";
@@ -105,17 +116,26 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 });
 </script>
 <?php
-
+		if($asString)
+		{
+			$out = ob_get_contents();
+			
+			ob_end_clean();
+			
+			return $out;
+		}
+		
 		return;
 	}
 	
 	public function updateKursSelector()
 	{
 		$sArr = array();
-		$sArr[':kurName'] = empty($_POST['kurName']) ? '' : $_POST['kurName'];
-		$sArr[':kurAlter'] = empty($_POST['kurAlter']) ? '' : $_POST['kurAlter'];
-		$sArr[':kurKlasse'] = empty($_POST['kurKlasse']) ? '' : $_POST['kurKlasse'];
-		$sArr[':wochentag'] = empty($_POST['wochentag']) ? '' : $_POST['wochentag'];
+		$sArr[':season_id']	= empty($_POST['search_season'])? '' : $_POST['search_season'];
+		$sArr[':kurName']	= empty($_POST['kurName'])		? '' : $_POST['kurName'];
+		$sArr[':kurAlter']	= empty($_POST['kurAlter'])		? '' : $_POST['kurAlter'];
+		$sArr[':kurKlasse']	= empty($_POST['kurKlasse'])	? '' : $_POST['kurKlasse'];
+		$sArr[':wochentag']	= empty($_POST['wochentag'])	? '' : $_POST['wochentag'];
 		
 		$res = $this->searchDates($sArr);
 		
@@ -138,6 +158,7 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 
 				//echo "<option value='".$r['kurId']."'>".$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."</option>";
 				echo"<option value='".$r['kurId']."'>".$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."<br>"
+					. " ".$r['season_name']
 					. " Termine: <br>"
 					. Fltr::printSqlTermin($r['termin'], ";", "->", "; <br>")
 					. " </option>";
@@ -164,9 +185,10 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 		
 		//delete empty entries
 		$searchArr = array_filter($searchArr);
-		$q = "SELECT k.*, l.vorname, l.name,"
-			. " group_concat('{\"wochentag\":\"',wochentag,'\",\"time\":\"', TIME_FORMAT(anfang, '%H:%i'),' - ', TIME_FORMAT(ende, '%H:%i'),'\"}' SEPARATOR',') as termin"
-			. " FROM kurse as k LEFT JOIN stundenplan as st USING(kurId) LEFT JOIN lehrer as l USING(lehrId)";
+		$q = "SELECT k.*, l.vorname, l.name, se.season_name"
+			. ", group_concat('{\"wochentag\":\"',wochentag,'\",\"time\":\"', TIME_FORMAT(anfang, '%H:%i'),' - ', TIME_FORMAT(ende, '%H:%i'),'\"}' SEPARATOR',') as termin"
+			. " FROM kurse as k LEFT JOIN stundenplan as st USING(kurId) LEFT JOIN lehrer as l USING(lehrId)"
+			. " LEFT JOIN seasons as se USING(season_id)";
 		
 		if(!empty($searchArr))
 		{
@@ -186,6 +208,10 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 			if(isset($searchArr[':wochentag']))
 			{
 				$where .= " wochentag=:wochentag AND";
+			}
+			if(isset($searchArr[':season_id']))
+			{
+				$where .= " season_id=:season_id AND";
 			}
 			
 			$where = substr($where, 0, -4);

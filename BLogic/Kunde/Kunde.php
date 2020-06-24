@@ -28,6 +28,7 @@ class Kunde
 		$sArr[':zeit']		  = empty($_POST['zeit'])		? '' : $_POST['zeit'];
 		$sArr[':showIntegra'] = empty($_POST['showIntegra'])? '' : $_POST['showIntegra'];
 		$sArr[':abgemeldet']  = empty($_POST['abgemeldet']) ? '' : $_POST['abgemeldet'];
+		$sArr[':season']	  = empty($_POST['s_season'])	? '' : $_POST['s_season'];
 		
 		return $sArr;
 	}
@@ -43,6 +44,7 @@ class Kunde
 		$vars['s_lehrId']	= TmplTls::getLehrerSelector("s_lehrId", "s_lehrId", $sArr[':lehrId'], "Lehrer", 1);
 		$vars['wochentag']	= TmplTls::getWeekdaySelector("wochentag", "wochentag", $sArr[':wochentag'], "Tag", 1);
 		$vars['zeit']		= TmplTls::getTimeSelector("zeit", "zeit", $sArr[':zeit'], "Zeit");
+		$vars['s_season']	= TmplTls::getSeasonsSelector("s_season", "s_season", $sArr[':season'], "Season", 1);
 		$vars['isCashImg']	= $this->isCashImg;
 		
 		$options = []; #array('cache' => TWIG_CACHE_DIR);
@@ -144,12 +146,21 @@ class Kunde
 "khk.kndId as kndIdInKhk,k.*, z.isCash, TIMESTAMPDIFF(YEAR,k.geburtsdatum,CURDATE()) as 'alter',
 	GROUP_CONCAT('{\"name\":\"',l.name, '\",\"vorname\":\"',l.vorname, '\",\"kurName\":\"', kr.KurName,'\",\"von\":\"',kndKurse.von,'\",\"bis\":\"',kndKurse.bis,'\",\"termin\":[', st.termin, ']}' SEPARATOR ',') as kurse";
 		}
-		
+		/*
 		$q = 
 "SELECT ".$select."
-FROM kunden as k LEFT JOIN kundehatkurse as kndKurse USING(kndId) LEFT JOIN kurse as kr USING(kurId)
+FROM kunden as k 
+LEFT JOIN kundehatkurse as kndKurse USING(kndId) 
+LEFT JOIN kurse as kr USING(kurId)
 LEFT JOIN lehrer as l USING(lehrId)
 LEFT JOIN zahlungsdaten as z USING(kndId)
+LEFT JOIN
+(
+	SELECT khk.kndId, khk.von, khk.bis
+	FROM kundehatkurse as khk
+	WHERE EXTRACT(YEAR_MONTH FROM NOW()) BETWEEN EXTRACT(YEAR_MONTH FROM khk.von) AND EXTRACT(YEAR_MONTH FROM khk.bis)
+	GROUP BY khk.kndId
+) as khk USING (kndId)
 LEFT JOIN
 (
 	SELECT kurId, wochentag, anfang, ende, group_concat('{\"wochentag\":\"',wochentag,'\",\"time\":\"', TIME_FORMAT(anfang, '%H:%i'),' - ', TIME_FORMAT(ende, '%H:%i'),'\"}' SEPARATOR',') as termin
@@ -157,13 +168,30 @@ LEFT JOIN
 	GROUP BY kurId
 )
 as st USING (kurId)
+";
+		*/
+				$q = 
+"SELECT ".$select."
+FROM kunden as k 
+LEFT JOIN kundehatkurse as kndKurse USING(kndId) 
+LEFT JOIN kurse as kr USING(kurId)
+LEFT JOIN lehrer as l USING(lehrId)
+LEFT JOIN zahlungsdaten as z USING(kndId)
 LEFT JOIN
 (
 	SELECT khk.kndId, khk.von, khk.bis
 	FROM kundehatkurse as khk
 	WHERE EXTRACT(YEAR_MONTH FROM NOW()) BETWEEN EXTRACT(YEAR_MONTH FROM khk.von) AND EXTRACT(YEAR_MONTH FROM khk.bis)
 	GROUP BY khk.kndId
-) as khk USING (kndId)";
+) as khk USING (kndId)
+LEFT JOIN
+(
+	SELECT kurId, wochentag, anfang, ende, group_concat('{\"wochentag\":\"',wochentag,'\",\"time\":\"', TIME_FORMAT(anfang, '%H:%i'),' - ', TIME_FORMAT(ende, '%H:%i'),'\"}' SEPARATOR',') as termin
+	FROM stundenplan
+	GROUP BY kurId
+)
+as st USING (kurId)
+";
 		
 		$q .= empty($where) ? '' : " WHERE " . $where;
 		$q .= " GROUP BY k.kndId";

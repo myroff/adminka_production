@@ -116,7 +116,8 @@ class CommentToolsHtml {
 	
 	public static function newCommentsJsFnct($kndId)
 	{
-	?>
+		ob_start();
+		?>
 		$('#newKndCmntForm').submit(function(e){
 			e.preventDefault();
 			var postData = $(this).serializeArray();
@@ -215,5 +216,8 @@ class CommentToolsHtml {
 		}
 	});
 	<?php
+		$js = ob_get_contents();
+		ob_end_clean();
+		return $js;
 	}
 }

@@ -8,8 +8,12 @@ use MVC\DBFactory as DBFactory;
 
 class Empfohlen
 {
-	public static function setButton($name)
+	public static function setButton($name, $asString=FALSE)
 	{
+		if($asString)
+		{
+			ob_start();
+		}
 	?>
 <style>
 #empfohlenMessageBox
@@ -67,6 +71,15 @@ $(".setEmpfohlen").on("click", function(e){
 });
 </script>
 	<?php
+	
+		if($asString)
+		{
+			$out = ob_get_contents();
+			
+			ob_end_clean();
+			
+			return $out;
+		}
 	}
 	
 	public function getGadget()

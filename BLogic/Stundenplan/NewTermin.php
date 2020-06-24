@@ -14,6 +14,25 @@ class NewTermin
 		$output = array();
 		$testData = array();
 		
+	//seasonId
+		if(!empty($_POST['season_id']))
+		{
+			$_POST['season_id'] = str_replace("/\s/", "", $_POST['season_id']);
+			if(Fltr::isInt($_POST['season_id']))
+			{
+				$dataPost[':season_id'] = $_POST['season_id'];
+			}
+			else
+			{
+				$fehler .= "SeasonID für Unterricht soll ein Integer sein.<br>";
+				$fehlerInput[] = 'kurId';
+			}
+		}
+		else 
+		{
+			$fehler .= "Saison-ID für Unterricht fehlt.<br>";
+			$fehlerInput[] = 'season_id';
+		}
 	//kurId - ID des Kurses
 		if(!empty($_POST['kurId']))
 		{

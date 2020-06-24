@@ -97,7 +97,7 @@ class KurseBearbeiten
 		}
 		
 		$q = "SELECT k.*, l.name as 'lehrName', l.vorname as 'lehrVorname' FROM kurse as k LEFT JOIN lehrer as l USING(lehrId) WHERE kurId=:kurId";
-		$t = "SELECT * FROM stundenplan WHERE kurId = :kurId";
+		$t = "SELECT std.*, sea.season_name, sea.season_id FROM stundenplan as std LEFT JOIN seasons as sea USING(season_id) WHERE kurId = :kurId";
 		$res = array();
 		$trm = array();
 		try
@@ -126,12 +126,7 @@ class KurseBearbeiten
 		{
 			return "Es wurde keine kurerrichts ID übermittelt.";
 		}
-		/*
-		if(!$itemVal)
-		{
-			return "Es wurde keine kurerrichts items Value übermittelt.";
-		}
-		*/
+		
 		// $in für $itemName
 		$set = "";
 		$dataPost = array();
@@ -272,6 +267,39 @@ class KurseBearbeiten
 				}
 				break;
 			
+			case "KursAnfangsdatum":
+				if(Fltr::isDate($itemVal))
+				{
+					$set = " date_start = :date_start";
+					$dataPost[':date_start'] = Fltr::strToSqlDate($itemVal);
+				}
+				elseif(Fltr::isSqlDate($itemVal))
+				{
+					$set = " date_start = :date_start";
+					$dataPost[':date_start'] = $itemVal;
+				}
+				else
+				{
+					return "Dateformat ist unbekannt: [$itemVal]";
+				}
+				break;
+			case "KursEnddatum":
+				if(Fltr::isDate($itemVal))
+				{
+					$set = " date_end = :date_end";
+					$dataPost[':date_end'] = Fltr::strToSqlDate($itemVal);
+				}
+				elseif(Fltr::isSqlDate($itemVal))
+				{
+					$set = " date_end = :date_end";
+					$dataPost[':date_end'] = $itemVal;
+				}
+				else
+				{
+					return "Dateformat ist unbekannt: [$itemVal]";
+				}
+				break;
+				
 			default :
 				return "kein passendes Item gefunden." . "<br>itemName=$itemName<br>itemValue=$itemVal";
 				break;

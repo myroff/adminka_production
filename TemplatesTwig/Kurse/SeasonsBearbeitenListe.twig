@@ -1,0 +1,151 @@
+{% extends "main.html.twig" %}
+{% block content %}
+	<a id="createNewSeason" class="waves-effect waves-light btn modal-trigger" href="#addNewSeason_form">Neues Season erstellen</a>
+<!-- modal trigger -->
+	<div id="addNewSeason_form" class="modal">
+		<input type="hidden" id="edit_season_id" value="0"/>
+		<div class="modal-content">
+			<h4>Neues Season hinzufügen</h4>
+			<table>
+				<tr>
+					<th>Seasons Name</th>
+					<td><input type="text" name=="new_seasons_name" id="new_seasons_name" /></td>
+				</tr>
+				<tr>
+					<th>Seasons Anfangsdatum</th>
+					<td><input type="date" name=="new_seasons_date_start" id="new_seasons_date_start" /></td>
+				</tr>
+				<tr>
+					<th>Seasons Enddatum</th>
+					<td><input type="date" name=="new_seasons_date_end" id="new_seasons_date_end" /></td>
+				</tr>
+			</table>
+		</div>
+		<div class="modal-footer">
+			<button class="waves-effect waves-green btn" id="submit_new_season" >Speichern</button>
+			<a href="#!" class="modal-close waves-effect waves-red btn red">Abbrechen</a>
+		</div>
+	</div>
+<!-- modal trigger -->
+<table class="striped highlight" style="width:auto;">
+	<thead>
+		<tr><th>Aktiv</th><th>Name</th><th>Anfang</th><th>Ende</th><th>Aktion</th></tr>
+	</thead>
+	<tbody>
+{% for season in seasons %}
+	<tr>
+		<td>
+			{% if season.is_active > 0 %}
+				{% set status = "checked" %}
+			{% else %}
+				{% set status = "" %}
+			{% endif %}
+			<label>
+				<input class="activity" name="season_id" type="radio" value="{{ season.season_id }}" {{ status }}/>
+				<span></span>
+			</label>
+		</td>
+		<td>{{ season.season_name }}</td>
+		<td>{{ season.date_start }}</td>
+		<td>{{ season.date_end }}</td>
+		<td>
+			<a class="edit_season waves-effect btn-small modal-trigger" href="#addNewSeason_form"
+			   data-season_id="{{ season.season_id }}"
+			   data-season_name="{{ season.season_name }}"
+			   data-date_start="{{ season.date_start }}"
+			   data-date_end="{{ season.date_end }}"
+			   data-is_active="{{ season.is_active }}"
+			>
+				Bearbeiten
+			</a>
+		</td>
+	</tr>
+{% endfor %}
+	</tbody>
+</table>
+{% block javascript %}
+<script>	
+document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.modal');
+    var instances = M.Modal.init(elems);
+	
+	document.getElementById('createNewSeason').onclick = function(e){
+		document.getElementById('edit_season_id').value			= "0";
+		document.getElementById('new_seasons_name').value		= "";
+		document.getElementById('new_seasons_date_start').value	= "";
+		document.getElementById('new_seasons_date_end').value	= "";
+	};
+	
+	document.getElementById('submit_new_season').onclick = function(e){
+
+		var postData = {
+			new_season_name			: document.getElementById('new_seasons_name').value,
+			new_seasons_date_start	: document.getElementById('new_seasons_date_start').value,
+			new_seasons_date_end	: document.getElementById('new_seasons_date_end').value,
+			edit_season_id			: document.getElementById('edit_season_id').value
+		};
+		var postString = JSON.stringify(postData);
+		
+		$.ajax({
+			url:'{{constant('BASIS_URL')}}/admin/addNewSeason',
+			type:'POST',
+			data: postData,
+			dataType:'JSON',
+			success:function(response){
+				if(response.status === 'ok')
+				{
+					location.reload();
+				}
+				else
+				{
+					alert("Fehler: "+response.message);
+				}
+			},
+			error:function(errorThrown){
+				alert('error: ' + errorThrown);
+			}
+		});
+	};
+	
+	editButtonList = document.getElementsByClassName('edit_season');
+	for(var i=0; i<editButtonList.length; i++) {
+		
+		editButtonList[i].onclick = function(e){
+			document.getElementById('edit_season_id').value			= this.dataset.season_id;
+			document.getElementById('new_seasons_name').value		= this.dataset.season_name;
+			document.getElementById('new_seasons_date_start').value	= this.dataset.date_start;
+			document.getElementById('new_seasons_date_end').value	= this.dataset.date_end;
+		};
+	}
+	//switch active season
+	activitySelector = document.getElementsByClassName('activity');
+	for(var i=0; i<activitySelector.length; i++){
+		activitySelector[i].onclick = function(e){
+			seasonId = this.value;
+			
+			$.ajax({
+				url:'{{constant('BASIS_URL')}}/admin/setActiveSeason',
+				type:'POST',
+				data: {season_id: seasonId},
+				dataType:'JSON',
+				success:function(response){
+					if(response.status === 'ok')
+					{
+						location.reload();
+					}
+					else
+					{
+						alert("Fehler: "+response.message);
+					}
+				},
+				error:function(errorThrown){
+					alert('error: ' + errorThrown);
+				}
+			});
+		};
+	}
+	
+});
+</script>
+{% endblock %}
+{% endblock %}

@@ -199,11 +199,12 @@ use Tools\Filter as Fltr;
 					{
 						echo"<div class='kurTrmDiv'>";
 
+						echo "Saison: ".$t['season_name']."<br>";
 						echo "Raum ".$t['raum']."<br>";
 						echo Fltr::indxToWeekday($t['wochentag'])."<br>";
 						echo Fltr::sqlTimeToStr($t['anfang'])." - ".Fltr::sqlTimeToStr($t['ende']);
 						
-						echo "<button type='button' class='editTermin editItemButton' stnPlId='".$t['stnPlId']."' raum='".$t['raum']."'"
+						echo "<button type='button' class='editTermin editItemButton' stnPlId='".$t['stnPlId']."' raum='".$t['raum']."'"." season_id=".$t['season_id']
 								. " wochentag='".$t['wochentag']."' anfang='".Fltr::sqlTimeToStr($t['anfang'])."' ende='".Fltr::sqlTimeToStr($t['ende'])."' >1</button>";
 						echo "<button type='button' class='deleteTermin deleteButton' stnPlId='".$t['stnPlId']."' >2</button>";
 						echo"</div>";
@@ -310,6 +311,14 @@ use Tools\Filter as Fltr;
 				<table>
 					<tr>
 						<th>
+							Saison
+						</th>
+						<td>
+							<?= TmplTls::getSeasonsSelector("season_id", "season_id")?>
+						</td>
+					</tr>
+					<tr>
+						<th>
 							Raum
 						</th>
 						<td>
@@ -345,6 +354,14 @@ use Tools\Filter as Fltr;
 			<form id="updateTerminForm" method="post" action="<?=$_SERVER['REQUEST_URI']?>">
 				<input type="hidden" name="stnPlId" value="" id="updateTerminForm_stnPlId"/>
 				<table>
+					<tr>
+						<th>
+							Saison
+						</th>
+						<td>
+							<?= TmplTls::getSeasonsSelector("season_id", "updateTerminForm_season_id")?>
+						</td>
+					</tr>
 					<tr>
 						<th>
 							Raum
@@ -581,6 +598,7 @@ use Tools\Filter as Fltr;
 		//update Termin
 			$('.editTermin').click(function(){
 				$button = $(this);
+				$('#updateTerminForm_season_id').val($button.attr('season_id'));
 				$('#updateTerminForm_stnPlId').val($button.attr('stnPlId'));
 				$('#updateTerminForm_Raum').val($button.attr('raum'));
 				$('#updateTerminForm_Anfang').val($button.attr('anfang'));

@@ -76,6 +76,7 @@ use DateInterval as DateInterval;
 							<td rowspan="2"><input class="search" type="submit" value="" /></td>
 						</tr>
 						<tr>
+							<td><?php echo TmplTls::getSeasonsSelector("season_id", "updateTerminForm_season_id"); ?></td>
 							<td><?php echo TmplTls::getWeekdaySelector("search_wochentag", "search_wochentag", $sArr[':wochentag']); ?></td>
 							<td><?php echo TmplTls::getLehrerSelector("search_lehrId", "search_lehrId", $sArr[':lehrId']); ?></td>
 							<td><?php TmplTls::getRaumSelector("search_raum", "search_raum", $sArr[':raum']); ?></td>

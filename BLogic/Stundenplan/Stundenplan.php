@@ -17,22 +17,23 @@ class Stundenplan {
 	public function showStundeplan()
 	{
 		$sArr = array();
-		$sArr[':wochentag'] = !empty($_GET['search_wochentag']) ? trim($_GET['search_wochentag']) : '';
-		$sArr[':lehrId'] = !empty($_GET['search_lehrId']) ? trim($_GET['search_lehrId']) : '';
-		$sArr[':raum'] = !empty($_GET['search_raum']) ? trim($_GET['search_raum']) : '';
-		$sArr[':kurName'] = !empty($_GET['search_kurs']) ? trim($_GET['search_kurs']) : '';
-		$sArr[':alter'] = !empty($_GET['search_alter']) ? trim($_GET['search_alter']) : '';
-		$sArr[':klasse'] = !empty($_GET['search_klasse']) ? trim($_GET['search_klasse']) : '';
+		$sArr[':wochentag']	= !empty($_GET['search_wochentag'])	? trim($_GET['search_wochentag'])	: '';
+		$sArr[':lehrId']	= !empty($_GET['search_lehrId'])	? trim($_GET['search_lehrId'])		: '';
+		$sArr[':raum']		= !empty($_GET['search_raum'])		? trim($_GET['search_raum'])		: '';
+		$sArr[':kurName']	= !empty($_GET['search_kurs'])		? trim($_GET['search_kurs'])		: '';
+		$sArr[':alter']		= !empty($_GET['search_alter'])		? trim($_GET['search_alter'])		: '';
+		$sArr[':klasse']	= !empty($_GET['search_klasse'])	? trim($_GET['search_klasse'])		: '';
+		$sArr[':season_id']	= !empty($_GET['search_season'])	? trim($_GET['search_season'])		: '';
 		
 		$res = $this->searchDates($sArr);
 		$raum = $this->getRaum();
 		
-		$this->loadTamplate($res, $raum, $sArr);
+		$this->loadTemplate($res, $raum, $sArr);
 		return;
 	}
-	public function loadTamplate($res, $raum, $sArr)
+	public function loadTemplate($res, $raum, $sArr)
 	{
-		$vars['pageName']	= "Kundenliste";
+		$vars['pageName']	= "Stundenplan";
 		$vars['sArr']		= $sArr;
 		$vars['stunden']	= $this->sortStundenPlan($res);
 		$vars['raum']		= $raum;
@@ -43,6 +44,7 @@ class Stundenplan {
 		$vars['s_klasse']	= TmplTls::getKlasseSelector("search_klasse", "search_klasse", $sArr[':klasse'], "Klasse", 1);
 		$vars['s_alter']	= TmplTls::getAlterSelector("search_alter", "search_alter", $sArr[':alter'], "Alter", 1);
 		$vars['editTerminForm_wochentag']	= TmplTls::getWeekdaySelector("wochentag", "editTerminForm_wochentag", $sArr[':wochentag'], "Tag", 1);
+		$vars['s_season']	= TmplTls::getSeasonsSelector("search_season", "s_season_id", $sArr[':season_id'], "Saisons", 1);
 		
 		$vars['userGroups']	= User::getUserGroup();
 		
@@ -70,7 +72,7 @@ class Stundenplan {
 			$_r = $stn['raum'];
 			$out[$_d][$_h][$_r][] = $stn;
 		}
-		#var_dump($out);die();
+		
 		return $out;
 	}
 	
@@ -115,6 +117,12 @@ class Stundenplan {
 			$where .= "( :klasse BETWEEN k.kurMinKlasse AND k.kurMaxKlasse) AND";
 			$searchArr[':klasse'] .= '%';
 		}
+		//set current season
+		$curSeason = "s.is_active = 1";
+		if(!empty($searchArr[':season_id']))
+		{
+			$curSeason = "season_id = :season_id";
+		}
 		
 		$having = substr($having, 0, -4);
 		$where = substr($where, 0, -4);
@@ -123,11 +131,13 @@ class Stundenplan {
 				. " TIME_FORMAT(anfang, '%H:%i') as anfang, TIME_FORMAT(ende, '%H:%i') as ende, wochentag, raum,"
 				. " k.*, l.name, l.vorname, l.lehrId, count(khk.kndId) as countKnd, k.maxKnd, stpl.stnPlId"
 				. " FROM stundenplan as stpl"
+				. " LEFT JOIN seasons as s USING(season_id)"
 				. " LEFT JOIN kurse as k USING(kurId)"
 				. " LEFT JOIN lehrer as l USING(lehrId)"
-				. " LEFT JOIN (SELECT * FROM kundehatkurse WHERE NOW() <= bis) as khk USING(kurId)";//BETWEEN von AND
+				. " LEFT JOIN (SELECT * FROM kundehatkurse WHERE NOW() <= bis) as khk USING(kurId)"//BETWEEN von AND
+				. " WHERE ".$curSeason;
 		
-		$q .= empty($where) ? '' : " WHERE ".$where;
+		$q .= empty($where) ? '' : " AND ".$where;
 		$q .= " GROUP By stpl.stnPlId ";
 		
 		$q .= empty($having) ? '' : " HAVING " . $having;

@@ -21,6 +21,15 @@ class UpdateTermin {
 			$fehler .= "Stundenplan-ID fehlt.\n";
 		}
 		
+		if(isset($_POST['season_id']) AND !empty($_POST['season_id']))
+		{
+			$dataPost[':season_id'] = $_POST['season_id'];
+			$testData[':season_id'] = $_POST['season_id'];
+		}
+		else{
+			$fehler .= "Stundenplan-ID fehlt.\n";
+		}
+		
 		if(isset($_POST['raum']))
 		{
 			$dataPost[':raum'] = Fltr::filterStr($_POST['raum']);
@@ -102,7 +111,7 @@ class UpdateTermin {
 			
 			$q = "UPDATE stundenplan SET ".$set." WHERE stnPlId=".$stnPlId;
 			$tq = "SELECT st.*, k.kurName FROM stundenplan as st LEFT JOIN kurse as k USING(kurId)"
-					. " WHERE stnPlId<>:stnPlId AND raum=:raum AND wochentag=:wochentag"
+					. " WHERE stnPlId<>:stnPlId AND raum=:raum AND wochentag=:wochentag AND season_id = :season_id"
 					. " AND ( (:anfang > anfang AND :anfang < ende) OR (:ende > anfang AND :ende < ende) )";
 			
 			try
