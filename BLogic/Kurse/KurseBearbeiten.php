@@ -259,7 +259,7 @@ class KurseBearbeiten
 				if($itemVal === "ja" OR $itemVal === "nein")
 				{
 					$set = " isKurInactive = :isKurInactive";
-					$dataPost[':isKurInactive'] = ($itemVal === "ja") ? false : true;
+					$dataPost[':isKurInactive'] = ($itemVal === "ja") ? 1 : 0;
 				}
 				else
 				{
