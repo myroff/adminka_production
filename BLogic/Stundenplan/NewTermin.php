@@ -21,6 +21,7 @@ class NewTermin
 			if(Fltr::isInt($_POST['season_id']))
 			{
 				$dataPost[':season_id'] = $_POST['season_id'];
+				$testData[':season_id'] = $_POST['season_id'];
 			}
 			else
 			{
@@ -156,7 +157,7 @@ class NewTermin
 			$vl = substr($vl, 0, -1);
 			
 			$q = "INSERT INTO stundenplan (".$tbl.") VALUES(".$vl.")";
-			$tq = "SELECT count(*) as 'count' FROM stundenplan WHERE raum=:raum AND wochentag=:wochentag"
+			$tq = "SELECT count(*) as 'count' FROM stundenplan WHERE raum=:raum AND wochentag=:wochentag AND season_id = :season_id"
 					. " AND ( (:anfang > anfang AND :anfang < ende) OR (:ende > anfang AND :ende < ende) OR (:anfang = anfang AND :ende = ende) )";
 			
 			try
