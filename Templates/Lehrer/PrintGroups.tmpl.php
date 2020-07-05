@@ -32,6 +32,9 @@ use Tools\TmplTools as TmplTls;
 					<table>
 						<tr>
 							<th>
+								Saison
+							</th>
+							<th>
 								Lehrer
 							</th>
 							<th>
@@ -42,6 +45,9 @@ use Tools\TmplTools as TmplTls;
 							</td>
 						</tr>
 						<tr>
+							<td>
+								<?php echo TmplTls::getSeasonsSelector("s_season", "s_season", $sArr[':season'], "Season", 0); ?>
+							</td>
 							<td>
 								<?php echo TmplTls::getLehrerSelector("s_lehrId", "s_lehrId", $sArr[':lehrId']); ?>
 							</td>

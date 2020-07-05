@@ -1,12 +1,15 @@
 <?php
 namespace Lehrer;
 use PDO as PDO;
+require_once BASIS_DIR.'/Tools/TmplTools.php';
+use Tools\TmplTools as TmplTls;
 
 class PrintGroups {
 	public function startPage(){
 		
 		$sArr = array();
-		$sArr[':lehrId'] = empty($_GET['s_lehrId']) ? '' : $_GET['s_lehrId'];
+		$sArr[':season']    = empty($_GET['s_season'])  ? '' : $_GET['s_season'];
+		$sArr[':lehrId']    = empty($_GET['s_lehrId'])  ? '' : $_GET['s_lehrId'];
 		$sArr[':wochentag'] = empty($_GET['wochentag']) ? '' : $_GET['wochentag'];
 	//delete empty entries
 		
@@ -28,7 +31,8 @@ class PrintGroups {
 		{
 			return FALSE;
 		}
-		$where ="";
+		$where  = "";
+		$where .= isset($searchArr[':season']) ?  " seas.season_id = :season " : "khk.bis >= CURDATE() AND seas.is_active = 1";
 		$where .= isset($searchArr[':lehrId']) ?  " AND l.lehrId = :lehrId " : "";
 		$where .= isset($searchArr[':wochentag']) ?  " AND stdn.wochentag = :wochentag " : "";
 		
@@ -38,7 +42,8 @@ class PrintGroups {
 			." stdn.raum, ku.kurName, l.name as lName, l.vorname as lVorname"
 			//." FROM kunden as k JOIN kundehatkurse as khk USING(kndId) JOIN kurse as ku USING(kurId) LEFT JOIN lehrer as l USING(lehrId) LEFT JOIN stundenplan as stdn USING(kurId)"
 			." FROM kurse as ku LEFT JOIN lehrer as l USING(lehrId) LEFT JOIN stundenplan as stdn USING(kurId) JOIN kundehatkurse as khk USING(kurId) LEFT JOIN kunden as k USING(kndId)"
-			." WHERE khk.bis >= CURDATE() ".$where
+			. " LEFT JOIN seasons as seas USING(season_id)"
+			." WHERE ".$where
 			//." "//GROUP BY khk.kndId
 			." ORDER BY stdn.wochentag, stdn.anfang, stdn.raum, k.vorname, k.name";
 		
