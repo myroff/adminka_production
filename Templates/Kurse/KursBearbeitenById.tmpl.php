@@ -25,7 +25,7 @@ use Tools\Filter as Fltr;
 				border:2px solid #a1a1a1;
 				padding:20px; 
 				background:#dddddd;
-				width:400px;
+				width:460px;
 				border-radius:20px;
 
 				position:fixed;
@@ -338,8 +338,8 @@ use Tools\Filter as Fltr;
 							Zeit<br>(format: hh:mm)
 						</th>
 						<td>
-							von <input name="anfang" type="time" class='timepicker'/>
-							bis <input name="ende" type="time" class='timepicker'/>
+							von <input name="anfang" type="time" />
+							bis <input name="ende" type="time" />
 						</td>
 					</tr>
 					<tr>
