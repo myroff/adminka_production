@@ -1,19 +1,23 @@
 <?php
 namespace Kurse;
+require_once BASIS_DIR.'/MVC/DBFactory.php';
 use PDO as PDO;
 require_once BASIS_DIR.'/Tools/TmplTools.php';
 use Tools\TmplTools as TmplTls;
 require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
 
-class KursSelector {
+class KursSelector 
+{
 	static public function getKursSelector($selectorName="", $selectorId="", $size="", $update_url="", $asString=FALSE)
 	{
 		$sArr = array();
-		$sArr[':kurName'] = empty($_POST['kurName']) ? '' : $_POST['kurName'];
-		$sArr[':kurAlter'] = empty($_POST['kurAlter']) ? '' : $_POST['kurAlter'];
+		$sArr[':kurName']   = empty($_POST['kurName'])   ? '' : $_POST['kurName'];
+		$sArr[':kurAlter']  = empty($_POST['kurAlter'])  ? '' : $_POST['kurAlter'];
 		$sArr[':kurKlasse'] = empty($_POST['kurKlasse']) ? '' : $_POST['kurKlasse'];
 		$sArr[':wochentag'] = empty($_POST['wochentag']) ? '' : $_POST['wochentag'];
+		$sArr[':wochentag'] = empty($_POST['wochentag']) ? '' : $_POST['wochentag'];
+		$sArr[':season_id']	= empty($_POST['search_season'])? self::getCurrentSeasonId() : $_POST['search_season'];
 		
 		$res = self::searchDates($sArr);
 		
@@ -47,13 +51,13 @@ class KursSelector {
 				<th>
 					Klasse
 				</th>
-				<td rowspan="2">
-					<input type='submit' value='' class="search" style="">
+				<td>
+					
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<?php echo TmplTls::getSeasonsSelector("search_season", "s_season_id", '', "Saisons", 0); ?>
+					<?php echo TmplTls::getSeasonsSelector("search_season", "s_season_id", $sArr[':season_id'], "Saisons", 0); ?>
 				</td>
 				<td>
 					<input name="kurName" type="text" value="<?=$sArr[':kurName']?>" />
@@ -66,6 +70,9 @@ class KursSelector {
 				</td>
 				<td>
 					<input name="kurKlasse" type="text" value="<?=$sArr[':kurKlasse']?>" />
+				</td>
+				<td>
+					<button type="submit" class="btn waves-light black" ><i class="material-icons white-text">search</i></button>
 				</td>
 			</tr>
 		</table>
@@ -86,7 +93,7 @@ class KursSelector {
 			
 			//echo"<option value='".$r['kurId']."'>".$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."</option>";
 			
-			echo"<option value='".$r['kurId']."'>".$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."<br>"
+			echo"<option value='".$r['kurId']."' season_id='".$r['season_id']."'>".$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."<br>"
 					. " ".$r['season_name']
 					. " Termine: <br>"
 					. Fltr::printSqlTermin($r['termin'], ";", "->", "<br>")
@@ -96,6 +103,22 @@ class KursSelector {
 	</select>
 </div>
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+	document.getElementById('<?=$SearchPanel_formId?>').onsubmit = function(e){
+		e.preventDefault();
+		selector = document.getElementById('<?=$selectorId?>');
+		data = new FormData(this);
+		request = new XMLHttpRequest();
+		request.open("POST", "<?=BASIS_URL?><?=$update_url?>", true);
+		request.onreadystatechange = function(){
+			if (request.readyState === XMLHttpRequest.DONE && request.status === 200){
+				selector.innerHTML = request.responseText;/* request.responseText; */
+			}
+		};
+		request.send(data);
+	};
+});
+/*
 $('#<?=$SearchPanel_formId?>').submit(function (e){
 	selector = $('#<?=$selectorId?>');
 	e.preventDefault();
@@ -114,6 +137,7 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 		}
 	});
 });
+*/
 </script>
 <?php
 		if($asString)
@@ -157,7 +181,7 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 				$klasse .= empty($klasse) ? '' : " Klasse.";
 
 				//echo "<option value='".$r['kurId']."'>".$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."</option>";
-				echo"<option value='".$r['kurId']."'>".$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."<br>"
+				echo"<option value='".$r['kurId']."' season_id='".$r['season_id']."'>".$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."<br>"
 					. " ".$r['season_name']
 					. " Termine: <br>"
 					. Fltr::printSqlTermin($r['termin'], ";", "->", "; <br>")
@@ -172,9 +196,8 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 		exit($output);
 	}
 	
-	private function searchDates($searchArr)
+	private static function searchDates($searchArr)
 	{
-		require_once BASIS_DIR.'/MVC/DBFactory.php';
 		$dbh = \MVC\DBFactory::getDBH();
 		if(!$dbh)
 		{
@@ -185,7 +208,7 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 		
 		//delete empty entries
 		$searchArr = array_filter($searchArr);
-		$q = "SELECT k.*, l.vorname, l.name, se.season_name"
+		$q = "SELECT k.*, l.vorname, l.name, se.season_id, se.season_name"
 			. ", group_concat('{\"wochentag\":\"',wochentag,'\",\"time\":\"', TIME_FORMAT(anfang, '%H:%i'),' - ', TIME_FORMAT(ende, '%H:%i'),'\"}' SEPARATOR',') as termin"
 			. " FROM kurse as k LEFT JOIN stundenplan as st USING(kurId) LEFT JOIN lehrer as l USING(lehrId)"
 			. " LEFT JOIN seasons as se USING(season_id)";
@@ -232,5 +255,15 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 			//print $ex;
 			return FALSE;
 		}
+	}
+	
+	static public function getCurrentSeasonId()
+	{
+		$dbh = \MVC\DBFactory::getDBH();
+		$q   = "SELECT season_id FROM seasons WHERE is_active = 1";
+		$sth = $dbh->prepare($q);
+		$sth->execute();
+		$res = $sth->fetch(PDO::FETCH_ASSOC);
+		return $res['season_id'] ?: 0;
 	}
 }

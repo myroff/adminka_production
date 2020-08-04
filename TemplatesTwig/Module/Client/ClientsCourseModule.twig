@@ -1,0 +1,407 @@
+<!-- client course start -->
+<style>
+#changeKurs_Table, #changeKursConfirm_Table, #editSonderPreis_Table, #editKundenKursKomm_Table, #UpdateKur_Table{
+	display:none;
+	border:2px solid #a1a1a1;
+	padding:20px; 
+	background:#dddddd;
+	min-width:450px;
+	border-radius:20px;
+
+	position:fixed;
+	top:200px;
+	left:30%;
+	z-index:100;
+}
+</style>
+
+<div>
+	{{ s_season | raw }}
+</div>
+<div id="wrapper_clientsCoursesTbl">
+{{ include('Module/Client/ClientsCourseTable.twig') }}
+</div>
+
+<!-- change Kurs -->
+<div id="changeKurs_Table">
+	<input type="hidden" id="changeKurs_oldKurId" />
+	<input type="hidden" id="changeKurs_oldSeasonId" />
+	<input type="hidden" id="changeKurs_eintrId" />
+	{{ changeCourseSelector | raw }}
+	<div class="buttonsOkCancelDiv">
+		<button class="submit btn-large white" id="changeKurs_Table_ButtonSpeichern" onclick="changeKurs_save();" ><i class="material-icons green-text lighten-1-text">check_circle</i></button>
+		<button class="cancel btn-large white" id="changeKurs_Table_ButtonAbbrechen" onclick="changeKurs_close();" ><i class="material-icons red-text lighten-1-text">cancel</i></button>
+	</div>
+</div>
+<div id="changeKursConfirm_Table" style="z-index:150;">
+	<table>
+		<tr>
+			<td><div id="changeKursConfirm_Table_oldKurName"></div></td>
+			<td>--></td>
+			<td><div id="changeKursConfirm_Table_newKurName"></div></td>
+		</tr>
+	</table>
+	<form id="changeKursConfirm_Form">
+		<input type="hidden" id="changeKursConfirm_Form_kndId" name="kndId"/>
+		<input type="hidden" id="changeKursConfirm_Form_eintrId" name="eintrId"/>
+		<input type="hidden" id="changeKursConfirm_Form_oldKurId" name="oldKurId"/>
+		<input type="hidden" id="changeKursConfirm_Form_oldSeasonId" name="oldSeasonId"/>
+		<input type="hidden" id="changeKursConfirm_Form_newKurId" name="newKurId"/>
+		<input type="hidden" id="changeKursConfirm_Form_newSeasonId" name="newSeasonId"/>
+		<div class="buttonsOkCancelDiv">
+			<button class="btn-large white" id="changeKursConfirm_Form_ButtonSpeichern" type='submit' value='' ><i class="material-icons green-text lighten-1-text">check_circle</i></button>
+			<button class="cancel btn-large white" id="changeKursConfirm_Form_ButtonAbbrechen" ><i class="material-icons red-text lighten-1-text">cancel</i></button>
+		</div>
+	</form>
+</div>
+<!-- Update Sonderpreis -->
+<div id="editSonderPreis_Table">
+	<div><span id="editSonderPreis_Titel"></span> Sonderpreis bearbeiten. 
+		<button id="deleteSonderPreisButton" class="deleteButton btn-small black" ><i class="material-icons white-text lighten-1-text">delete_forever</i></button>
+	</div>
+	<div>
+		<form id="editSonderPreis_Form" method="post" action="{{ requestUri }}">
+			<input class="white" type="hidden" id="editSonderPreis_eintrId" name="eintrId" value=""/>
+			<div>
+				SonderPreis: <input type="text" id="editSonderPreis_sonderPreis" name="sonderPreis" size="5"/>
+				<select class="browser-default" id="editSonderPreis_khkIsStdPreis" name="khkIsStdPreis" >
+					<option value="proMonat">pro Monat</option>
+					<option value="proStunde">pro Stunde</option>
+				</select>
+			</div>
+			<div class="buttonsOkCancelDiv">
+				<button class="btn-large white" id="editSonderPreis_Form_ButtonSpeichern" type='submit'><i class="material-icons green-text lighten-1-text">check_circle</i></button>
+				<button class="btn-large white" id="editSonderPreis_Form_ButtonAbbrechen" ><i class="material-icons red-text lighten-1-text">cancel</i></button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<!-- Update KundenKurs-Kommentar -->
+<div id="editKundenKursKomm_Table">
+	<div id="editKundenKursKomm_Titel"></div>
+	<form id="editKundenKursKomm_Form" method="post">
+		<input type="hidden" id="editKundenKursKomm_eintrId" name="eintrId"/>
+		<div><textarea id="KursBeschreibung_Form_Textarea" name="khkKomm"></textarea></div>
+		<div class="buttonsOkCancelDiv">
+			<button class="btn-large white" id="editKundenKursKomm_Form_ButtonSpeichern" type='submit'><i class="material-icons green-text lighten-1-text">check_circle</i></button>
+			<button class="btn-large white" id="editKundenKursKomm_Form_ButtonAbbrechen" ><i class="material-icons red-text lighten-1-text">cancel</i></button>
+		</div>
+	</form>
+</div>
+
+<!-- Update Kurs von/bis -->
+<div id="UpdateKur_Table">
+	<div id="UpdateKur_Title"></div>
+	<div id="UpdateKur_FormDiv">
+		<form id="UpdateKur_Form" method="post">
+			<input type="hidden" id="UpdateKur_kndId" name="kndId" value=""/>
+			<input type="hidden" id="UpdateKur_eintrId" name="eintrId" value=""/>
+			<input type="hidden" id="UpdateKur_kurId" name="kurId" value=""/>
+			<input type="hidden" id="UpdateKur_TypeVal" name="typeVal" value=""/>
+			<input type="text" id="UpdateKur_Val" name="dateVal" value="" />
+			<div class="buttonsOkCancelDiv">
+				<button class="btn-large white" id="UpdateKur_ButtonSpeichern" type='submit' ><i class="material-icons green-text lighten-1-text">check_circle</i></button>
+				<button class="btn-large white" id="UpdateKur_ButtonAbbrechen" ><i class="material-icons red-text lighten-1-text">cancel</i></button>
+			</div>
+		</form>
+	</div>
+</div>
+
+{% block javascript %}
+<script>
+	var clientId = {{client_id}};
+	var mode = {{editMode}};
+	
+function loadjscssfile(filename, filetype){
+	if (filetype=="js"){ //if filename is a external JavaScript file
+		var fileref=document.createElement('script');
+		fileref.setAttribute("type","text/javascript");
+		fileref.setAttribute("src", filename);
+	}
+	else if (filetype=="css"){ //if filename is an external CSS file
+		var fileref=document.createElement("link");
+		fileref.setAttribute("rel", "stylesheet");
+		fileref.setAttribute("type", "text/css");
+		fileref.setAttribute("href", filename);
+	}
+	if (typeof fileref!="undefined"){
+		document.getElementsByTagName("head")[0].appendChild(fileref);
+	}
+}
+
+function loadMissingCss(){
+	var styles = document.styleSheets;
+	max = styles.length;
+	if(!max){
+		for(var i=0; i < max; i++ ){
+			if(styles[i].href.includes('materialize.min.css')){
+				return;
+			}
+		}
+	}
+
+	loadjscssfile('/production/Public/materialize/css/materialize.min.css', 'css');
+	loadjscssfile('/production/Public/material_icons/material_icon.css', 'css');
+	loadjscssfile('/production/Public/materialize/js/materialize.min.js', 'js');
+}
+
+	
+	/* document is loaded */
+	document.addEventListener('DOMContentLoaded', function() {
+		/* load missing css */
+		loadMissingCss();
+
+		seasonSelector = document.getElementById('s_season');
+		
+		seasonSelector.onchange = function(e){
+			seasonId = this.value;
+			
+			request = new XMLHttpRequest();
+			
+			request.onreadystatechange = function(){
+				if (request.readyState === XMLHttpRequest.DONE && request.status === 200){
+					document.getElementById('wrapper_clientsCoursesTbl').innerHTML = request.responseText;/* request.responseText; */
+				}
+			};
+			request.open('POST', "{{ constant('BASIS_URL') }}/admin/ajaxGetClientsCoursesUpdate", true);
+			request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			request.send("season_id="+seasonId+"&client_id="+clientId+"&mode="+mode);
+		};
+	});
+	
+//change Kurs
+function changeCourse(courseId, seasonId, eintrId){
+	document.getElementById('changeKurs_oldKurId').value = courseId;
+	document.getElementById('changeKurs_oldSeasonId').value = seasonId;
+	document.getElementById('changeKurs_eintrId').value = eintrId;
+	document.getElementById('changeKurs_Table').style.display = 'block';
+	//document.getElementById('changeKurs_Table').style.visibility = 'hidden';
+}
+	
+function changeKurs_close(){
+	document.getElementById('changeKurs_Table').style.display = 'none';
+}
+
+function changeKurs_save(){
+	/*
+	eintrId = $('#changeKurs_eintrId').val();
+	oldKurId = $('#changeKurs_oldKurId').val();
+	newKurId = $('#changeKurs_newKurId option:selected').val();
+	*/
+	eintrId     = document.getElementById('changeKurs_eintrId').value;
+	oldKurId    = document.getElementById('changeKurs_oldKurId').value;
+	oldSeasonId = document.getElementById('changeKurs_oldSeasonId').value;
+	selector    = document.getElementById('changeKurs_newKurId');
+	newKurId    = selector.options[selector.selectedIndex].value;
+	newSeasonId = selector.options[selector.selectedIndex].getAttribute('season_id');
+
+	document.getElementById('changeKursConfirm_Form_oldKurId').value    = oldKurId;
+	document.getElementById('changeKursConfirm_Form_oldSeasonId').value = oldSeasonId;
+	document.getElementById('changeKursConfirm_Form_eintrId').value     = eintrId;
+	document.getElementById('changeKursConfirm_Form_newKurId').value    = newKurId;
+	document.getElementById('changeKursConfirm_Form_newSeasonId').value = newSeasonId;
+	document.getElementById('changeKursConfirm_Form_kndId').value       = clientId;
+	
+	var postData = 'oldKurId='+oldKurId+'&oldSeasonId='+oldSeasonId+'&newKurId='+newKurId+'&newSeasonId='+newSeasonId+'&eintrId='+eintrId;
+	
+	request = new XMLHttpRequest();
+			
+	request.onreadystatechange = function(){
+		if (request.readyState === XMLHttpRequest.DONE && request.status === 200){
+			var response = JSON.parse(request.responseText);
+			document.getElementById('changeKursConfirm_Table_oldKurName').innerHTML = response.message.oldKur;
+			document.getElementById('changeKursConfirm_Table_newKurName').innerHTML = response.message.newKur;
+		}
+	};
+	request.open('POST', "{{ constant('BASIS_URL') }}/admin/ajaxChangeKursInfo", true);
+	request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	request.send(postData);
+	
+	document.getElementById('changeKursConfirm_Table').style.display = 'block';
+}
+
+document.getElementById('changeKursConfirm_Form_ButtonAbbrechen').onclick = function(e){
+	e.preventDefault();
+	document.getElementById('changeKursConfirm_Table').style.display = 'none';
+};
+
+document.getElementById('changeKursConfirm_Form').onsubmit = function(e){
+	e.preventDefault();
+	var postData = new FormData(document.getElementById('changeKursConfirm_Form'));
+	
+	request = new XMLHttpRequest();
+	request.onreadystatechange = function(){
+		if (request.readyState === XMLHttpRequest.DONE && request.status === 200){
+			var response = JSON.parse(request.responseText);
+			alert(response.message);
+			window.location.reload(true);
+		}
+	};
+	
+	request.open('POST', "{{ constant('BASIS_URL') }}/admin/ajaxChangeKursReallyDo", true);
+	request.send(postData);
+};
+function editSonderPreis(eintrId, kurName){
+	document.getElementById('editSonderPreis_Titel').innerHTML	= kurName+': ';
+	document.getElementById('editSonderPreis_eintrId').value	= eintrId;
+	document.getElementById('deleteSonderPreisButton').setAttribute('eintrId', eintrId);
+	document.getElementById('editSonderPreis_Table').style.display = 'block';
+}
+
+document.getElementById('editSonderPreis_Form_ButtonAbbrechen').onclick = function(e){
+	e.preventDefault();
+	document.getElementById('editSonderPreis_Table').style.display = 'none';
+};
+
+document.getElementById('editSonderPreis_Form').onsubmit = function(e){
+	e.preventDefault();
+	var postData = new FormData(document.getElementById('editSonderPreis_Form'));
+	
+	request = new XMLHttpRequest();
+	request.onreadystatechange = function(){
+		if (request.readyState === XMLHttpRequest.DONE && request.status === 200){
+			var response = JSON.parse(request.responseText);
+			if(response.status == 'ok'){
+				window.location.reload(true);
+			}
+			else{
+				alert(response.info);
+			}
+		}
+	};
+	
+	request.open('POST', "{{ constant('BASIS_URL') }}/admin/ajaxEditSonderPreis", true);
+	request.send(postData);
+};
+
+document.getElementById('deleteSonderPreisButton').onclick = function(e){
+	eId = this.getAttribute('eintrId');
+	postData = "eintrId="+eId;
+	
+	request = new XMLHttpRequest();
+			
+	request.onreadystatechange = function(){
+		if (request.readyState === XMLHttpRequest.DONE && request.status === 200){
+			var response = JSON.parse(request.responseText);
+			if(response.status == 'ok'){
+				window.location.reload(true);
+			}
+			else{
+				alert(response.info);
+			}
+		}
+	};
+	request.open('POST', "{{ constant('BASIS_URL') }}/admin/ajaxDeleteSonderPreis", true);
+	request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	request.send(postData);
+};
+
+//edit Beschreibung
+function editKomment(el){
+	document.getElementById('KursBeschreibung_Form_Textarea').value = el.parentNode.getElementsByClassName('clientComent')[0].innerText;
+	
+	eId = el.getAttribute('eintrId');
+	document.getElementById('editKundenKursKomm_eintrId').value = eId;
+	
+	document.getElementById('editKundenKursKomm_Titel').innerHTML = el.getAttribute('kurName');
+	
+	document.getElementById('editKundenKursKomm_Table').style.display = 'block';
+}
+document.getElementById('editKundenKursKomm_Form_ButtonAbbrechen').onclick = function(e){
+	e.preventDefault();
+	document.getElementById('editKundenKursKomm_Table').style.display = 'none';
+};
+document.getElementById('editKundenKursKomm_Form').onsubmit = function(e){
+	e.preventDefault();
+	var postData = new FormData(document.getElementById('editKundenKursKomm_Form'));
+	
+	request = new XMLHttpRequest();
+	request.onreadystatechange = function(){
+		if (request.readyState === XMLHttpRequest.DONE && request.status === 200){
+			var response = JSON.parse(request.responseText);
+			if(response.status == 'ok'){
+				window.location.reload(true);
+			}
+			else{
+				alert(response.info);
+			}
+		}
+	};
+	
+	request.open('POST', "{{ constant('BASIS_URL') }}/admin/ajaxUpdateKhkKomm", true);
+	request.send(postData);
+};
+//update 'von' + 'bis'
+function updateKurDate(el){
+	kurDateType = el.getAttribute('kurDateType').trim();
+	kurId       = el.getAttribute('kurId');
+	date        = el.getAttribute('dateVal').trim();
+	eintrId     = el.getAttribute('eintrId');
+	
+	document.getElementById('UpdateKur_eintrId').value = eintrId;
+	document.getElementById('UpdateKur_kndId').value   = clientId;
+	document.getElementById('UpdateKur_kurId').value   = kurId;
+	document.getElementById('UpdateKur_TypeVal').value = kurDateType;
+	document.getElementById('UpdateKur_Val').value     = date;
+	document.getElementById('UpdateKur_Title').innerHTML     = kurDateType;
+	document.getElementById('UpdateKur_Table').style.display = 'block';
+}
+document.getElementById('UpdateKur_ButtonAbbrechen').onclick = function(e){
+	e.preventDefault();
+	document.getElementById('UpdateKur_Table').style.display = 'none';
+};
+document.getElementById('UpdateKur_Form').onsubmit = function(e){
+	e.preventDefault();
+	
+	var postData = new FormData(document.getElementById('UpdateKur_Form'));
+	
+	request = new XMLHttpRequest();
+	request.onreadystatechange = function(){
+		if (request.readyState === XMLHttpRequest.DONE && request.status === 200){
+			var response = JSON.parse(request.responseText);
+			if(typeof response.fehler === 'undefined')
+			{
+				window.location.reload(true);
+			}
+			else
+			{
+				alert(response.fehler);
+			}
+		}
+	};
+	
+	request.open('POST', "{{ constant('BASIS_URL') }}/admin/ajaxUpdateKursToKunde", true);
+	request.send(postData);
+};
+//Kurs entfernen
+function kurEntfernen(eintrId){
+	if (confirm('Wollen Sie wirklich diesen Kurs von dem Kunde entfernen?')) {
+		
+		postData = "eintrId="+eintrId;
+		request  = new XMLHttpRequest();
+
+		request.onreadystatechange = function(){
+			if (request.readyState === XMLHttpRequest.DONE && request.status === 200){
+				var response = JSON.parse(request.responseText);
+				if(typeof response.fehler === 'undefined')
+				{
+					alert(response.info);
+					window.location.reload(true);
+				}
+				else
+				{
+					alert(response.fehler);
+				}
+			}
+		};
+		request.open('POST', "{{ constant('BASIS_URL') }}/admin/ajaxKursVomKundeEntfernen", true);
+		request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		request.send(postData);
+	} else {
+		// Do nothing!
+	}
+}
+</script>
+{% endblock %}
+<!-- client course end -->

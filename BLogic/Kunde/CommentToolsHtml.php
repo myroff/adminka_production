@@ -6,8 +6,9 @@ require_once BASIS_DIR.'/MVC/DBFactory.php';
 use MVC\DBFactory as DBFactory;
 use PDO as PDO;
 
-class CommentToolsHtml {
-	private function getComments($kndId)
+class CommentToolsHtml 
+{
+	private static function getComments($kndId)
 	{
 		$dbh = DBFactory::getDBH();
 			

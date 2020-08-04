@@ -33,6 +33,16 @@ class addKursToKunde
 			$testData[':kurId'] = $_POST['kurId'];
 		}
 		
+		if( !isset($_POST['seasonId']) OR empty($_POST['seasonId']) OR !Fltr::isInt(($_POST['seasonId'])))
+		{
+			$fehler .= "Season-Id fehlt oder ist kein Integer.";
+		}
+		else
+		{
+			$dataPost[':season_id'] = $_POST['seasonId'];
+			$testData[':season_id'] = $_POST['seasonId'];
+		}
+		
 		if(!isset($_POST['von']) OR empty($_POST['von']))
 		{
 			$fehler .= "Anfangsmonat fehlt.";
@@ -132,7 +142,7 @@ class addKursToKunde
 			$vl .= "'".$curAdminId."'";
 
 			$q = "INSERT INTO kundehatkurse (".$tbl.") VALUES(".$vl.")";
-			$tq = "SELECT count(*) as 'count' FROM kundehatkurse WHERE kndId=:kndId AND kurId=:kurId AND ( (:von BETWEEN von AND bis) OR (:bis BETWEEN von AND bis) )";
+			$tq = "SELECT count(*) as 'count' FROM kundehatkurse WHERE kndId=:kndId AND season_id=:season_id AND kurId=:kurId AND ( (:von BETWEEN von AND bis) OR (:bis BETWEEN von AND bis) )";
 			
 			try
 			{

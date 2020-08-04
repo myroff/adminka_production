@@ -6,36 +6,51 @@ use MVC\DBFactory as DBFactory;
 require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
 
-class ChangeKurs {
+class ChangeKurs 
+{
 	public function getInfoJson()
 	{
 		$postData = array();
-		$fehler = "";
+		$fehler   = array();
 //eintrId
-		if( empty($_POST['eintrId']) OR !isset($_POST['eintrId']) ) {
-			$fehler .= "eintrId fehlt!";
+		if( empty($_POST['eintrId']) ) {
+			$fehler[] = "eintrId fehlt!";
 		}
 		else {
 			$postData['eintrId'] = $_POST['eintrId'];
 		}
 //altes KurId
-		if( empty($_POST['oldKurId']) OR !isset($_POST['oldKurId']) ) {
-			$fehler .= "oldKurId fehlt!";
+		if( empty($_POST['oldKurId']) ) {
+			$fehler[] = "oldKurId fehlt!";
 		}
 		else {
 			$postData['oldKurId'] = $_POST['oldKurId'];
 		}
+//altes SeasonId
+		if(empty($_POST['oldSeasonId'])) {
+			$fehler[] = "oldSeasonId fehlt!";
+		}
+		else {
+			$postData['oldSeasonId'] = $_POST['oldSeasonId'];
+		}
 //neues KurId
-		if( empty($_POST['newKurId']) OR !isset($_POST['newKurId']) ) {
-			$fehler .= "oldKurId fehlt!";
+		if( empty($_POST['newKurId']) ) {
+			$fehler[] = "newKurId fehlt!";
 		}
 		else {
 			$postData['newKurId'] = $_POST['newKurId'];
 		}
+//neues SeasonId
+		if(empty($_POST['newSeasonId'])) {
+			$fehler[] = "newSeasonId fehlt!";
+		}
+		else {
+			$postData['newSeasonId'] = $_POST['newSeasonId'];
+		}
 		
 		if(!empty($fehler))
 		{
-			$output = array('status' => 'error', 'message' => "no connection to db (dbh).");
+			$output = array('status' => 'error', 'message' => implode(' ', $fehler));
 			header("Content-type: application/json");
 			exit(json_encode($output));
 		}
@@ -48,26 +63,31 @@ class ChangeKurs {
 			exit(json_encode($output));
 		}
 		
-		$qOldKur = "SELECT kur.kurId, kur.kurName, st.raum, l.name, l.vorname,"
-			." group_concat('{\"wochentag\":\"',wochentag,'\",\"time\":\"', TIME_FORMAT(anfang, '%H:%i'),' - ', TIME_FORMAT(ende, '%H:%i'),'\"}' SEPARATOR',') as 'termine'"
+		$qOldKur = "SELECT kur.kurId, kur.kurName, st.raum, l.name, l.vorname"
+			.", group_concat('{\"wochentag\":\"',wochentag,'\",\"time\":\"', TIME_FORMAT(anfang, '%H:%i'),' - ', TIME_FORMAT(ende, '%H:%i'),'\"}' SEPARATOR',') as 'termine'"
+			.", season.season_name"
 			." FROM kundehatkurse as khk LEFT JOIN kurse as kur USING(kurId) LEFT JOIN stundenplan as st USING(kurId) LEFT JOIN lehrer as l USING(lehrId)"
-			." WHERE khk.eintrId=:eintrId GROUP BY kur.KurId";
+			." LEFT JOIN seasons as season ON khk.season_id=season.season_id"
+			." WHERE khk.eintrId=:eintrId AND khk.season_id=:seasonId"
+			." GROUP BY kur.KurId";
 		
-		$qNewKur = "SELECT kur.kurId, kur.kurName, st.raum, l.name, l.vorname,"
-			." group_concat('{\"wochentag\":\"',wochentag,'\",\"time\":\"', TIME_FORMAT(anfang, '%H:%i'),' - ', TIME_FORMAT(ende, '%H:%i'),'\"}' SEPARATOR',') as 'termine'"
-			." FROM kurse as kur LEFT JOIN stundenplan as st USING(kurId) LEFT JOIN lehrer as l USING(lehrId)"
-			." WHERE kur.kurId=:kurId GROUP BY kur.KurId";
+		$qNewKur = "SELECT kur.kurId, kur.kurName, st.raum, l.name, l.vorname"
+			.", group_concat('{\"wochentag\":\"',wochentag,'\",\"time\":\"', TIME_FORMAT(anfang, '%H:%i'),' - ', TIME_FORMAT(ende, '%H:%i'),'\"}' SEPARATOR',') as 'termine'"
+			.", season.season_name"
+			." FROM kurse as kur LEFT JOIN stundenplan as st USING(kurId) LEFT JOIN lehrer as l USING(lehrId) LEFT JOIN seasons as season ON st.season_id=season.season_id"
+			." WHERE kur.kurId=:kurId AND st.season_id=:seasonId"
+			." GROUP BY kur.KurId";
 		$oldKur = array();
 		$newKur = array();
 		$rs = array();
 		try
 		{
 			$sth = $dbh->prepare($qOldKur);
-			$sth->execute(array(':eintrId' => $postData['eintrId']));
+			$sth->execute(array(':eintrId' => $postData['eintrId'], ':seasonId' => $postData['oldSeasonId']));
 			$oldKur = $sth->fetch(PDO::FETCH_ASSOC,1);
 			
 			$sth = $dbh->prepare($qNewKur);
-			$sth->execute(array(':kurId' => $postData['newKurId']));
+			$sth->execute(array(':kurId' => $postData['newKurId'], ':seasonId' => $postData['newSeasonId']));
 			$newKur = $sth->fetch(PDO::FETCH_ASSOC,1);
 			
 		} catch (Exception $ex) {
@@ -77,8 +97,8 @@ class ChangeKurs {
 			exit(json_encode($output));
 		}
 		$out = array(
-			"oldKur" => "<b>".$oldKur['kurName']."</b><br><i>".$oldKur['vorname']." ".$oldKur['name']."</i><br>Raum ". $oldKur['raum'].Fltr::printSqlTermin($oldKur['termine']),
-			"newKur" => "<b>".$newKur['kurName']."</b><br><i>".$newKur['vorname']." ".$newKur['name']."</i><br>Raum ". $newKur['raum'].Fltr::printSqlTermin($newKur['termine'])
+			"oldKur" => $oldKur['season_name']."<br><b>".$oldKur['kurName']."</b><br><i>".$oldKur['vorname']." ".$oldKur['name']."</i><br>Raum ". $oldKur['raum'].Fltr::printSqlTermin($oldKur['termine']),
+			"newKur" => $newKur['season_name']."<br><b>".$newKur['kurName']."</b><br><i>".$newKur['vorname']." ".$newKur['name']."</i><br>Raum ". $newKur['raum'].Fltr::printSqlTermin($newKur['termine'])
 		);
 		
 		$output = array('status' => 'ok', 'message' => $out );
@@ -89,39 +109,53 @@ class ChangeKurs {
 	public function changeKursJson()
 	{
 		$postData = array();
-		$fehler = "";
+		$fehler   = array();
 //kndId
 		if( empty($_POST['kndId']) OR !isset($_POST['kndId']) ) {
-			$fehler .= "kndId fehlt!";
+			$fehler[] = "kndId fehlt!";
 		}
 		else {
 			$postData[':kndId'] = $_POST['kndId'];
 		}
 //altes KurId
 		if( empty($_POST['eintrId']) OR !isset($_POST['eintrId']) ) {
-			$fehler .= "eintrId fehlt!";
+			$fehler[] = "eintrId fehlt!";
 		}
 		else {
 			$postData[':eintrId'] = $_POST['eintrId'];
 		}
 //altes KurId
 		if( empty($_POST['oldKurId']) OR !isset($_POST['oldKurId']) ) {
-			$fehler .= "oldKurId fehlt!";
+			$fehler[] = "oldKurId fehlt!";
 		}
 		else {
 			$postData[':oldKurId'] = $_POST['oldKurId'];
 		}
 //neues KurId
 		if( empty($_POST['newKurId']) OR !isset($_POST['newKurId']) ) {
-			$fehler .= "oldKurId fehlt!";
+			$fehler[] = "oldKurId fehlt!";
 		}
 		else {
 			$postData[':newKurId'] = $_POST['newKurId'];
 		}
+//altes SeasonId
+		if(empty($_POST['oldSeasonId'])) {
+			$fehler[] = "oldSeasonId fehlt!";
+		}
+		else {
+			$postData['oldSeasonId'] = $_POST['oldSeasonId'];
+		}
+//neues SeasonId
+		if(empty($_POST['newSeasonId'])) {
+			$fehler[] = "newSeasonId fehlt!";
+		}
+		else {
+			$postData['newSeasonId'] = $_POST['newSeasonId'];
+		}
 		
 		if(!empty($fehler))
 		{
-			$output = array('status' => 'error', 'message' => "no connection to db (dbh).");
+			$output = array('status' => 'error', 'message' => implode(' ', $fehler));
 			header("Content-type: application/json");
 			exit(json_encode($output));
 		}
@@ -136,10 +170,10 @@ class ChangeKurs {
 		
 		$q_timeLimit = "SELECT EXTRACT(YEAR_MONTH from von) as 'von', EXTRACT(YEAR_MONTH from bis) as 'bis' FROM kundehatkurse WHERE eintrId=:eintrId";
 		
-		$q_khk = "UPDATE kundehatkurse SET kurId=:newKurId WHERE eintrId=:eintrId ";
+		$q_khk = "UPDATE kundehatkurse SET kurId=:newKurId, season_id=:seasonId  WHERE eintrId=:eintrId ";
 		
 		$q_rechnDat = "UPDATE rechnungsdaten as rd JOIN rechnungen as r USING(rnId)"
-				. " SET rd.kurId=:newKurId"
+				. " SET rd.kurId=:newKurId, rd.season_id=:seasonId"
 				. " WHERE r.kndId=:kndId AND rd.kurId=:oldKurId AND (EXTRACT(YEAR_MONTH from rnMonat) BETWEEN :von AND :bis)";
 		
 		$dbh->beginTransaction();
@@ -151,10 +185,10 @@ class ChangeKurs {
 			$res = $sth->fetch(PDO::FETCH_ASSOC, 1);
 			
 			$sth = $dbh->prepare($q_khk);
-			$sth->execute(array(':eintrId'=>$postData[':eintrId'], ':newKurId'=>$postData[':newKurId']));
+			$sth->execute(array(':eintrId'=>$postData[':eintrId'], ':newKurId'=>$postData[':newKurId'], ':seasonId'=>$postData['newSeasonId']));
 			
 			$sth = $dbh->prepare($q_rechnDat);
-			$sth->execute(array(':newKurId'=>$postData[':newKurId'], ':kndId'=>$postData[':kndId'], ':oldKurId'=>$postData[':oldKurId'], ':von'=>$res['von'], ':bis'=>$res['bis']));
+			$sth->execute(array(':newKurId'=>$postData[':newKurId'], ':seasonId'=>$postData['newSeasonId'], ':kndId'=>$postData[':kndId'], ':oldKurId'=>$postData[':oldKurId'], ':von'=>$res['von'], ':bis'=>$res['bis']));
 			
 		} catch(Exception $ex){
 			$dbh->rollBack();

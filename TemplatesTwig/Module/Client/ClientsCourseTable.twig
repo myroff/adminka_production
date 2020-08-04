@@ -1,0 +1,109 @@
+<table id="kundenResTbl">
+	<tr>
+		<th>
+			Saison
+		</th>
+		<th>
+			Kurs
+		</th>
+		<th>
+			Lehrer
+		</th>
+		<th>
+			Preis
+		</th>
+		<th>
+			Sonderpreis
+		</th>
+		<th>
+			Beschreibung
+		</th>
+		<th>
+			Kommentar
+		</th>
+		<th>
+			Alter
+		</th>
+		<th>
+			Klassen
+		</th>
+		<th>
+			Von
+		</th>
+		<th>
+			Bis
+		</th>
+		<th>
+			Entfernen
+		</th>
+	</tr>
+{% if lessons is empty %}
+	<tr>
+		<td colspan="13">Nach Ihrer Anfrage wurden keine Daten gefunden.</td>
+	</tr>
+{% else %}
+	{% for lesson in lessons %}
+	<tr>
+		<td>{{lesson.season_name}}</td>
+		<td>{{lesson.kurName}}<br>
+			{{printSqlTermin(lesson.termin)}}<br>
+			<button class='changeKursButton btn-small white' onclick="changeCourse({{lesson.kurId}}, {{lesson.season_id}}, {{lesson.eintrId}});" kurId="{{lesson.kurId}}" eintrId="{{lesson.eintrId}}">
+				<i class="material-icons blue-text lighten-1-text">edit</i>
+			</button>
+		</td>
+		<td>{{lesson.vorname}} {{lesson.name}}</td>
+		<td>{{lesson.kurPreis}} {{ lesson.kurIsStdPreis ? 'pro Stunde' : 'pro Monat' }}</td>
+		<td>
+			{% if lesson.sonderPreis %}
+				{{lesson.sonderPreis}} {{ lesson.khkIsStdPreis ? 'pro Stunde' : 'pro Monat' }}
+			{% endif %}
+			<button class='editSonderPreis btn-small white' eintrId="{{lesson.eintrId}}" kurName="{{lesson.kurName}}" onclick="editSonderPreis({{lesson.eintrId}}, '{{lesson.kurName}}');">
+				<i class="material-icons blue-text lighten-1-text">edit</i>
+			</button>
+		</td>
+		<td>
+			{{ lesson.kurBeschreibung }}
+		</td>
+		<td>
+			<span class="clientComent">{{ lesson.khkKomm }}</span>
+			<button class='editBeschreibung btn-small white' eintrId="{{ lesson.eintrId }}" kurName="{{ lesson.kurName }}" onclick="editKomment(this);">
+				<i class="material-icons blue-text">comment</i>
+			</button>
+		</td>
+		<td>
+			{{ lesson.kurMinAlter }}
+			{% if lesson.kurMinAlter < lesson.kurMaxAlter %}
+				bis {{ lesson.kurMaxAlter }}
+			{% endif %}
+		</td>
+		<td>
+			{{ lesson.kurMinKlasse }}
+			{% if lesson.kurMinKlasse < lesson.kurMaxKlasse %}
+				bis {{ lesson.kurMaxKlasse }}
+			{% endif %}
+		</td>
+		<td>
+			{{ lesson.von | date("d.m.Y") }}
+			<button class='btn-small white' onclick="updateKurDate(this);"
+			kurId="{{ lesson.kurId }}" kurName="{{ lesson.kurName }}" kurDateType="von" dateVal="{{ lesson.von | date("d.m.Y") }}" 
+			eintrId="{{ lesson.eintrId }}" >
+				<i class="material-icons blue-text">date_range</i>
+			</button>
+		</td>
+		<td>
+			{{ lesson.bis | date("d.m.Y") }}
+			<button class="btn-small white" onclick="updateKurDate(this);"
+			kurId="{{ lesson.kurId }}" kurName="{{ lesson.kurName }}" kurDateType="bis" dateVal="{{ lesson.bis | date("d.m.Y") }}"
+			eintrId="{{ lesson.eintrId }}" >
+				<i class="material-icons blue-text">date_range</i>
+			</button>
+		</td>
+		<td>
+			<button class="kurEntfernenButton btn-small white" onclick="kurEntfernen({{ lesson.eintrId }});" >
+				<i class="material-icons blue-text">delete_forever</i>
+			</button>
+		</td>
+	</tr>
+	{% endfor %}
+{% endif %}
+</table>

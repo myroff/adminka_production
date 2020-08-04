@@ -53,7 +53,7 @@ class Twig_Extension_CustomTools extends Twig_Extension
 		return $out;
 	}
 	
-	public function indxToWeekday($ind)
+	public static function indxToWeekday($ind)
 	{
 		if(empty($ind)) return '';
 		

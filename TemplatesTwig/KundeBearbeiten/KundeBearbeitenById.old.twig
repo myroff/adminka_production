@@ -306,8 +306,102 @@
 		</div>
 	</div>
 <!-- Kurse -->
-{{ clientsCourseModule|raw }}
-
+	<div class="divider"></div>
+	<div class="row">
+		<div id="kurListe">
+			<table id="kundenResTbl">
+				<tr>
+					<th>
+						Kurs
+					</th>
+					<th>
+						Lehrer
+					</th>
+					<th>
+						Preis
+					</th>
+					<th>
+						Sonderpreis
+					</th>
+					<th>
+						Beschreibung
+					</th>
+					<th>
+						Kommentar
+					</th>
+					<th>
+						Alter
+					</th>
+					<th>
+						Klassen
+					</th>
+					<th>
+						Von
+					</th>
+					<th>
+						Bis
+					</th>
+					<th>
+						Entfernen
+					</th>
+				</tr>
+			{% if lessons is empty %}
+				<tr>
+					<td colspan="13">Nach Ihrer Anfrage wurden keine Daten gefunden.</td>
+				</tr>
+			{% else %}
+				{% for lesson in lessons %}
+				<tr>
+					<td>{{ lesson.kurName }}<br>
+						{{  printSqlTermin(lesson.termin) }}
+						<br><button class='changeKursButton'  kurId="{{lesson.kurId}}" eintrId="{{lesson.eintrId}}">Ändern</button>
+					</td>
+					<td>{{lesson.vorname}} {{lesson.name}}</td>
+					<td>{{lesson.kurPreis}} {{ lesson.kurIsStdPreis ? 'pro Stunde' : 'pro Monat' }}</td>
+					<td>
+						{% if lesson.sonderPreis %}
+							{{ lesson.sonderPreis }} {{ lesson.khkIsStdPreis ? 'pro Stunde' : 'pro Monat' }}
+						{% endif %}
+						<button class='editItemButton editSonderPreis' eintrId="{{ lesson.eintrId }}" kurName="{{ lesson.kurName }}"></button>
+					</td>
+					<td>
+						{{ lesson.kurBeschreibung }}
+					</td>
+					<td>
+						{{ lesson.khkKomm }} <button class='editItemButton editBeschreibung' eintrId="{{ lesson.eintrId }}" kurName="{{ lesson.kurName }}"></button>
+					</td>
+					<td>
+						{{ lesson.kurMinAlter }}
+						{% if lesson.kurMinAlter < lesson.kurMaxAlter %}
+							bis {{ lesson.kurMaxAlter }}
+						{% endif %}
+					</td>
+					<td>
+						{{ lesson.kurMinKlasse }}
+						{% if lesson.kurMinKlasse < lesson.kurMaxKlasse %}
+							bis {{ lesson.kurMaxKlasse }}
+						{% endif %}
+					</td>
+					<td>
+						{{ lesson.von | date("d.m.Y") }}
+						<button class='updateKurDateButton' kurId="{{ lesson.kurId }}" kurName="{{ lesson.kurName }}" kurDateType="von" dateVal="{{ lesson.von | date("d.m.Y") }}" 
+						eintrId="{{ lesson.eintrId }}" ></button>
+					</td>
+					<td>
+						{{ lesson.bis | date("d.m.Y") }}
+						<button class="updateKurDateButton" kurId="{{ lesson.kurId }}" kurName="{{ lesson.kurName }}" kurDateType="bis" dateVal="{{ lesson.von | date("d.m.Y") }}"
+						eintrId="{{ lesson.eintrId }}" ></button>
+					</td>
+					<td>
+						<button class="kurEntfernenButton" eintrId="{{ lesson.eintrId }}" >Löschen</button>
+					</td>
+				</tr>
+				{% endfor %}
+			{% endif %}
+			</table>
+		</div>
+	</div>
+	
 <!-- Update Anrede -->
 	<div id="edit_anrede" class="modal">
 		<form id="edit_anrede_form" method="post" action="{{ requestUri }}">
@@ -412,7 +506,6 @@
 			<form id="addKursTable_Form" method="post" action="<?=$_SERVER['REQUEST_URI']?>">
 				<input type="hidden" id="addKursTable_Form_kndId" name="kndId" value=""/>
 				<input type="hidden" id="addKursTable_Form_kurId" name="kurId" value=""/>
-				<input type="hidden" id="addKursTable_Form_seasonId" name="seasonId" value=""/>
 				von <input type="text" id="addKursTable_Form_von" name="von" class="zebra_datepicker_dmy" />
 				bis <input type="text" id="addKursTable_Form_von" name="bis" class="zebra_datepicker_dmy" />
 				<div>
@@ -430,6 +523,84 @@
 				<div class="buttonsOkCancelDiv">
 					<input class="submit" id="addKursTable_Form_ButtonSpeichern" type='submit' value='' />
 					<button class="cancel" id="addKursTable_Form_ButtonAbbrechen" ></button>
+				</div>
+			</form>
+		</div>
+	</div>
+<!-- change Kurs -->
+	<div id="changeKurs_Table">
+		<input type="hidden" id="changeKurs_oldKurId" />
+		<input type="hidden" id="changeKurs_eintrId" />
+		{{ changeCourseSelector | raw }}
+		<div class="buttonsOkCancelDiv">
+			<button class="submit" id="changeKurs_Table_ButtonSpeichern" ></button>
+			<button class="cancel" id="changeKurs_Table_ButtonAbbrechen" ></button>
+		</div>
+	</div>
+	<div id="changeKursConfirm_Table" style="z-index:150;">
+		<table>
+			<tr>
+				<td><span id="changeKursConfirm_Table_oldKurName"></span></td>
+				<td>--></td>
+				<td><span id="changeKursConfirm_Table_newKurName"></span></td>
+			</tr>
+		</table>
+		<form id="changeKursConfirm_Form">
+			<input type="hidden" id="changeKursConfirm_Form_kndId" name="kndId"/>
+			<input type="hidden" id="changeKursConfirm_Form_eintrId" name="eintrId"/>
+			<input type="hidden" id="changeKursConfirm_Form_oldKurId" name="oldKurId"/>
+			<input type="hidden" id="changeKursConfirm_Form_newKurId" name="newKurId"/>
+			<div class="buttonsOkCancelDiv">
+				<input class="submit" id="changeKursConfirm_Form_ButtonSpeichern" type='submit' value='' />
+				<button class="cancel" id="changeKursConfirm_Form_ButtonAbbrechen" ></button>
+			</div>
+		</form>
+	</div>
+<!-- Update Sonderpreis -->
+	<div id="editSonderPreis_Table">
+		<div id="editSonderPreis_Titel"><button id="deleteSonderPreisButton" class="deleteButton" ></button>Sonderpreis bearbeiten. </div>
+		<div>
+			<form id="editSonderPreis_Form" method="post" action="<?=$_SERVER['REQUEST_URI']?>">
+				<input type="hidden" id="editSonderPreis_eintrId" name="eintrId" value=""/>
+				<div>
+					SonderPreis: <input type="text" id="editSonderPreis_sonderPreis" name="sonderPreis" size="5"/>
+					<select id="editSonderPreis_khkIsStdPreis" name="khkIsStdPreis" >
+						<option value="proMonat">pro Monat</option>
+						<option value="proStunde">pro Stunde</option>
+					</select>
+				</div>
+				<div class="buttonsOkCancelDiv">
+					<input class="submit" id="editSonderPreis_Form_ButtonSpeichern" type='submit' value=""/>
+					<button class="cancel" id="editSonderPreis_Form_ButtonAbbrechen" ></button>
+				</div>
+			</form>
+		</div>
+	</div>
+<!-- Update KundenKurs-Kommentar -->
+	<div id="editKundenKursKomm_Table">
+		<div id="editKundenKursKomm_Titel"></div>
+		<form id="editKundenKursKomm_Form" method="post" action="<?=$_SERVER['REQUEST_URI']?>">
+			<input type="hidden" id="editKundenKursKomm_eintrId" name="eintrId"/>
+			<div><textarea id="KursBeschreibung_Form_Textarea" name="khkKomm"></textarea></div>
+			<div class="buttonsOkCancelDiv">
+				<input class="submit" id="editKundenKursKomm_Form_ButtonSpeichern" type='submit' value="" />
+				<button class="cancel" id="editKundenKursKomm_Form_ButtonAbbrechen" ></button>
+			</div>
+		</form>
+	</div>
+<!-- Update Kurs von/bis -->
+	<div id="UpdateKur_Table">
+		<div id="UpdateKur_Title"></div>
+		<div id="UpdateKur_FormDiv">
+			<form id="UpdateKur_Form" method="post" action="<?=BASIS_URL?>/admin/ajaxUpdateKurToKunde">
+				<input type="hidden" id="UpdateKur_kndId" name="kndId" value=""/>
+				<input type="hidden" id="UpdateKur_eintrId" name="eintrId" value=""/>
+				<input type="hidden" id="UpdateKur_kurId" name="kurId" value=""/>
+				<input type="hidden" id="UpdateKur_TypeVal" name="typeVal" value=""/>
+				<input type="text" id="UpdateKur_Val" name="dateVal" value="" class="zebra_datepicker_dmy"/>
+				<div class="buttonsOkCancelDiv">
+					<input class="submit" id="UpdateKur_ButtonSpeichern" type='submit' value='' />
+					<button class="cancel" id="UpdateKur_ButtonAbbrechen" class="cancel"></button>
 				</div>
 			</form>
 		</div>
@@ -539,12 +710,10 @@
 	{
 		var kurId = $('#k_kurId').val();
 		var text = $('#k_kurId option:selected').text();
-		var seasonId = $('#k_kurId option:selected').attr('season_id');
-alert(seasonId);
+
 		$('#addKursTable_KurName').html(text);
 		$('#addKursTable_Form_kndId').val(kndId);
 		$('#addKursTable_Form_kurId').val(kurId);
-		$('#addKursTable_Form_seasonId').val(seasonId);
 
 		$('#addKursTable').slideDown('slow');
 	}
@@ -581,6 +750,144 @@ alert(seasonId);
 		});
 	});
 
+//change Kurs
+			
+	$('.changeKursButton').click(function(){
+		kurId = $(this).attr('kurid');
+		eintrId = $(this).attr('eintrid');
+		$('#changeKurs_oldKurId').val(kurId);
+		$('#changeKurs_eintrId').val(eintrId);
+		$('#changeKurs_Table').slideDown('slow');
+	});
+			
+			$('#changeKurs_Table_ButtonAbbrechen').click(function(e){
+				e.preventDefault();
+				$('#changeKurs_Table').slideUp('slow');
+			});
+			
+			$('#changeKurs_Table_ButtonSpeichern').click(function(e){
+				eintrId = $('#changeKurs_eintrId').val();
+				oldKurId = $('#changeKurs_oldKurId').val();
+				newKurId = $('#changeKurs_newKurId option:selected').val();
+				
+				//<input type="hidden" id="changeKursConfirm_Form_kndId" name="kndId"/>
+				//<input type="hidden" id="changeKursConfirm_Form_oldKurId" name="oldKurId"/>
+				
+				$('#changeKursConfirm_Form_oldKurId').val(oldKurId);
+				$('#changeKursConfirm_Form_eintrId').val(eintrId);
+				$('#changeKursConfirm_Form_newKurId').val(newKurId);
+				$('#changeKursConfirm_Form_kndId').val(kndId);
+				
+				$.ajax({
+					url:'{{ constant('BASIS_URL') }}/admin/ajaxChangeKursInfo',
+					type:'POST',
+					data:{ oldKurId: oldKurId, newKurId: newKurId, eintrId:eintrId },
+					dataType:'JSON',
+					success:function(response){
+						if(response.status == 'ok')
+						{
+							//kur = JSON.parse(response.message);
+							$('#changeKursConfirm_Table_oldKurName').html(response.message.oldKur);
+							$('#changeKursConfirm_Table_newKurName').html(response.message.newKur);
+							
+							//alert(response.message.oldKur);
+						}
+						else
+						{
+							alert(response.message);
+						}
+						meldung.html(response.message);//response.dataPost
+					},
+					error:function(errorThrown){
+						meldung.html(errorThrown);
+					}
+				});
+				
+				$('#changeKursConfirm_Table').slideDown('slow');
+			});
+			
+			$('#changeKursConfirm_Form_ButtonAbbrechen').click(function(e){
+				e.preventDefault();
+				$('#changeKursConfirm_Table').slideUp('slow');
+			});
+			
+			$('#changeKursConfirm_Form').submit(function(e){
+				e.preventDefault();
+				var postData = $(this).serializeArray();
+				
+				$.ajax({
+					url:'{{ constant('BASIS_URL') }}/admin/ajaxChangeKursReallyDo',
+					type:'POST',
+					data:postData,
+					dataType:'JSON',
+					success:function(response){
+						if(response.status == 'ok')
+						{
+							alert(response.message);
+							window.location.reload(true);
+						}
+						else
+						{
+							alert(response.message);
+						}
+						meldung.html(response.message);
+					},
+					error:function(errorThrown){
+						meldung.html(errorThrown);
+					}
+				});
+			});
+			
+		//update Kurs
+			
+			$('.updateKurDateButton').click(function()
+			{
+				kurDateType = $(this).attr('kurDateType').trim();
+				kurId = $(this).attr('kurId');
+				date = $(this).attr('dateVal').trim();
+				eintrId = $(this).attr('eintrId');
+				
+				$('#UpdateKur_eintrId').val(eintrId);
+				$('#UpdateKur_kndId').val(kndId);
+				$('#UpdateKur_kurId').val(kurId);
+				$('#UpdateKur_TypeVal').val(kurDateType);
+				$('#UpdateKur_Val').val(date);
+				$('#UpdateKur_Title').text(kurDateType);
+				$('#UpdateKur_Table').slideDown('slow');
+			});
+			
+			$('#UpdateKur_Form').submit(function(e){
+				e.preventDefault();
+				var postData = $(this).serializeArray();
+				
+				$.ajax({
+					url:'{{ constant('BASIS_URL') }}/admin/ajaxUpdateKursToKunde',
+					type:'POST',
+					data:postData,
+					dataType:'JSON',
+					success:function(response){
+						if(typeof response.fehler === 'undefined')
+						{
+							window.location.reload(true);
+						}
+						else
+						{
+							alert(response.fehler);
+						}
+					},
+					error:function(errorThrown){
+						meldung.html(errorThrown);
+					}
+				});
+				
+				$('#UpdateKur_Table').slideUp('slow');
+			});
+			
+			$('#UpdateKur_ButtonAbbrechen').click(function(e){
+				e.preventDefault();
+				$('#UpdateKur_Table').slideUp('slow');
+			});
+			
 		//Bezahlungsformular
 			
 			$('.kurBezahlenButton').click(function()
@@ -628,7 +935,150 @@ alert(seasonId);
 				
 				//$('#Zahlungsformular').slideUp('slow');
 			});
-
+		//Kurs entfernen
+			$('.kurEntfernenButton').click(function()
+			{
+				eintrId = $(this).attr('eintrId');
+				
+				if (confirm('Wollen Sie wirklich diesen Kurs von dem Kunde entfernen?')) {
+					$.ajax({
+						url:'{{ constant('BASIS_URL') }}/admin/ajaxKursVomKundeEntfernen',
+						type:'POST',
+						data:{eintrId:eintrId},
+						dataType:'JSON',
+						success:function(response){
+							if(typeof response.fehler === 'undefined')
+							{
+								alert(response.info);
+								window.location.reload(true);
+							}
+							else
+							{
+								alert(response.fehler);
+							}
+						},
+						error:function(errorThrown){
+							meldung.html(errorThrown);
+						}
+					});
+				} else {
+					// Do nothing!
+				}
+			});
+//edit SonderPreis deleteSonderPreisButton
+			$('.editSonderPreis').click(function(){
+				eId = $(this).attr('eintrId');
+				$('#editSonderPreis_Titel').prepend($(this).attr('kurName')+': ');
+				$('#editSonderPreis_eintrId').val(eId);
+				
+			//prepare deleteButton
+				$('#deleteSonderPreisButton').attr({eintrId:eId});
+				
+				$('#editSonderPreis_Table').slideDown(1000);
+			});
+			
+			$('#editSonderPreis_Form_ButtonAbbrechen').click(function(e){
+				e.preventDefault();
+				$('#editSonderPreis_Table').slideUp('slow');
+			});
+			
+			$('#editSonderPreis_Form').submit(function(e){
+				e.preventDefault();
+				var postData = $(this).serializeArray();
+				
+				$.ajax({
+					url:'{{ constant('BASIS_URL') }}/admin/ajaxEditSonderPreis',
+					type:'POST',
+					data:postData,
+					dataType:'JSON',
+					success:function(response){
+						if(response.status == 'ok')
+						{
+							alert(response.status);
+							window.location.reload(true);
+						}
+						else
+						{
+							alert(response.status);
+						}
+						meldung.html(response.info);//response.dataPost
+					},
+					error:function(errorThrown){
+						meldung.html(errorThrown);
+					}
+				});
+			});
+			
+			$('#deleteSonderPreisButton').click(function(){
+				eId = $(this).attr('eintrId');
+				
+				$.ajax({
+					url:'{{ constant('BASIS_URL') }}/admin/ajaxDeleteSonderPreis',
+					type:'POST',
+					data:{eintrId:eId},
+					dataType:'JSON',
+					success:function(response){
+						if(response.status == 'ok')
+						{
+							alert(response.status);
+							window.location.reload(true);
+						}
+						else
+						{
+							alert(response.status);
+						}
+						meldung.html(response.info);//response.dataPost
+					},
+					error:function(errorThrown){
+						meldung.html(errorThrown);
+					}
+				});
+			});
+			
+	//edit Beschreibung
+			$('.editBeschreibung').click(function(){
+				$('#KursBeschreibung_Form_Textarea').val($(this).parent().text());
+				
+				eId = $(this).attr('eintrId');
+				$('#editKundenKursKomm_eintrId').val(eId);
+				
+				$('#editKundenKursKomm_Titel').text("Kommentar: "+$(this).attr('kurName'));
+				
+				$('#editKundenKursKomm_Table').slideDown(1000);
+			});
+			
+			$('#editKundenKursKomm_Form_ButtonAbbrechen').click(function(e){
+				e.preventDefault();
+				$('#editKundenKursKomm_Table').slideUp(1000);
+			});
+			
+			//admin/ajaxUpdateKhkKomm
+			$('#editKundenKursKomm_Form').submit(function(e){
+				e.preventDefault();
+				var postData = $(this).serializeArray();
+				
+				$.ajax({
+					url:'{{ constant('BASIS_URL') }}/admin/ajaxUpdateKhkKomm',
+					type:'POST',
+					data:postData,
+					dataType:'JSON',
+					success:function(response){
+						if(response.status == 'ok')
+						{
+							alert(response.status);
+							window.location.reload(true);
+						}
+						else
+						{
+							alert(response.status);
+						}
+						meldung.html(response.info);//response.dataPost
+					},
+					error:function(errorThrown){
+						meldung.html(errorThrown);
+					}
+				});
+			});
 //Kunde Löschen
 		$('#kundeLoeschenBtn').click(function(){
 			if(confirm('Wollen Sie wirklich diesen Kunden aus der Datenbank entfernen?'))

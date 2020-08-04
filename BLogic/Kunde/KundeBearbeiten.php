@@ -10,6 +10,9 @@ use Kurse\KursSelector as KurSel;
 require_once BASIS_DIR.'/BLogic/Kunde/CommentToolsHtml.php';
 use Kunde\CommentToolsHtml as CmntTlsHtml;
 
+require_once BASIS_DIR.'/BLogic/Kunde/ClientsCourses.php';
+use Kunde\ClientsCourses as ClientsCourses;
+
 //twig
 require_once BASIS_DIR . '/Vendor/autoload.php';
 
@@ -130,8 +133,8 @@ class KundeBearbeiten
 			return FALSE;
 		}
 		//set Geburtsdatum to string format
-		$res['geburtsdatum'] = Fltr::sqlDateToStr($res['geburtsdatum']);
-		$res['printZahlungsArt'] = Fltr::printZahlungsArt($res['isCash']);
+		$res['geburtsdatum']	= Fltr::sqlDateToStr($res['geburtsdatum']);
+		$res['printZahlungsArt']= Fltr::printZahlungsArt($res['isCash']);
 		
 		$vars['pageName']	= "Kunde bearbeiten";
 		$vars['client']		= $res;
@@ -145,6 +148,8 @@ class KundeBearbeiten
 		$vars['comments']				= CmntTlsHtml::showComments($kndId);
 		$vars['commentsJs']				= CmntTlsHtml::newCommentsJsFnct($kndId);
 		$vars['changeCourseSelector']	= KurSel::getKursSelector("newKurId", "changeKurs_newKurId",  "10", "/admin/ajaxKursSelectorUpdate", 1);
+		
+		$vars['clientsCourseModule']	= ClientsCourses::getCourseModule($kndId, 1);
 		
 		$options = []; #array('cache' => TWIG_CACHE_DIR);
 		$loader = new \Twig_Loader_Filesystem(TWIG_TEMPLATE_DIR);

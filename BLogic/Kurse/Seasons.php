@@ -5,6 +5,7 @@ require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
 //twig
 require_once BASIS_DIR . '/Vendor/autoload.php';
+require_once BASIS_DIR.'/MVC/DBFactory.php';
 
 class Seasons 
 {
@@ -21,7 +22,7 @@ class Seasons
 	
 	public function searchDates()
 	{
-		require_once BASIS_DIR.'/MVC/DBFactory.php';
+		
 		$dbh = \MVC\DBFactory::getDBH();
 		if(!$dbh)
 		{
@@ -138,26 +139,45 @@ class Seasons
 		}
 		else
 		{
-			require_once BASIS_DIR.'/MVC/DBFactory.php';
 			$dbh     = \MVC\DBFactory::getDBH();
 			$qReset  = "UPDATE seasons SET is_active = '0'";
 			$qUpdate = "UPDATE seasons SET is_active = '1'  WHERE season_id = :season_id";
 			
 			try
-				{
-					$dbh->query($qReset);
-					
-					$sth = $dbh->prepare($qUpdate);
-					$sth->execute([':season_id' => $seasonId]);
-					$response['status']  = "ok";
-				}
-				catch (Exception $ex) {
-					print $ex;
-					return "Fehler bei SQL-Queries.";
-				}
+			{
+				$dbh->query($qReset);
+
+				$sth = $dbh->prepare($qUpdate);
+				$sth->execute([':season_id' => $seasonId]);
+				$response['status']  = "ok";
+			}
+			catch (Exception $ex) {
+				print $ex;
+				return "Fehler bei SQL-Queries.";
+			}
 		}
 		
 		header("Content-type: application/json");
 		exit(json_encode($response));
+	}
+	
+	public static function getActiveSeason()
+	{
+		$q   = "SELECT * FROM seasons WHERE is_active = '1'";
+		$dbh = \MVC\DBFactory::getDBH();
+		try
+		{
+			$dbh->query($q);
+
+			$sth = $dbh->prepare($q);
+			$sth->execute();
+			$rs = $sth->fetch(PDO::FETCH_ASSOC);
+			
+			return $rs;
+		}
+		catch (Exception $ex) {
+			print $ex;
+			return "Fehler bei SQL-Queries.";
+		}
 	}
 }

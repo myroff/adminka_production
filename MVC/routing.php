@@ -24,13 +24,15 @@ function getRoutingList()
 		'/admin/ajaxSaveRechnung' => 'Kunde:Bezahlen:ajaxSaveRechnung',
 		'/admin/testRechnung2Pdf' => 'Rechnung:Rechnung2Pdf:saveRechnungToPdf',
 //Kunde
-		'/admin/ajaxSaveNewKunde' => 'Kunde:neueKunde:saveNewKunde',
-		'/admin/ajaxDeleteKunde' => 'Kunde:KundeLoeschen:ajaxDeleteKunde',
-		'/admin/ajaxBankDatesUpdate' => 'Kunde:BankDatenUpdate:ajaxUpdate',
-		'/admin/ajaxKursBezahlen' => 'Kunde:KursBezahlen:bezahlen',
-		'/admin/ajaxKursVomKundeEntfernen' => 'Kunde:KursEntfernen:ajaxEntfernen',
-		'/admin/ajaxGetEmpfohlenGadget' => 'Kunde:Empfohlen:getGadget',
-		'/admin/ajaxGetEmpfohlenGadgetUpdate' => 'Kunde:Empfohlen:updateTable',
+		'/admin/ajaxSaveNewKunde'				=> 'Kunde:neueKunde:saveNewKunde',
+		'/admin/ajaxDeleteKunde'				=> 'Kunde:KundeLoeschen:ajaxDeleteKunde',
+		'/admin/ajaxBankDatesUpdate'			=> 'Kunde:BankDatenUpdate:ajaxUpdate',
+		'/admin/ajaxKursBezahlen'				=> 'Kunde:KursBezahlen:bezahlen',
+		'/admin/ajaxKursVomKundeEntfernen'		=> 'Kunde:KursEntfernen:ajaxEntfernen',
+		'/admin/ajaxGetEmpfohlenGadget'			=> 'Kunde:Empfohlen:getGadget',
+		'/admin/ajaxGetEmpfohlenGadgetUpdate'	=> 'Kunde:Empfohlen:updateTable',
+		'/admin/ajaxGetClientsCoursesUpdate'	=> 'Kunde:ClientsCourses:updateTable',
+		
 		'/login/' => 'Login:LoginController:loginForm',
 		'/logout/' => 'Login:LoginController:logout',
 		'/admin/mitarbeiter' => 'Mitarbeiter:Mitarbeiter:showList',
@@ -69,7 +71,7 @@ function getRoutingList()
 		'/admin/addNewSeason'			=> 'Kurse:Seasons:addNewSeason',
 		'/admin/setActiveSeason'		=> 'Kurse:Seasons:setActiveSeason',
 //change Kurs
-		'/admin/ajaxChangeKursInfo' => 'Kurse:ChangeKurs:getInfoJson',
+		'/admin/ajaxChangeKursInfo'		=> 'Kurse:ChangeKurs:getInfoJson',
 		'/admin/ajaxChangeKursReallyDo' => 'Kurse:ChangeKurs:changeKursJson',
 //Stundenplan
 		'/admin/stundenplan'			=> 'Stundenplan:Stundenplan:showStundeplan',

@@ -3,11 +3,16 @@ namespace Statistik;
 use PDO as PDO;
 require_once BASIS_DIR.'/MVC/DBFactory.php';
 use MVC\DBFactory as DBFactory;
+require_once BASIS_DIR.'/Tools/TmplTools.php';
+use Tools\TmplTools as TmplTls;
 
 class Statistik {
 	public function getStat()
 	{
-		$kres = $this->getKundenDaten();
+		$sArr = array();
+		$sArr[':season']    = empty($_GET['s_season'])  ? '' : $_GET['s_season'];
+		
+		$kres = $this->getKundenDaten($sArr);
 		$pres = $this->getPopulationStat();
 		$ares = $this->getAgeStat();
 		
@@ -22,6 +27,12 @@ class Statistik {
 		{
 			return FALSE;
 		}
+		$selectSeason = "";
+		
+		if($sArr[':season'])
+		{
+			
+		}
 		
 		$q = "SELECT 'countKunde' as key1, count(t.kndId) as value1
 FROM 
@@ -34,7 +45,19 @@ UNION
 (SELECT 'countFrauen', count(*) as value1 FROM kunden WHERE anrede LIKE 'Frau')
 UNION 
 (SELECT 'countAlle', count(*) as value1 FROM kunden)";
-		
+/*
+		$q = "SELECT 'countKunde' as key1, count(t.kndId) as value1
+FROM 
+(SELECT kndId FROM kundehatkurse WHERE EXTRACT(YEAR_MONTH FROM NOW()) BETWEEN EXTRACT(YEAR_MONTH FROM von) AND EXTRACT(YEAR_MONTH FROM bis) GROUP BY kndId ) as t
+UNION 
+(SELECT 'countKurs', count(eintrId) as value1 FROM kundehatkurse WHERE NOW() BETWEEN von AND bis)
+UNION 
+(SELECT 'countHerren', count(*) as value1 FROM kunden WHERE anrede LIKE 'Herr')
+UNION 
+(SELECT 'countFrauen', count(*) as value1 FROM kunden WHERE anrede LIKE 'Frau')
+UNION 
+(SELECT 'countAlle', count(*) as value1 FROM kunden)";
+*/
 		$res = array();
 		
 		try

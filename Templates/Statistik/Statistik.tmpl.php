@@ -24,6 +24,15 @@
 		<!-- START OF CONTENT -->
 		<div id="mainContent">
 			
+			<table>
+				<tr>
+					<td>Saison</td>
+				</tr>
+				<tr>
+					<td><?php echo TmplTls::getSeasonsSelector("s_season", "s_season", $sArr[':season'], "Season", 0); ?></td>
+				</tr>
+			</table>
+			
 			<h3>Teilnehmer-Statistik</h3>
 			<div id="tables">
 				<table >

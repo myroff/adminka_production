@@ -24,8 +24,19 @@ class TmplTools {
 		}
 		
 		if($meterializeOn){
-			$jqSelector = $selectorId ? "#$selectorId" : "select";
-			$content .= '<script>$(document).ready(function(){$("'.$jqSelector.'").formSelect();});</script>';
+			#$jqSelector = $selectorId ? "#$selectorId" : "select";
+			$jsSelector = $selectorId ? "var elems = document.getElementById('$selectorId');" : "var elems = document.querySelectorAll('select');";
+			#$content .= '<script>$(document).ready(function(){$("'.$jqSelector.'").formSelect();});</script>';
+			$content .= "<script>document.addEventListener('DOMContentLoaded', function() {
+	$jsSelector
+	if(typeof(M) !== 'undefined'){
+		var instances = M.FormSelect.init(elems);
+	}
+	else {
+		elems.classList.add('browser-default');
+	}
+  });
+  </script>";
 		}
 		
 		return $content;
