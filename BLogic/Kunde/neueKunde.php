@@ -19,7 +19,8 @@ class neueKunde
 		$bezahlMethoden = array("bar" => "Bar", 
 			"lastschrift" => "Lastschrift", 
 			"bamf" => "BAMF", "zuzahler" => "Zuzahler",
-			"selbstzahler" => "Selbstzahler");
+			"selbstzahler" => "Selbstzahler", "ueberweisung" => "Überweisung"
+			);
 		
 		$anreden = ["Frau" => "Frau", "Herr" => "Herr"];
 		
@@ -368,8 +369,11 @@ class neueKunde
 					case "selbstzahler":
 						$dataBezahlung[':isCash'] = 4;
 						break;
+					case "ueberweisung":
+						$dataBezahlung[':isCash'] = 5;
+						break;
 					default:
-						$fehler .= "Zahlungsart ist falsch eingegeben. Erlaubt sind nur 'bar', 'lastschrift', 'BAMF', 'Zuzahler' oder 'Selbstzahler'.<br>";
+						$fehler .= "Zahlungsart ist falsch eingegeben. Erlaubt sind nur 'bar', 'lastschrift', 'BAMF', 'Überweisung', Zuzahler' oder 'Selbstzahler'.<br>";
 						$fehlerInput[] = 'zahlenMit';
 						break;
 				}
