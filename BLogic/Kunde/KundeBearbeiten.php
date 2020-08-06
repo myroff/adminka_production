@@ -106,7 +106,7 @@ class KundeBearbeiten
 				." LEFT JOIN mitarbeiter as m ON k.erstelltVom = m.mtId"
 				." LEFT JOIN kunden as empf ON empf.kndId=k.empfohlenId"
 				." WHERE k.kndId=:kndId";
-		
+		/*
 		$qu = "SELECT khk.*, k.*, l.vorname, l.name,"
 					." group_concat('{\"wochentag\":\"',st.wochentag,'\",\"time\":\"', TIME_FORMAT(st.anfang, '%H:%i'),' - ', TIME_FORMAT(st.ende, '%H:%i'),'\"}' SEPARATOR',') as termin"
 				." FROM kundehatkurse as khk LEFT JOIN kurse as k USING(kurId)"
@@ -115,7 +115,7 @@ class KundeBearbeiten
 				." WHERE khk.kndId=:kndId"
 				." GROUP BY khk.eintrId "
 				." ORDER By khk.eintrId DESC";
-		
+		*/
 		$res = array();
 		$ures = array();
 		
@@ -125,9 +125,9 @@ class KundeBearbeiten
 			$sth->execute(array(":kndId" => $kndId));
 			$res = $sth->fetch(PDO::FETCH_ASSOC, 1);
 			
-			$sth = $dbh->prepare($qu);
-			$sth->execute(array(":kndId" => $kndId));
-			$ures = $sth->fetchAll(PDO::FETCH_ASSOC);
+			#$sth = $dbh->prepare($qu);
+			#$sth->execute(array(":kndId" => $kndId));
+			#$ures = $sth->fetchAll(PDO::FETCH_ASSOC);
 		} catch (Exception $ex) {
 			print $ex;
 			return FALSE;
@@ -138,7 +138,7 @@ class KundeBearbeiten
 		
 		$vars['pageName']	= "Kunde bearbeiten";
 		$vars['client']		= $res;
-		$vars['lessons']	= $ures;
+		#$vars['lessons']	= $ures;
 		$vars['meldung']	= $meldung;
 		$vars['requestUri']	= $_SERVER['REQUEST_URI'];
 		

@@ -262,6 +262,9 @@ class Filter {
 			case "4":
 				$zArt = "Selbstzahler";
 				break;
+			case "5":
+				$zArt = "Überweisung";
+				break;
 			default:
 				$zArt .= "Zahlungsart ist nicht gefunden.";
 				break;

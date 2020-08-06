@@ -15,6 +15,7 @@ class Kunde
 		2 => "bamf.002.jpeg",
 		3 => "euro_cash.jpg",
 		4 => "euro_cash.jpg",
+		5 => "ueberweisung.logo.png",
 		);
 	
 	private function filterPostData()
@@ -36,10 +37,11 @@ class Kunde
 	public function showList()
 	{
 		$sArr = $this->filterPostData();
-		#die(TmplTls::getKursSelectorById("s_kurId", "s_kurId", $sArr[':kurId']));
+		
+		$vars['clients']	= $this->searchDates($sArr);
+		
 		$vars['pageName']	= "Kundenliste";
 		$vars['sArr']		= $sArr;
-		$vars['clients']	= $this->searchDates($sArr);
 		$vars['s_kurId']	= TmplTls::getKursSelectorById("s_kurId", "s_kurId", $sArr[':kurId'], "Kurse", 1);
 		$vars['s_lehrId']	= TmplTls::getLehrerSelector("s_lehrId", "s_lehrId", $sArr[':lehrId'], "Lehrer", 1);
 		$vars['wochentag']	= TmplTls::getWeekdaySelector("wochentag", "wochentag", $sArr[':wochentag'], "Tag", 1);
@@ -128,10 +130,14 @@ class Kunde
 		
 		if(isset($searchArr[':abgemeldet']))//showIntegra = "i"
 		{
-			
 			unset($searchArr[':abgemeldet']);
 		}else{
 			$where .= " NOW() BETWEEN kndKurse.von AND kndKurse.bis AND";
+		}
+		
+		if(isset($searchArr[':season']))
+		{
+			$where .= " kndKurse.season_id=:season AND";
 		}
 		
 		$where = substr($where, 0, -4);
@@ -146,7 +152,7 @@ class Kunde
 "khk.kndId as kndIdInKhk,k.*, z.isCash, TIMESTAMPDIFF(YEAR,k.geburtsdatum,CURDATE()) as 'alter',
 	GROUP_CONCAT('{\"name\":\"',l.name, '\",\"vorname\":\"',l.vorname, '\",\"kurName\":\"', kr.KurName,'\",\"von\":\"',kndKurse.von,'\",\"bis\":\"',kndKurse.bis,'\",\"termin\":[', st.termin, ']}' SEPARATOR ',') as kurse";
 		}
-		/*
+		
 		$q = 
 "SELECT ".$select."
 FROM kunden as k 
@@ -156,33 +162,10 @@ LEFT JOIN lehrer as l USING(lehrId)
 LEFT JOIN zahlungsdaten as z USING(kndId)
 LEFT JOIN
 (
-	SELECT khk.kndId, khk.von, khk.bis
-	FROM kundehatkurse as khk
-	WHERE EXTRACT(YEAR_MONTH FROM NOW()) BETWEEN EXTRACT(YEAR_MONTH FROM khk.von) AND EXTRACT(YEAR_MONTH FROM khk.bis)
-	GROUP BY khk.kndId
-) as khk USING (kndId)
-LEFT JOIN
-(
-	SELECT kurId, wochentag, anfang, ende, group_concat('{\"wochentag\":\"',wochentag,'\",\"time\":\"', TIME_FORMAT(anfang, '%H:%i'),' - ', TIME_FORMAT(ende, '%H:%i'),'\"}' SEPARATOR',') as termin
-	FROM stundenplan
-	GROUP BY kurId
-)
-as st USING (kurId)
-";
-		*/
-				$q = 
-"SELECT ".$select."
-FROM kunden as k 
-LEFT JOIN kundehatkurse as kndKurse USING(kndId) 
-LEFT JOIN kurse as kr USING(kurId)
-LEFT JOIN lehrer as l USING(lehrId)
-LEFT JOIN zahlungsdaten as z USING(kndId)
-LEFT JOIN
-(
-	SELECT khk.kndId, khk.von, khk.bis
-	FROM kundehatkurse as khk
-	WHERE EXTRACT(YEAR_MONTH FROM NOW()) BETWEEN EXTRACT(YEAR_MONTH FROM khk.von) AND EXTRACT(YEAR_MONTH FROM khk.bis)
-	GROUP BY khk.kndId
+	SELECT kndId, season_id, von, bis
+	FROM kundehatkurse
+	WHERE EXTRACT(YEAR_MONTH FROM NOW()) BETWEEN EXTRACT(YEAR_MONTH FROM von) AND EXTRACT(YEAR_MONTH FROM bis)
+	GROUP BY kndId
 ) as khk USING (kndId)
 LEFT JOIN
 (

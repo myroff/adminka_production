@@ -66,6 +66,9 @@ class BankDatenUpdate {
 					case "selbstzahler":
 						$varVal = 4;
 						break;
+					case "ueberweisung":
+						$varVal = 5;
+						break;
 					default:
 						$fehler .= "Zahlungsart ist falsch eingegeben. Erlaubt sind nur 'bar' oder 'lastschrift'.<br>";
 						break;

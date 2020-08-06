@@ -121,7 +121,7 @@ class Stundenplan {
 		$curSeason = "s.is_active = 1";
 		if(!empty($searchArr[':season_id']))
 		{
-			$curSeason = "season_id = :season_id";
+			$curSeason = "stpl.season_id = :season_id";
 		}
 		
 		$having = substr($having, 0, -4);
@@ -131,7 +131,7 @@ class Stundenplan {
 				. " TIME_FORMAT(anfang, '%H:%i') as anfang, TIME_FORMAT(ende, '%H:%i') as ende, wochentag, raum,"
 				. " k.*, l.name, l.vorname, l.lehrId, count(khk.kndId) as countKnd, k.maxKnd, stpl.stnPlId"
 				. " FROM stundenplan as stpl"
-				. " LEFT JOIN seasons as s USING(season_id)"
+				. " LEFT JOIN seasons as s ON s.season_id=stpl.season_id"
 				. " LEFT JOIN kurse as k USING(kurId)"
 				. " LEFT JOIN lehrer as l USING(lehrId)"
 				. " LEFT JOIN (SELECT * FROM kundehatkurse WHERE NOW() <= bis) as khk USING(kurId)"//BETWEEN von AND
