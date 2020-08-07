@@ -5,14 +5,15 @@
 <div style="float:left;width:200px;">
 	<table class="quitTable">
 		<tr>
-			<th>Kurs</th><th>Betrag</th>
+			<th>Schuljahr</th><th>Kurs</th><th>Betrag</th>
 		</tr>
 <?php
 foreach($res as $r)
 {
 	echo '<tr>';
+	echo '<td>' . $r['season_name'] . '</td>';
 	echo '<td>' . $r['kurName'] . '</td>';
-	echo '<td>' . $kurId[$r['kurId']] . ' €</td>';
+	echo '<td>' . $kurId[$r['eintrId']] . ' €</td>';
 	echo '</tr>';
 }
 ?>

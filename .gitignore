@@ -6,3 +6,5 @@
 /TemplatesTwigCache/*
 /netbeans/nbproject/private/
 *.csv
+*.dat
+/BLogic/mpdf/ttfontdata/

@@ -17,12 +17,12 @@ function getRoutingList()
 		'/admin/ajaxGetBezahlungsformular'	=> 'Kunde:Bezahlen:ajaxGetFormular',
 		'/admin/geburtstagsListe'			=> 'Kunde:ClientsBirthday:showList',
 //Rechnung
-		'/admin/ajaxConfirmRechnung' => 'Kunde:Bezahlen:ajaxConfirmRechnung',
-		'/admin/ajaxShowRechnung' => 'Rechnung:Rechnung:ajaxShowRechnung',
-		'/admin/ajaxEditRechnungsKommentar' => 'Rechnung:Rechnung:ajaxEditKomm',
-		'/admin/ajaxDeleteRechnung' => 'Rechnung:Rechnung:ajaxDeleteRechnung',
-		'/admin/ajaxSaveRechnung' => 'Kunde:Bezahlen:ajaxSaveRechnung',
-		'/admin/testRechnung2Pdf' => 'Rechnung:Rechnung2Pdf:saveRechnungToPdf',
+		'/admin/ajaxConfirmRechnung'		=> 'Kunde:Bezahlen:ajaxConfirmRechnung',
+		'/admin/ajaxShowRechnung'			=> 'Rechnung:Rechnung:ajaxShowRechnung',
+		'/admin/ajaxEditRechnungsKommentar'	=> 'Rechnung:Rechnung:ajaxEditKomm',
+		'/admin/ajaxDeleteRechnung'			=> 'Rechnung:Rechnung:ajaxDeleteRechnung',
+		'/admin/ajaxSaveRechnung'			=> 'Kunde:Bezahlen:ajaxSaveRechnung',
+		'/admin/testRechnung2Pdf'			=> 'Rechnung:Rechnung2Pdf:saveRechnungToPdf',
 //Kunde
 		'/admin/ajaxSaveNewKunde'				=> 'Kunde:neueKunde:saveNewKunde',
 		'/admin/ajaxDeleteKunde'				=> 'Kunde:KundeLoeschen:ajaxDeleteKunde',

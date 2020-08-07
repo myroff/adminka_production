@@ -22,7 +22,7 @@ class Rechnung2Pdf {
 		$qrn = "SELECT r.*, k.kundenNummer, k.anrede, k.vorname, k.name, k.strasse, k.strNr, k.plz, k.stadt"
 			." FROM rechnungen as r LEFT JOIN kunden as k USING(kndId)"
 			." WHERE r.rnId=:rnId";
-		$qrd = "SELECT * FROM rechnungsdaten as r LEFT JOIN kurse as k USING(kurId) WHERE rnId=:rnId";
+		$qrd = "SELECT season.season_name, r.*, k.* FROM rechnungsdaten as r LEFT JOIN kurse as k USING(kurId) LEFT JOIN seasons as season USING(season_id) WHERE rnId=:rnId";
 		$qm = "SELECT anrede, vorname, name FROM mitarbeiter WHERE mtId=:mtId";
 		
 		$rn =array();
@@ -58,7 +58,7 @@ class Rechnung2Pdf {
 		
 //fileName: name.vorname.kundenNummer.[rechnungNummer][rechnungsMonat][erstellungsDatum]
 		$fileName = $rn['name'].".".$rn['vorname'].".".$rn['kundenNummer']
-				."[".$rn['rnId']."][".Fltr::sqlDateToMonatYear($rn['rnMonat'])."][".date("d.m.Y[H:i:s]", strtotime($rn['rnErstelltAm']) )."].pdf";
+				."[".$rn['rnId']."][".Fltr::sqlDateToMonatYear($rn['rnMonat'])."][".date("d.m.Y[H_i_s]", strtotime($rn['rnErstelltAm']) )."].pdf";
 		$PathFile = $pdfPath.$fileName;
 		$relativePath .= $fileName;
 		
@@ -66,6 +66,7 @@ class Rechnung2Pdf {
 		include_once BASIS_DIR .'/Templates/Formulare/Rechnung2Pdf.01.tmpl.php';
 		$html = ob_get_contents();
 		ob_end_clean();
+		
 /*
 string Output ([ string $filename , string $dest ])
 I: send the file inline to the browser. The plug-in is used if available. The name given by filename is used when one selects the "Save as" option on the link generating the PDF.

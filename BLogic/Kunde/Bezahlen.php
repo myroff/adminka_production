@@ -1,23 +1,33 @@
 <?php
 namespace Kunde;
 use PDO as PDO;
+require_once BASIS_DIR.'/MVC/DBFactory.php';
 require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
 require_once BASIS_DIR.'/Tools/User.php';
 use Tools\User as User;
 require_once BASIS_DIR.'/BLogic/Rechnung/Rechnung2Pdf.php';
 use Rechnung\Rechnung2Pdf as Rechnung2Pdf;
+require_once BASIS_DIR.'/BLogic/Kurse/Seasons.php';
+use Kurse\Seasons as Seasons;
 
 class Bezahlen {
 	public function showKundeById($kId)
 	{
-		require_once BASIS_DIR.'/MVC/DBFactory.php';
         $dbh = \MVC\DBFactory::getDBH();
         if(!$dbh)
         {
             echo "no Connection to DB";
             return FALSE;
         }
+		if(empty($_POST['s_season']))
+		{
+			$curSeason = Seasons::getActiveSeason()['season_id'];
+		}
+		else
+		{
+			$curSeason = (int)$_POST['s_season'];
+		}
 		
 		$q = "SELECT k.*, zd.*, GROUP_CONCAT(empf.vorname,' ', empf.name) as empfohlenDurch"
 			. " FROM kunden as k LEFT JOIN zahlungsdaten as zd USING(kndId)"
@@ -26,9 +36,11 @@ class Bezahlen {
 		
 		$qk = "SELECT khk.*, k.*, l.name as 'lehrName', l.vorname as 'lehrVorname'"
 				.", group_concat('{\"wochentag\":\"',st.wochentag,'\",\"time\":\"', TIME_FORMAT(st.anfang, '%H:%i'),' - ', TIME_FORMAT(st.ende, '%H:%i'),'\"}' SEPARATOR',') as termin"
+				.", season.season_name"
 			. " FROM kundehatkurse as khk LEFT JOIN kurse as k USING(kurId) LEFT JOIN lehrer as l USING(lehrId)"
 			. " LEFT JOIN stundenplan as st USING(kurId)"
-			. " WHERE khk.kndId=:kndId"
+			. " LEFT JOIN seasons as season ON season.season_id=khk.season_id"
+			. " WHERE khk.kndId=:kndId AND khk.season_id=:season"
 			. " GROUP BY khk.eintrId"
 			. " ORDER By khk.eintrId DESC";
 		
@@ -50,7 +62,7 @@ class Bezahlen {
 			$res = $sth->fetch(PDO::FETCH_ASSOC, 1);
 			
 			$sth = $dbh->prepare($qk);
-			$sth->execute($kndAr);
+			$sth->execute(array(":kndId" => $kId, ':season' => $curSeason));
 			$ures = $sth->fetchAll(PDO::FETCH_ASSOC);
 			
 			$sth = $dbh->prepare($qr);
@@ -88,7 +100,6 @@ class Bezahlen {
 				$fehler .= "kndId ist kein Integer";
 			}
 		}
-		require_once BASIS_DIR.'/MVC/DBFactory.php';
         $dbh = \MVC\DBFactory::getDBH();
         if(!$dbh)
         {
@@ -102,7 +113,8 @@ class Bezahlen {
 			$eIds .= ',';
 		}
 		$eIds = substr($eIds, 0, -1);
-		$qe = "SELECT * FROM kundehatkurse as khk LEFt JOIN kurse as k USING(kurId) WHERE kndId=$kndId AND eintrId IN ($eIds)";
+		$qe = "SELECT khk.*, k.*, season.season_name FROM kundehatkurse as khk LEFT JOIN kurse as k USING(kurId) LEFT JOIN seasons as season USING(season_id)"
+			. " WHERE kndId=$kndId AND eintrId IN ($eIds)";
 		$res = array();
 		
 		try
@@ -118,10 +130,12 @@ class Bezahlen {
 		}
 		
 		$kurse = "<table>";
-		$kurse .= "<th>Kurs</th><th>Preis</th><th>SonderPreis</th><th>Betrag</th>";
+		$kurse .= "<th>Schuljahr</th><th>Kurs</th><th>Preis</th><th>SonderPreis</th><th>Betrag</th>";
 		foreach($res as $r)
 		{
 			$kurse .= "<tr>";
+			//Season
+			$kurse .= "<td>".$r['season_name']."</td>";
 			//Name
 			$kurse .= "<td>".$r['kurName']."</td>";
 			//Preis
@@ -138,7 +152,7 @@ class Bezahlen {
 			$kurse .= "</td>";
 			//Betrag
 			$v = $r['sonderPreis'] ? $r['sonderPreis'] : $r['kurPreis'];
-			$kurse .= "<td><input class='inputPreis' type='text' name='kurId[".$r['kurId']."]' value='$v' /></td>";
+			$kurse .= "<td><input class='inputPreis' type='text' name='eintrId[".$r['eintrId']."]' value='$v' /></td>";
 			$kurse .= "</tr>";
 		}
 		$kurse .= "</table>";
@@ -199,13 +213,13 @@ class Bezahlen {
 			$rnKomm = Fltr::filterStr($_POST['rnKomm']);
 		}
 	//Summe der Beträgen wird zugeordnet
-		if(!isset($_POST['kurId']) OR empty($_POST['kurId']))
+		if(empty($_POST['eintrId']))
 		{
 			$fehler .= "Kurs-IDs fehlen.\n";
 		}
 		else
 		{
-			foreach($_POST['kurId'] as $k=>$v)
+			foreach($_POST['eintrId'] as $k=>$v)
 			{
 				$tk = Fltr::deleteSpace($k);
 				$tv = Fltr::deleteSpace($v);
@@ -228,7 +242,6 @@ class Bezahlen {
 			exit(json_encode($output));
 		}
 		
-		require_once BASIS_DIR.'/MVC/DBFactory.php';
         $dbh = \MVC\DBFactory::getDBH();
         if(!$dbh)
         {
@@ -248,7 +261,7 @@ class Bezahlen {
 		}
 		$kurIds = substr($kurIds, 0, -1);
 		
-		$q = "SELECT * FROM kurse WHERE kurId IN($kurIds)";
+		$q = "SELECT khk.eintrId, k.*, season.season_name FROM kurse as k JOIN kundehatkurse as khk USING(kurId) LEFT JOIN seasons as season USING(season_id) WHERE khk.eintrId IN($kurIds)";
 		
 		$q2 = "SELECT * FROM kunden WHERE kndId=$kndId";
 		
@@ -320,19 +333,20 @@ class Bezahlen {
 			$rnKomm = Fltr::filterStr($_POST['rnKomm']);
 		}
 		
-		if(!isset($_POST['kurId']) OR empty($_POST['kurId']))
+		if(empty($_POST['eintrId']))
 		{
 			$fehler .= "Kurs-IDs fehlen.\n";
 		}
 		else
 		{
-			foreach($_POST['kurId'] as $k=>$v)
+			foreach($_POST['eintrId'] as $k=>$v)
 			{
 				$tk = Fltr::deleteSpace($k);
 				$tv = str_replace(',', '.', Fltr::deleteSpace($v) );
 				if(Fltr::isInt($tk) AND Fltr::isPrice($tv))
 				{
-					$kurId[$tk] = $tv;
+					
+					$eintrId[$tk] = $tv;
 				}
 				else
 				{
@@ -355,7 +369,6 @@ class Bezahlen {
 			exit(json_encode($output));
 		}
 		
-		require_once BASIS_DIR.'/MVC/DBFactory.php';
         $dbh = \MVC\DBFactory::getDBH();
         if(!$dbh)
         {
@@ -375,14 +388,34 @@ class Bezahlen {
 		}
 		$kurIds = substr($kurIds, 0, -1);
 		
+		$eintrIdStr = implode(',', array_keys($eintrId));
+		$qGetKurse  = "SELECT eintrId, kurId, season_id FROM kundehatkurse WHERE eintrId IN ($eintrIdStr) ";
+		
 		$q = "INSERT INTO rechnungen (kndId, rnMonat, `rnKomm`, `mtId`, `rnErstelltAm`)"
 				. " VALUES ('$kndId', '$rnMonat', '$rnKomm', '$mtId',NOW())";
 		
-		$q2 = "INSERT INTO rechnungsdaten (rnId, kurId, rndBetrag) VALUES (:rnId, :kurId, :rnBetrag)";
+		$q2 = "INSERT INTO rechnungsdaten (rnId, kurId, season_id, rndBetrag) VALUES (:rnId, :kurId, :season_id, :rnBetrag)";
 		$rnId;
 		try
-		{#die($q);
+		{
 			$dbh->beginTransaction();
+			
+			//get kurse
+			$sthKurse = $dbh->prepare($qGetKurse);
+			$sthKurse->execute();
+			$kurse = $sthKurse->fetchAll(PDO::FETCH_ASSOC);
+			$kurId = array();
+			
+			foreach($kurse as $k)
+			{
+				$_t = array();
+				$_t['kurId'] = $k['kurId'];
+				$_t['season_id'] = $k['season_id'];
+				$_t['betrag'] = $eintrId[$k['eintrId']];
+				
+				$kurId[] = $_t;
+			}
+			
 			$res = $dbh->exec($q);
 
 			if($res>0)
@@ -392,10 +425,11 @@ class Bezahlen {
 				$sth = $dbh->prepare($q2);
 				$sth->bindValue(':rnId', $rnId);
 				
-				foreach($kurId as $k=>$v)
+				foreach($kurId as $kur)
 				{
-					$sth->bindValue(':kurId', $k);
-					$sth->bindValue(':rnBetrag', $v);
+					$sth->bindValue(':kurId', $kur['kurId']);
+					$sth->bindValue(':season_id', $kur['season_id']);
+					$sth->bindValue(':rnBetrag', $kur['betrag']);
 					$sth->execute();
 				}
 				
@@ -404,8 +438,11 @@ class Bezahlen {
 				$output['status'] = "ok";
 				$output['info'] = "[DB] Neue Rechnung wurde erfolgreich gespeichert.";
 //send pdfUrl
+//hide notice and wornings
+				ob_start();
 				$pdfUrl = Rechnung2Pdf::saveRechnungToPdf($rnId);//$rnId
-				$output['pdfUrl'] = $pdfUrl;				
+				$output['pdfUrl'] = $pdfUrl;
+				ob_end_clean();
 			}
 			else
 			{

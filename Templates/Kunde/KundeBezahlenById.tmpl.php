@@ -3,6 +3,8 @@ require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
 require_once BASIS_DIR.'/BLogic/Kunde/CommentToolsHtml.php';
 use Kunde\CommentToolsHtml as CmntTlsHtml;
+require_once BASIS_DIR.'/Tools/TmplTools.php';
+use Tools\TmplTools as TmplTls;
 ?>
 <!DOCTYPE html>
 <html>
@@ -258,8 +260,19 @@ use Kunde\CommentToolsHtml as CmntTlsHtml;
 			<div id="kurListe">
 				<table id="kundenResTbl">
 					<tr>
+						<td colspan="11">
+							<form method="POST">
+								<?= TmplTls::getSeasonsSelector("s_season", "s_season", $curSeason, "Schuljahr", 1); ?>
+								<button type="submit">Aktualisieren</button>
+							</form>
+						</td>
+					</tr>
+					<tr>
 						<th>
 							<input type="checkbox" id="markAlleKurse" />
+						</th>
+						<th>
+							Schuljahr
 						</th>
 						<th>
 							Unterricht
@@ -324,6 +337,8 @@ use Kunde\CommentToolsHtml as CmntTlsHtml;
 							echo "<tr style='background:yellow;'>";
 /*Nachzahlen button*/		echo "<td><button class='nachzahlen' eintrId='".$r['eintrId']."' >Nachzahlen</button></td>";
 						}
+						
+						echo "<td>".$r['season_name']."</td>";
 						
 						echo "<td><i>".$r['lehrVorname']." ".$r['lehrName']."</i><br>";
 						echo $r['kurName']."<br>";

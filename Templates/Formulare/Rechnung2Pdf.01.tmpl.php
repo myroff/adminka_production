@@ -72,6 +72,9 @@
 			<table class="rTable">
 				<tr>
 					<th>
+						Schuljahr
+					</th>
+					<th>
 						Kurs
 					</th>
 					<th>
@@ -84,6 +87,9 @@
 					?>
 					<tr>
 						<td>
+							<?=$r['season_name']?>
+						</td>
+						<td>
 							<?=$r['kurName']?>
 						</td>
 						<td>
@@ -95,6 +101,7 @@
 					}
 					?>
 					<tr>
+						<td></td>
 						<td><b>Gesamtbetrag</b></td>
 						<td><b><?=round($summe,2)?> €</b></td>
 					</tr>
