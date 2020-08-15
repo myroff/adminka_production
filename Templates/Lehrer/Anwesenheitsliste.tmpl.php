@@ -61,6 +61,9 @@ use Tools\DateTools as DateTools;
 					<table>
 						<tr>
 							<th>
+								Saison
+							</th>
+							<th>
 								Lehrer
 							</th>
 							<th>
@@ -72,10 +75,13 @@ use Tools\DateTools as DateTools;
 						</tr>
 						<tr>
 							<td>
+								<?php echo TmplTls::getSeasonsSelector("s_season", "s_season", $sArr[':season'], "Season", 0); ?>
+							</td>
+							<td>
 								<?php echo TmplTls::getLehrerSelector("s_lehrId", "s_lehrId", $sArr[':lehrId']); ?>
 							</td>
 							<td>
-								<input type="text" id="month" name="month" class="zebra_datepicker_my"/>
+								<input type="text" id="month" name="month" class="zebra_datepicker_my" value="<?= $sArr[':month'] ?>"/>
 							</td>
 						</tr>
 					</table>
@@ -150,7 +156,7 @@ use Tools\DateTools as DateTools;
 <script>
 //Monatspicker
 	$(".zebra_datepicker_my").Zebra_DatePicker({
-		format: 'm',		//  note that becase there's no day in the format
+		format: 'Ym',		//  note that becase there's no day in the format
 		offset:	[0,200],	//  users will not be able to select a day!
 	});
 	/*
