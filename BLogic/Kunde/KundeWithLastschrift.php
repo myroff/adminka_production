@@ -4,6 +4,9 @@ use PDO as PDO;
 //twig
 require_once BASIS_DIR . '/Vendor/autoload.php';
 
+require_once BASIS_DIR.'/BLogic/Kurse/Seasons.php';
+use Kurse\Seasons as Seasons;
+
 require_once BASIS_DIR.'/Tools/TmplTools.php';
 use Tools\TmplTools as TmplTls;
 
@@ -12,15 +15,17 @@ class KundeWithLastschrift
 	public function getList()
 	{
 		$sArr = array();
-		$sArr[':vorname']	= empty($_POST['vorname']) ? '' : $_POST['vorname'];
-		$sArr[':name']		= empty($_POST['name']) ? '' : $_POST['name'];
-		$sArr[':lehrId']	= empty($_POST['s_lehrId']) ? '' : $_POST['s_lehrId'];
-		$sArr[':wochentag']	= empty($_POST['wochentag']) ? '' : $_POST['wochentag'];
+		$sArr[':vorname']	= empty($_POST['vorname'])	? '' : $_POST['vorname'];
+		$sArr[':name']		= empty($_POST['name'])		? '' : $_POST['name'];
+		$sArr[':lehrId']	= empty($_POST['s_lehrId'])	? '' : $_POST['s_lehrId'];
+		$sArr[':wochentag']	= empty($_POST['wochentag'])? '' : $_POST['wochentag'];
+		$sArr[':season']	= empty($_POST['s_season'])	? Seasons::getActiveSeason()['season_id'] : $_POST['s_season'];
 		
 		$vars['s_lehrId']	= TmplTls::getLehrerSelector("s_lehrId", "s_lehrId", $sArr[':lehrId'], "Lehrer", 1);
 		$vars['wochentag']	= TmplTls::getWeekdaySelector("wochentag", "wochentag", $sArr[':wochentag'], "Tag", 1);
 		$vars['clients']	= $this->searchDates($sArr);
 		$vars['sArr']		= $sArr;
+		$vars['s_season']	= TmplTls::getSeasonsSelector("s_season", "s_season", $sArr[':season'], "Season", 1);
 		
 		$options = []; #array('cache' => TWIG_CACHE_DIR);
 		$loader = new \Twig_Loader_Filesystem(TWIG_TEMPLATE_DIR);
@@ -64,12 +69,16 @@ class KundeWithLastschrift
 		{
 			$where .= " stn.wochentag = :wochentag AND";
 		}
+		if(isset($searchArr[':season']))
+		{
+			$where .= " khk.season_id = :season AND";
+		}
 		
 		$where = substr($where, 0, -4);
 		//echo "where = " . $where . "<br>";
 		
 		$q = "SELECT k.*, GROUP_CONCAT(kr.kurName) as kurse"
-			." FROM kunden as k LEFT JOIN kundehatkurse USING(kndId) LEFT JOIN kurse as kr USING(kurId)"
+			." FROM kunden as k JOIN kundehatkurse as khk USING(kndId) LEFT JOIN kurse as kr USING(kurId)"
 			." LEFT JOIN stundenplan as stn USING(kurId)"
 			." LEFT JOIN zahlungsdaten as z USING(kndId)"
 			." LEFT JOIN lehrer as l USING(lehrId)"
