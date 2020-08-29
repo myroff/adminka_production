@@ -56,7 +56,7 @@ class KundeBearbeiten
 		
 		$q = "SELECT * FROM kunden LEFT JOIN zahlungsdaten USING (kndId)";
 		$q .= empty($where) ? '' : " WHERE " . $where;
-		$q .= " ORDER BY kundenNummer DESC";
+		$q .= " ORDER BY LENGTH(kundenNummer) DESC, kundenNummer DESC";
 		
 		try
 		{
