@@ -56,7 +56,10 @@ class Menu
 			]
 		],
 		['group'=>[], 'user'=>['admin'],'link'=>'/admin/users', 'title'=>'Users'],
+		
 		['group'=>['Administrator','Editor'], 'user'=>array(),'link'=>'/admin/warteliste', 'title'=>'Warteliste'],
+		
+		['group'=>['Administrator'], 'user'=>array(),'link'=>'/admin/payments', 'title'=>'Payment Methods'],
 	];
 	public static function adminMenuOld() //adminMenu
 	{

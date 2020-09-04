@@ -106,7 +106,10 @@ function getRoutingList()
         //'/second/$name' => 'Content:ShowContent:hello',
         //'/summe/$a/$b' => 'Content:ShowContent:summe',
 //Warteliste
-		'/admin/warteliste' => 'Warteliste:Warteliste:showList',
+		'/admin/warteliste'			=> 'Warteliste:Warteliste:showList',
+//Payments
+		'/admin/payments'			=> 'Payment:PaymentInterface:editPaymentsInterface',
+		'/admin/paymentsApi/$action'=> 'Payment:PaymentApi:handleApiRequest',
     );
     return $routingList;
 }

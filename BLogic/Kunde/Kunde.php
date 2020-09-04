@@ -179,7 +179,7 @@ as st USING (kurId)
 		$q .= empty($where) ? '' : " WHERE " . $where;
 		$q .= " GROUP BY k.kndId";
 		//$q .= empty($where) ? '' : " HAVING " . $where;
-		$q .= " ORDER BY cast(k.kundenNummer as unsigned) DESC";
+		$q .= " ORDER BY LENGTH(k.kundenNummer) DESC, k.kundenNummer DESC";
 		
 		try
 		{

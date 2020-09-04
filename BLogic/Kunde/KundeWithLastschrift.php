@@ -86,7 +86,7 @@ class KundeWithLastschrift
 		
 		$q .= empty($where) ? '' : " AND " . $where;
 		$q .= " GROUP BY k.kndId";
-		$q .= " ORDER BY k.kundenNummer DESC";
+		$q .= " ORDER BY LENGTH(k.kundenNummer) DESC, k.kundenNummer DESC";
 		
 		try
 		{

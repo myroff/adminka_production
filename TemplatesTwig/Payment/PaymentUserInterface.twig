@@ -1,0 +1,219 @@
+{% extends "main.html.twig" %}
+{% block content %}
+<h4>Kunden Zahlungsmethoden</h4>
+<div>
+	<a id="createNewSeason" class="waves-effect waves-light btn modal-trigger" href="#addNewPayment_form">Neue Zahlungsmethode erstellen</a>
+<!-- modal trigger -->
+	<div id="addNewPayment_form" class="modal">
+		<input type="hidden" id="edit_season_id" value="0"/>
+		<div class="modal-content">
+			<h4>Neue Zahlungsmethode hinzufügen</h4>
+			<table>
+				<tr>
+					<th>ZahlungsName</th>
+					<td><input type="text" name=="new_payment_name" id="new_payment_name" /></td>
+				</tr>
+				<tr>
+					<th>Logo in /Public/img/payment_logo</th>
+					<td><input type="text" name=="new_payment_logo" id="new_payment_logo" /></td>
+				</tr>
+				<tr>
+					<th>Payment aktivieren</th>
+					<td><label><input type="checkbox" value="1" name=="new_payment_active" id="new_payment_active" /><span></span></label></td>
+				</tr>
+			</table>
+		</div>
+		<div class="modal-footer">
+			<button class="waves-effect waves-green btn" id="submit_new_payment" >Speichern</button>
+			<a href="#!" class="modal-close waves-effect waves-red btn red">Abbrechen</a>
+		</div>
+	</div>
+</div>
+
+<table id="paymentInterface-table">
+	<tr>
+		<th>ID</th>
+		<th>Name</th>
+		<th>Logo in /Public/img/payment_logo</th>
+		<th>Logo Image</th>
+		<th>Aktiv</th>
+		<th>Erstellt</th>
+	</tr>
+{% for payment in payments %}
+	<tr>
+		<td>{{ payment.payment_id }}<br>
+			<i class="deleteItem material-icons small"
+			   data-payId="{{ payment.payment_id }}"
+			   >delete_forever</i>
+		</td>
+		<td>{{ payment.payment_name }}
+			<a class="modal-trigger editItem" href="#edit_item"
+			   data-payId="{{ payment.payment_id }}"
+			   data-payItemName="Zahlungsname"
+			   data-payItemId="payment_name"
+			   data-payItemVal="{{ payment.payment_name }}"
+			>
+				<i class="material-icons blue-text lighten-1-text">edit</i>
+			</a>
+		</td>
+		<td>{{ payment.logo_path }}
+			<a class="modal-trigger editItem" href="#edit_item"
+			   data-payId="{{ payment.payment_id }}"
+			   data-payItemName="Logo in /Public/img/payment_logo"
+			   data-payItemId="logo_path"
+			   data-payItemVal="{{ payment.logo_path }}"
+			>
+				<i class="material-icons blue-text lighten-1-text">edit</i>
+			</a>
+		</td>
+		<td><img class="logo-image" src="{{constant('PUBLIC_URL')}}/img/payment_logo/{{ payment.logo_path }}" /></td>
+		<td>{{ payment.is_active }}
+			<div class="switch">
+				<label>
+					Off
+					<input type="checkbox" {{ payment.is_active ? 'checked' : '' }}
+						class="editActivity"
+						data-payId="{{ payment.payment_id }}"
+						data-payItemId="is_active"
+					>
+					<span class="lever"></span>
+					On
+				</label>
+			</div>
+		</td>
+		<td>{{ payment.created | date('d.m.Y H:i:s') }}</td>
+	</tr>
+{% endfor %}
+</table>
+
+<!-- Update default item -->
+<div id="edit_item" class="modal">
+	<form id="edit_item_form" method="post" action="{{ requestUri }}">
+		<input type="hidden" id="edit_item_record_id" name="edit_item_record_id" value=""/>
+		<input type="hidden" id="edit_item_value_name" name="edit_item_value_name" value=""/>
+		<div class="modal-content">
+			<h4 id="edit_item_label"></h4>
+			<div id="upateItemTable_Form_ValueContainer">
+				<input type="text" id="edit_item_value_value" name="edit_item_value_value"/>
+			</div>
+		</div>
+	</form>
+	<div class="modal-footer">
+		<button form="edit_item_form" class="waves-effect waves-green btn" type='submit' >Speichern</button>
+		<a href="#!" class="modal-close waves-effect waves-red btn red">Abbrechen</a>
+	</div>
+</div>
+
+{% block javascript %}
+<script>
+
+function sendUpdateRequest(formData, method='update'){
+	request = new XMLHttpRequest();
+	request.onreadystatechange = function(){
+		if (request.readyState === XMLHttpRequest.DONE && request.status === 200){
+			var response = JSON.parse(request.responseText);
+			if(response.status === 'ok'){
+				window.location.reload(true);
+			}
+			else{
+				alert(response.message);
+			}
+		}
+	};
+	request.open('POST', "{{constant('BASIS_URL')}}/admin/paymentsApi/"+method, true);
+	request.send(formData);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.modal');
+    var instances = M.Modal.init(elems);
+	
+	document.getElementById('submit_new_payment').onclick = function(e){
+
+		var postData = {
+			new_payment_name	: document.getElementById('new_payment_name').value,
+			new_payment_logo	: document.getElementById('new_payment_logo').value,
+			new_payment_active	: document.getElementById('new_payment_active').checked === true ? '1' : '0'
+		};
+		var postString = JSON.stringify(postData);
+		
+		$.ajax({
+			url:'{{constant('BASIS_URL')}}/admin/paymentsApi/create',
+			type:'POST',
+			data: postData,
+			dataType:'JSON',
+			success:function(response){
+				if(response.status === 'ok')
+				{
+					location.reload();
+				}
+				else
+				{
+					alert("Fehler: "+response.message);
+				}
+			},
+			error:function(errorThrown){
+				alert('error: ' + errorThrown);
+			}
+		});
+	};
+	
+	var editItemId		= document.getElementById('edit_item_record_id');
+	var editItemLabel	= document.getElementById('edit_item_label');
+	var editValueName	= document.getElementById('edit_item_value_name');
+	var editValueValue	= document.getElementById('edit_item_value_value');
+	editButtonList		= document.getElementsByClassName('editItem');
+		
+	for(var i=0; i<editButtonList.length; i++) {
+
+		editButtonList[i].onclick = function(e){
+			
+			editItemId.value			= e.currentTarget.dataset.payid;
+			editItemLabel.textContent	= e.currentTarget.dataset.payitemname;
+			editValueName.value			= e.currentTarget.dataset.payitemid;
+			editValueValue.value		= e.currentTarget.dataset.payitemval;
+		};
+	}
+	//submit update
+	document.getElementById('edit_item_form').onsubmit = function(e){
+		e.preventDefault();
+		var postData = new FormData(document.getElementById('edit_item_form'));
+
+		sendUpdateRequest(postData);
+	};
+	
+	editActivity = document.getElementsByClassName('editActivity');
+	
+	for(var i=0; i < editActivity.length; i++) {
+
+		editActivity[i].onchange = function(e){
+			
+			var status   = e.currentTarget.checked ? '1' : '0';
+			var recordId = e.currentTarget.dataset.payid;
+			
+			var postData = new FormData();
+			postData.append('edit_item_record_id', e.currentTarget.dataset.payid);
+			postData.append('edit_item_value_name', e.currentTarget.dataset.payitemid);
+			postData.append('edit_item_value_value', status);
+			
+			sendUpdateRequest(postData);
+		};
+	}
+	
+	deleteItem = document.getElementsByClassName('deleteItem');
+	
+	for(var i=0; i < deleteItem.length; i++) {
+
+		deleteItem[i].onclick = function(e){
+			
+			if(confirm("Möchten Sie wirklich diese Zahlungsmethode entfernen?")){
+				var postData = new FormData();
+				postData.append('item_record_id', e.currentTarget.dataset.payid);
+				sendUpdateRequest(postData, 'delete');
+			}
+		};
+	}
+});
+</script>
+{% endblock %}
+{% endblock %}

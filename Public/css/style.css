@@ -190,3 +190,6 @@ th {border-bottom:1px solid black;}
 /*
 end Main Content
 */
+
+/** edit buttons **/
+.deleteItem{cursor:pointer;}
