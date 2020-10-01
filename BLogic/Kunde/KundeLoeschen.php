@@ -29,6 +29,7 @@ FROM rechnungen as r JOIN rechnungsdaten as rd USING(rnId) LEFT JOIN kurse as k 
 WHERE r.kndId=:kndId";
 		
 		$qDelete = "DELETE FROM kunden WHERE kndId=:kndId";
+		$qDeletePaymentData = "DELETE FROM zahlungsdaten WHERE kndId=:kndId";
 		
 		$dbh = DBFactory::getDBH();
 		if(!$dbh)
@@ -98,6 +99,10 @@ WHERE r.kndId=:kndId";
 			{
 				$sth = $dbh->prepare($qDelete);
 				$res = $sth->execute(array(":kndId" => $kndId));
+
+				$sth = $dbh->prepare($qDeletePaymentData);
+				$sth->execute(array(":kndId" => $kndId));				
+				
 				if($res>0)
 				{
 					$output['status'] = "ok";
