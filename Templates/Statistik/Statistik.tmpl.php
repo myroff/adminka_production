@@ -1,3 +1,7 @@
+<?php
+require_once BASIS_DIR.'/Tools/TmplTools.php';
+use Tools\TmplTools as TmplTls;
+?>
 <html>
 	<head>
 		<title>SWIFF: Statistik.</title>
@@ -29,20 +33,18 @@
 					<td>Saison</td>
 				</tr>
 				<tr>
-					<td><?php echo TmplTls::getSeasonsSelector("s_season", "s_season", $sArr[':season'], "Season", 0); ?></td>
+					<td>
+						<form method="GET">
+							<?php echo TmplTls::getSeasonsSelector("s_season", "s_season", $sArr[':season'], "Season", 0); ?>
+							<button type="submit">Aktualisieren</button>
+						</form>
+					</td>
 				</tr>
 			</table>
 			
 			<h3>Teilnehmer-Statistik</h3>
 			<div id="tables">
 				<table >
-					<tr>
-						<th>
-							Angemeldete Kunde<br>
-							einschl. Probe-Kunde
-						</th>
-						<td><?=$kres['countKunde']?></td>
-					</tr>
 					<tr>
 						<th>Kunden-Kurse</th>
 						<td><?=$kres['countKurs']?></td>
@@ -56,7 +58,13 @@
 						<td><?=$kres['countFrauen']?></td>
 					</tr>
 					<tr>
-						<th>Gesammt eigentragen</th>
+						<th>Kunde in diesem Saison</th>
+						<td><?=$kres['countKunde']?></td>
+					</tr>
+					<tr>
+						<th>Gesammt eigentragen<br>
+						(alle Saisons)
+						</th>
 						<td><?=$kres['countAlle']?></td>
 					</tr>
 				</table>
@@ -115,6 +123,8 @@
 			// Get context with jQuery - using jQuery's .get() method.
 			//var ctx = $("#myChart").get(0).getContext("2d");
 			var ctx = document.getElementById("myChart").getContext("2d");
+			
+			var seasonId = '<?= $sArr[':season'] ?: '' ?>';
 			
 			var actualChart;
 			
@@ -182,7 +192,7 @@
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/getChartsData',
 					type:'POST',
-					data:{charReq: 'gender'},
+					data:{charReq: 'gender', season_id: seasonId},
 					dataType:'TEXT',
 					success:function(response){
 						// eval("("+'{a:"www"}'+")")
@@ -202,7 +212,7 @@
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/getChartsData',
 					type:'POST',
-					data:{charReq: 'population'},
+					data:{charReq: 'population', season_id: seasonId},
 					dataType:'TEXT',
 					success:function(response){
 						var data = eval("("+response+")");
@@ -221,7 +231,7 @@
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/getChartsData',
 					type:'POST',
-					data:{charReq: 'ageStat'},
+					data:{charReq: 'ageStat', season_id: seasonId},
 					dataType:'TEXT',
 					success:function(response){
 						var data = eval("("+response+")");
@@ -240,7 +250,7 @@
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/getChartsData',
 					type:'POST',
-					data:{charReq: 'klassesStat'},
+					data:{charReq: 'klassesStat', season_id: seasonId},
 					dataType:'TEXT',
 					success:function(response){
 						var data = eval("("+response+")");

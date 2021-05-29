@@ -20,12 +20,14 @@ class KundeWithLastschrift
 		$sArr[':lehrId']	= empty($_POST['s_lehrId'])	? '' : $_POST['s_lehrId'];
 		$sArr[':wochentag']	= empty($_POST['wochentag'])? '' : $_POST['wochentag'];
 		$sArr[':season']	= empty($_POST['s_season'])	? Seasons::getActiveSeason()['season_id'] : $_POST['s_season'];
+		$sArr[':payment']	= empty($_POST['payment'])	? '' : $_POST['payment'];
 		
 		$vars['s_lehrId']	= TmplTls::getLehrerSelector("s_lehrId", "s_lehrId", $sArr[':lehrId'], "Lehrer", 1);
 		$vars['wochentag']	= TmplTls::getWeekdaySelector("wochentag", "wochentag", $sArr[':wochentag'], "Tag", 1);
 		$vars['clients']	= $this->searchDates($sArr);
 		$vars['sArr']		= $sArr;
 		$vars['s_season']	= TmplTls::getSeasonsSelector("s_season", "s_season", $sArr[':season'], "Season", 1);
+		$vars['payment']	= TmplTls::getPaymentSelector("payment", "payment", $sArr[':payment'], "Bezahlt mit:", 1);
 		
 		$options = []; #array('cache' => TWIG_CACHE_DIR);
 		$loader = new \Twig_Loader_Filesystem(TWIG_TEMPLATE_DIR);
@@ -73,6 +75,14 @@ class KundeWithLastschrift
 		{
 			$where .= " khk.season_id = :season AND";
 		}
+		if(!empty($searchArr[':payment']))
+		{
+			$where .= " pd.payment_id = :payment AND";
+		}
+		else
+		{
+			$where .= " pd.payment_id <> '1' AND";
+		}
 		
 		$where = substr($where, 0, -4);
 		//echo "where = " . $where . "<br>";
@@ -80,11 +90,11 @@ class KundeWithLastschrift
 		$q = "SELECT k.*, GROUP_CONCAT(kr.kurName) as kurse"
 			." FROM kunden as k JOIN kundehatkurse as khk USING(kndId) LEFT JOIN kurse as kr USING(kurId)"
 			." LEFT JOIN stundenplan as stn USING(kurId)"
-			." LEFT JOIN zahlungsdaten as z USING(kndId)"
+			." LEFT JOIN payment_data as pd USING(kndId)"
 			." LEFT JOIN lehrer as l USING(lehrId)"
-			." WHERE z.isCash <> 1";
+			." WHERE ";
 		
-		$q .= empty($where) ? '' : " AND " . $where;
+		$q .= empty($where) ? '' : $where;
 		$q .= " GROUP BY k.kndId";
 		$q .= " ORDER BY LENGTH(k.kundenNummer) DESC, k.kundenNummer DESC";
 		

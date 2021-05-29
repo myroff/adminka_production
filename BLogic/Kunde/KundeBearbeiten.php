@@ -10,6 +10,12 @@ use Kurse\KursSelector as KurSel;
 require_once BASIS_DIR.'/BLogic/Kunde/CommentToolsHtml.php';
 use Kunde\CommentToolsHtml as CmntTlsHtml;
 
+require_once BASIS_DIR.'/Tools/TmplTools.php';
+use Tools\TmplTools as TmplTls;
+
+require_once BASIS_DIR.'/BLogic/Payment/PaymentApi.php';
+use Payment\PaymentApi as PaymentApi;
+
 require_once BASIS_DIR.'/BLogic/Kunde/ClientsCourses.php';
 use Kunde\ClientsCourses as ClientsCourses;
 
@@ -54,7 +60,7 @@ class KundeBearbeiten
 		
 		$where = substr($where, 0, -5);
 		
-		$q = "SELECT * FROM kunden LEFT JOIN zahlungsdaten USING (kndId)";
+		$q = "SELECT * FROM kunden LEFT JOIN payment_data USING (kndId)";
 		$q .= empty($where) ? '' : " WHERE " . $where;
 		$q .= " ORDER BY LENGTH(kundenNummer) DESC, kundenNummer DESC";
 		
@@ -100,9 +106,10 @@ class KundeBearbeiten
 			$meldung .= self::updateItemInDB($kndId,$itemName,$itemValue);
 		}
 		
-		$q = "SELECT k.*, z.*, GROUP_CONCAT(m.anrede,' ',m.vorname,' ',m.name) as mitarbeiter, GROUP_CONCAT(empf.vorname,' ', empf.name) as empfohlenDurch"
+		$q = "SELECT k.*, pd.*, pm.payment_name, GROUP_CONCAT(m.anrede,' ',m.vorname,' ',m.name) as mitarbeiter, GROUP_CONCAT(empf.vorname,' ', empf.name) as empfohlenDurch"
 				." FROM kunden as k"
-				." LEFT JOIN zahlungsdaten as z USING(kndId)"
+				." LEFT JOIN payment_data as pd USING(kndId)"
+				." LEFT JOIN payment_methods as pm USING(payment_id)"
 				." LEFT JOIN mitarbeiter as m ON k.erstelltVom = m.mtId"
 				." LEFT JOIN kunden as empf ON empf.kndId=k.empfohlenId"
 				." WHERE k.kndId=:kndId";
@@ -134,7 +141,7 @@ class KundeBearbeiten
 		}
 		//set Geburtsdatum to string format
 		$res['geburtsdatum']	= Fltr::sqlDateToStr($res['geburtsdatum']);
-		$res['printZahlungsArt']= Fltr::printZahlungsArt($res['isCash']);
+		$res['printZahlungsArt']= Fltr::printZahlungsArt($res['payment_id']);
 		
 		$vars['pageName']	= "Kunde bearbeiten";
 		$vars['client']		= $res;
@@ -150,6 +157,9 @@ class KundeBearbeiten
 		$vars['changeCourseSelector']	= KurSel::getKursSelector("newKurId", "changeKurs_newKurId",  "10", "/admin/ajaxKursSelectorUpdate", 1);
 		
 		$vars['clientsCourseModule']	= ClientsCourses::getCourseModule($kndId, 1);
+		
+		$bezahlMethoden					= PaymentApi::getSelectorData();
+		$vars['zahlenMitSelector']		= TmplTls::printMaterializeSelector($bezahlMethoden, "updateBankDates_Form_Value", "zahlenMit", "", "", 0);
 		
 		$options = []; #array('cache' => TWIG_CACHE_DIR);
 		$loader = new \Twig_Loader_Filesystem(TWIG_TEMPLATE_DIR);

@@ -206,9 +206,9 @@ use Tools\TmplTools as TmplTls;
 						</th>
 					</tr>
 					<tr>
-						<td <?=!$res['isCash']? 'style="background:red;"' : ''?>>
+						<td <?=!$res['payment_id']? 'style="background:red;"' : ''?>>
 							<?php
-								echo Fltr::printZahlungsArt($res['isCash']);
+								echo Fltr::printZahlungsArt($res['payment_id']);
 							?>
 						</td>
 						<td>

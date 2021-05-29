@@ -284,7 +284,7 @@ $nextYear = ACTUAL_YEAR + 1;
 						<th class="itemName">Zahlungsart</th>
 						<td>
 							<?php
-							echo Fltr::printZahlungsArt($res['isCash']);
+							echo Fltr::printZahlungsArt($res['payment_id']);
 							?>
 						</td>
 						<td>

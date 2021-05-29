@@ -136,7 +136,7 @@ use Tools\TmplTools as TmplTls;
 						echo "<td colspan='12' style='font-weight: bold;color:white;background:#575757;' >".Fltr::sqlDateToMonatYear($k).": ".count($v)." Teilnemern.<td></tr>";
 						foreach ($v as $r)
 						{
-							if($r['isCash'] === "1")
+							if($r['payment_id'] === "1")
 							{
 								echo "<tr>";
 							}

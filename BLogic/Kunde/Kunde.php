@@ -47,7 +47,7 @@ class Kunde
 		$vars['wochentag']	= TmplTls::getWeekdaySelector("wochentag", "wochentag", $sArr[':wochentag'], "Tag", 1);
 		$vars['zeit']		= TmplTls::getTimeSelector("zeit", "zeit", $sArr[':zeit'], "Zeit");
 		$vars['s_season']	= TmplTls::getSeasonsSelector("s_season", "s_season", $sArr[':season'], "Season", 1);
-		$vars['isCashImg']	= $this->isCashImg;
+		#$vars['isCashImg']	= $this->isCashImg;
 		
 		$options = []; #array('cache' => TWIG_CACHE_DIR);
 		$loader = new \Twig_Loader_Filesystem(TWIG_TEMPLATE_DIR);
@@ -149,7 +149,7 @@ class Kunde
 		}
 		else{
 			$select = 
-"khk.kndId as kndIdInKhk,k.*, z.isCash, TIMESTAMPDIFF(YEAR,k.geburtsdatum,CURDATE()) as 'alter',
+"khk.kndId as kndIdInKhk,k.*, pd.payment_id, pm.logo_file, TIMESTAMPDIFF(YEAR,k.geburtsdatum,CURDATE()) as 'alter',
 	GROUP_CONCAT('{\"name\":\"',l.name, '\",\"vorname\":\"',l.vorname, '\",\"kurName\":\"', kr.KurName,'\",\"von\":\"',kndKurse.von,'\",\"bis\":\"',kndKurse.bis,'\",\"termin\":[', st.termin, ']}' SEPARATOR ',') as kurse";
 		}
 		
@@ -159,7 +159,8 @@ FROM kunden as k
 LEFT JOIN kundehatkurse as kndKurse USING(kndId) 
 LEFT JOIN kurse as kr USING(kurId)
 LEFT JOIN lehrer as l USING(lehrId)
-LEFT JOIN zahlungsdaten as z USING(kndId)
+LEFT JOIN payment_data as pd USING(kndId)
+LEFT JOIN payment_methods as pm USING(payment_id)
 LEFT JOIN
 (
 	SELECT kndId, season_id, von, bis

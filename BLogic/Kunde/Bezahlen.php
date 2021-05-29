@@ -30,7 +30,7 @@ class Bezahlen {
 		}
 		
 		$q = "SELECT k.*, zd.*, GROUP_CONCAT(empf.vorname,' ', empf.name) as empfohlenDurch"
-			. " FROM kunden as k LEFT JOIN zahlungsdaten as zd USING(kndId)"
+			. " FROM kunden as k LEFT JOIN payment_data as zd USING(kndId)"
 			. " LEFT JOIN kunden as empf ON empf.kndId=k.empfohlenId"
 			. " WHERE k.kndId=:kndId";
 		

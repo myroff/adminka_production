@@ -9,6 +9,9 @@ require_once BASIS_DIR.'/MVC/DBFactory.php';
 require_once BASIS_DIR.'/Tools/TmplTools.php';
 use Tools\TmplTools as TmplTls;
 
+require_once BASIS_DIR.'/BLogic/Payment/PaymentApi.php';
+use Payment\PaymentApi as PaymentApi;
+
 //twig
 require_once BASIS_DIR . '/Vendor/autoload.php';
 
@@ -16,11 +19,14 @@ class neueKunde
 {
     public function showForm()
     {
+		/*
 		$bezahlMethoden = array("bar" => "Bar", 
 			"lastschrift" => "Lastschrift", 
 			"bamf" => "BAMF", "zuzahler" => "Zuzahler",
 			"selbstzahler" => "Selbstzahler", "ueberweisung" => "Überweisung"
 			);
+		*/
+		$bezahlMethoden = PaymentApi::getSelectorData();
 		
 		$anreden = ["Frau" => "Frau", "Herr" => "Herr"];
 		
@@ -341,43 +347,7 @@ class neueKunde
 		//Bezahlen mit Bar oder Lastschrift
 		if(!empty($_POST['zahlenMit']))
 		{
-			$_POST['zahlenMit'] = preg_replace("/\s/", "", $_POST['zahlenMit']);
-			/*
-			if($_POST['zahlenMit'] === "bar" OR $_POST['zahlenMit'] === "lastschrift")
-			{
-				$dataBezahlung[':isCash'] = $_POST['zahlenMit'] === "bar" ? 1 : 0;
-			}
-			else
-			{
-				$fehler .= "Zahlungsart ist falsch eingegeben. Erlaubt sind nur 'bar' oder 'lastschrift'.<br>";
-				$fehlerInput[] = 'zahlenMit';
-			}
-			*/
-			switch ($_POST['zahlenMit']) {
-					case "lastschrift":
-						$dataBezahlung[':isCash'] = 0;
-						break;
-					case "bar":
-						$dataBezahlung[':isCash'] = 1;
-						break;
-					case "bamf":
-						$dataBezahlung[':isCash'] = 2;
-						break;
-					case "zuzahler":
-						$dataBezahlung[':isCash'] = 3;
-						break;
-					case "selbstzahler":
-						$dataBezahlung[':isCash'] = 4;
-						break;
-					case "ueberweisung":
-						$dataBezahlung[':isCash'] = 5;
-						break;
-					default:
-						$fehler .= "Zahlungsart ist falsch eingegeben. Erlaubt sind nur 'bar', 'lastschrift', 'BAMF', 'Überweisung', Zuzahler' oder 'Selbstzahler'.<br>";
-						$fehlerInput[] = 'zahlenMit';
-						break;
-				}
-			
+			$dataBezahlung[':payment_id'] = (int)$_POST['zahlenMit'];
 		}
                 else
 		{
@@ -569,10 +539,10 @@ class neueKunde
 			}
 			
 			$q = "INSERT INTO kunden (".$tbl.") VALUES(".$vl.")";
-			$zdq = "INSERT INTO zahlungsdaten (".$zd_tbl.") VALUES(".$zd_vl.")";
+			$zdq = "INSERT INTO payment_data (".$zd_tbl.") VALUES(".$zd_vl.")";
 			$info = "q=".$q."<br>zdq=".$zdq;
 			$info .= "<br>dataPost=";
-                        $info .= print_r($dataPost,true);
+			$info .= print_r($dataPost,true);
 			$info .= "<br>dataBezahlung=";
 			
 			try

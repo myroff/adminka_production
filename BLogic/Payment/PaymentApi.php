@@ -5,7 +5,10 @@ require_once BASIS_DIR.'/MVC/DBFactory.php';
 
 class PaymentApi 
 {
-	private $colums = ['payment_name', 'logo_path', 'is_active'];
+	private $colums = ['payment_name', 'logo_file', 'is_active'];
+	
+	// data to build html selector
+	private static $selectorData = [];
 	
 	public function getPaymentMethods()
 	{
@@ -62,7 +65,7 @@ class PaymentApi
 		}
 		if(!empty($_POST['new_payment_logo']))
 		{
-			$data[':logo_path'] = $_POST['new_payment_logo'];
+			$data[':logo_file'] = $_POST['new_payment_logo'];
 		}
 		if(!empty($_POST['new_payment_active']) || $_POST['new_payment_active'] === '0' )
 		{
@@ -74,7 +77,7 @@ class PaymentApi
 			return array('status' => 'error', 'message' => 'Daten fehlen fürs Erstellen neuer Zahlungsmethode.');
 		}
 		
-		$q = "INSERT INTO payment_methods (payment_name, logo_path, is_active) VALUES (:payment_name, :logo_path, :is_active)";
+		$q = "INSERT INTO payment_methods (payment_name, logo_file, is_active) VALUES (:payment_name, :logo_file, :is_active)";
 		
 		$dbh = \MVC\DBFactory::getDBH();
 		
@@ -183,5 +186,32 @@ class PaymentApi
 		}
 		
 		return array('status' => 'ok', 'message' => 'update is executed.');
+	}
+	
+	/* get array to bild materialize css selector:
+	 * array (<payment_id> => <payment_name>)
+	 */
+	public static function getSelectorData()
+	{
+		if(empty(self::$selectorData))
+		{
+			$q = "SELECT payment_id, payment_name FROM payment_methods";
+			$dbh = \MVC\DBFactory::getDBH();
+			try
+			{
+				$sth = $dbh->prepare($q);
+				$sth->execute();
+				$res = $sth->fetchAll(PDO::FETCH_ASSOC);
+			} catch (Exception $ex) {
+				print $ex;
+				return FALSE;
+			}
+			foreach($res as $r)
+			{
+				self::$selectorData[$r['payment_id']] = $r['payment_name'];
+			}
+		}
+		
+		return self::$selectorData;
 	}
 }

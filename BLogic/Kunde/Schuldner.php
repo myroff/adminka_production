@@ -44,15 +44,15 @@ class Schuldner
 		}
 		else
 		{
-			$where .= " z.isCash = 1 AND ";
+			$where .= " pd.payment_id = 1 AND ";
 		}
 		
 		//$where = substr($where, 0, -4);
 		
 		$q = "SELECT k.kundenNummer, k.kndId, khk.kurId, k.anrede, k.vorname, k.name, GROUP_CONCAT(ku.kurName SEPARATOR ';') as kurse"
-			." ,k.geburtsdatum, k.handy, k.telefon, k.email, k.strasse, k.strNr, k.plz, k.stadt, z.isCash"
+			." ,k.geburtsdatum, k.handy, k.telefon, k.email, k.strasse, k.strNr, k.plz, k.stadt, pd.payment_id"
 			." FROM kundehatkurse as khk LEFT JOIN kurse as ku USING(kurId) LEFT JOIN kunden as k USING(kndId) 
-				LEFT JOIN zahlungsdaten as z USING(kndId)
+				LEFT JOIN payment_data as pd USING(kndId)
 				WHERE EXTRACT(YEAR_MONTH FROM :curMonth) BETWEEN EXTRACT(YEAR_MONTH FROM khk.von) AND EXTRACT(YEAR_MONTH FROM khk.bis) "
 			." AND ".$where
 			." (k.kndId,kurId) NOT IN 

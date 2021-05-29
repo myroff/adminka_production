@@ -22,10 +22,10 @@ class StatistikBuchhaltung {
 		}
 		
 		$q = "SELECT rnMonat, SUM(rndBetrag) as summe, SUM(kurPreis) as summeKurPreis,"
-			." SUM(IF(zd.isCash=1, rndBetrag, 0)) as barSumme,"
-			." SUM(IF(zd.isCash=0, rndBetrag, 0)) as lastschriftSumme"
+			." SUM(IF(pd.payment_id=1, rndBetrag, 0)) as barSumme,"
+			." SUM(IF(pd.payment_id=0, rndBetrag, 0)) as lastschriftSumme"
 			." FROM rechnungen LEFT JOIN rechnungsdaten USING(rnId)  LEFT JOIN kurse USING(kurId)"
-			." LEFT JOIN zahlungsdaten as zd USING(kndId)"
+			." LEFT JOIN payment_data as pd USING(kndId)"
 			." GROUP BY YEAR(rnMonat), MONTH(rnMonat)"
 			." ORDER BY YEAR(rnMonat) DESC, MONTH(rnMonat) DESC";
 		

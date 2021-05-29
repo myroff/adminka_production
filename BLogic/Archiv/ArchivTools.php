@@ -54,8 +54,8 @@ class ArchivTools {
 		}
 		
 		$q = "INSERT INTO `swiff.crm.$toYear`.`kunden` SELECT * FROM `swiff.crm.".$fromYear."`.`kunden` WHERE kndId = :kndId";
-		$qZ = "INSERT INTO `swiff.crm.".$toYear."`.`zahlungsdaten` SELECT * FROM `swiff.crm.".$fromYear."`.`zahlungsdaten` WHERE kndId = :kndId".
-				" ON DUPLICATE KEY UPDATE `swiff.crm.".$toYear."`.`zahlungsdaten`.zdId=`swiff.crm.".$fromYear."`.`zahlungsdaten`.zdId;";
+		$qZ = "INSERT INTO `swiff.crm.".$toYear."`.`payment_data` SELECT * FROM `swiff.crm.".$fromYear."`.`payment_data` WHERE kndId = :kndId".
+				" ON DUPLICATE KEY UPDATE `swiff.crm.".$toYear."`.`payment_data`.zdId=`swiff.crm.".$fromYear."`.`payment_data`.zdId;";
 		$tq = "SELECT count( * ) AS 'count', kundenNummer"
 			." FROM `swiff.crm.$toYear`.`kunden`"
 			." WHERE kndId = :kndId";

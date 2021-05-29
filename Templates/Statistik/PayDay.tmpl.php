@@ -63,13 +63,13 @@
 					{
 						$m = strtotime($r['rnMonat']);
 						$d = strtotime($r['rnErstelltAm']);
-						echo "<tr style='".($r['isCash'] === "1" ? "Bar" : "background:rgba(255,255,0,0.7);")."' >";
+						echo "<tr style='".($r['payment_id'] === "1" ? "Bar" : "background:rgba(255,255,0,0.7);")."' >";
 						
 						echo "<td>".$r['kndName'].", ".$r['kndVorname']."</td>";
 						echo "<td>".$r['summe']." €</td>";
 					//Zahlungsart
 						echo "<td>";
-						echo $r['isCash'] === "1" ? "Bar" : "Lastschrift";
+						echo $r['payment_id'] === "1" ? "Bar" : "Lastschrift";
 						echo "</td>";
 						
 						echo "<td>".date('H:i [d.m.Y]', $d)."</td>";

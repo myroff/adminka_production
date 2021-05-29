@@ -46,10 +46,11 @@ class BankDatenUpdate {
 		}
 		
 		switch ($dataPost[':varName']):
-			case 'isCash':
-				$varName = "isCash";
-				$dataPost[':varWert'] = Fltr::deleteSpace($dataPost[':varWert']);
-				
+			case 'payment_id':
+				$varName = "payment_id";
+				$varVal = Fltr::deleteSpace($dataPost[':varWert']);
+				$varVal = Fltr::filterStr($varVal);
+				/*
 				switch ($dataPost[':varWert']) {
 					case "lastschrift":
 						$varVal = 0;
@@ -175,7 +176,7 @@ class BankDatenUpdate {
 				. " ON DUPLICATE KEY UPDATE zahlungsdaten SET $varName = '$varVal' WHERE kndId = '$kndId'";
 		*/
 		
-		$q = "INSERT INTO zahlungsdaten (kndId, $varName) VALUES ('$kndId', '$varVal')"
+		$q = "INSERT INTO payment_data (kndId, $varName) VALUES ('$kndId', '$varVal')"
 				. " ON DUPLICATE KEY UPDATE $varName = '$varVal'";
 		
 		require_once BASIS_DIR.'/MVC/DBFactory.php';

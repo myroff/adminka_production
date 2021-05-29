@@ -198,7 +198,7 @@ use Kunde\CommentToolsHtml as CmntTlsHtml;
 					<tr>
 						<td>
 							<?php
-								echo Fltr::printZahlungsArt($res['isCash']);
+								echo Fltr::printZahlungsArt($res['payment_id']);
 							?>
 						</td>
 						<td>

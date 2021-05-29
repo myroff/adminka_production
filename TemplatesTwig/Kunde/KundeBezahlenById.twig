@@ -27,7 +27,7 @@
   </div>
   <div class="clients_dates col s12 m4">
 	<h5><i class="material-icons">payment</i> Bezahlen</h5>
-	<p class="clients_street"><i class="material-icons">local_phone</i> {{client.isCash|printZahlungsArt}}</p>
+	<p class="clients_street"><i class="material-icons">local_phone</i> {{client.payment_id|printZahlungsArt}}</p>
 	<p class="clients_city"><i class="material-icons">smartphone</i> {{client.plz}} {{client.stadt}}</p>
   </div>
 {% endblock %}

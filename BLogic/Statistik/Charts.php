@@ -9,22 +9,23 @@ class Charts {
 		$charReq = isset($_POST['charReq']) && !empty($_POST['charReq']) ? $_POST['charReq']: "citizens";
 		$data = array();
 		$o = "";
+		$seasonId = $_POST['season_id'] ?: '';
 		
 		switch ($charReq) {
 			case "gender":
-				$data = $this->getGenderData();
+				$data = $this->getGenderData($seasonId);
 				$o .= $this->arrayToCharData($data,"circle");
 				break;
 			case 'population':
-				$data = $this->getPopulationStat();
+				$data = $this->getPopulationStat($seasonId);
 				$o .= $this->arrayToCharData($data,"bar");
 				break;
 			case 'ageStat':
-				$data = $this->getAgeStat();
+				$data = $this->getAgeStat($seasonId);
 				$o .= $this->arrayToCharData($data,"bar");
 				break;
 			case 'klassesStat':
-				$data = $this->getKlassesStat();
+				$data = $this->getKlassesStat($seasonId);
 				$o .= $this->arrayToCharData($data,"bar");
 				break;
 			default:
@@ -93,15 +94,22 @@ class Charts {
 		}
 	}//private function arrayToCharData($arr)
 	
-	private function getGenderData(){
+	private function getGenderData($seasonId){
 		$dbh = DBFactory::getDBH();
 		if(!$dbh)
 		{
 			return FALSE;
 		}
 		
-		$qMan = "SELECT count(*) as 'count' FROM kunden WHERE anrede LIKE 'Herr'";
-		$qWomen = "SELECT count(*) as 'count' FROM kunden WHERE anrede LIKE 'Frau'";
+		$condition = [':season' => '%'];
+		
+		if($seasonId)
+		{
+			$condition = [':season' => $seasonId];
+		}
+		
+		$qMan = "SELECT count(*) as 'count' FROM kunden WHERE anrede LIKE 'Herr' AND kndId IN (SELECT kndId FROM kundehatkurse WHERE season_id LIKE :season GROUP BY kndId)";
+		$qWomen = "SELECT count(*) as 'count' FROM kunden WHERE anrede LIKE 'Frau' AND kndId IN (SELECT kndId FROM kundehatkurse WHERE season_id LIKE :season GROUP BY kndId)";
 		
 		$resM = array();
 		$resW = array();
@@ -109,11 +117,11 @@ class Charts {
 		try
 		{
 			$sth = $dbh->prepare($qMan);
-			$sth->execute();
+			$sth->execute($condition);
 			$resM = $sth->fetch(PDO::FETCH_ASSOC,1);
 			
 			$sth = $dbh->prepare($qWomen);
-			$sth->execute();
+			$sth->execute($condition);
 			$resW = $sth->fetch(PDO::FETCH_ASSOC,1);
 			
 		} catch (Exception $ex) {
@@ -126,7 +134,7 @@ class Charts {
 		
 	}//private function getGenderData()
 	
-	private function getPopulationStat()
+	private function getPopulationStat($seasonId)
 	{
 		$dbh = DBFactory::getDBH();
 		if(!$dbh)
@@ -134,13 +142,23 @@ class Charts {
 			return FALSE;
 		}
 		
-		$q = "SELECT stadt, count(*) as population FROM kunden GROUP BY stadt ORDER BY population DESC";
+		$condition = [':season' => '%'];
+		
+		if($seasonId)
+		{
+			$condition = [':season' => $seasonId];
+		}
+		
+		$q = "SELECT stadt, count(*) as population FROM kunden"
+			." WHERE kndId IN (SELECT kndId FROM kundehatkurse WHERE season_id LIKE :season GROUP BY kndId)"
+			." GROUP BY stadt ORDER BY population DESC";
+		
 		$res = array();
 		
 		try
 		{
 			$sth = $dbh->prepare($q);
-			$sth->execute();
+			$sth->execute($condition);
 			$res = $sth->fetchAll(PDO::FETCH_KEY_PAIR);
 			
 			return $res;
@@ -151,7 +169,7 @@ class Charts {
 		}
 	}//private function getPopulationStat()
 	
-	private function getAgeStat()
+	private function getAgeStat($seasonId)
 	{
 		$dbh = DBFactory::getDBH();
 		if(!$dbh)
@@ -159,14 +177,23 @@ class Charts {
 			return FALSE;
 		}
 		
+		$condition = [':season' => '%'];
+		
+		if($seasonId)
+		{
+			$condition = [':season' => $seasonId];
+		}
+		
 		$q = "SELECT TIMESTAMPDIFF(YEAR,geburtsdatum,CURDATE()) AS age, count(kndId) as number FROM kunden"
+			." WHERE kndId IN (SELECT kndId FROM kundehatkurse WHERE season_id LIKE :season GROUP BY kndId)"
 			." GROUP BY age ORDER BY age";
+		
 		$res = array();
 		
 		try
 		{
 			$sth = $dbh->prepare($q);
-			$sth->execute();
+			$sth->execute($condition);
 			$res = $sth->fetchAll(PDO::FETCH_KEY_PAIR);
 			
 			return $res;
@@ -177,7 +204,7 @@ class Charts {
 		}
 	}//private function getAgeStat()
 	
-	private function getKlassesStat()
+	private function getKlassesStat($seasonId)
 	{
 		$dbh = DBFactory::getDBH();
 		if(!$dbh)
@@ -185,19 +212,26 @@ class Charts {
 			return FALSE;
 		}
 		
-		$q = "SELECT ku.kurMaxKlasse AS Klasse, count( k.kndId ) AS 'Schueler'
-FROM kunden AS k
-JOIN kundehatkurse
+		$condition = [':season' => '%'];
+		
+		if($seasonId)
+		{
+			$condition = [':season' => $seasonId];
+		}
+		
+		$q = "SELECT ku.kurMaxKlasse AS Klasse, count( k.kndId ) AS 'Schueler' 
+FROM kunden AS k 
+JOIN kundehatkurse 
 USING ( kndId ) 
-JOIN kurse AS ku
+JOIN kurse AS ku 
 USING ( kurId ) 
-WHERE ku.kurMaxKlasse IS NOT NULL 
+WHERE ku.kurMaxKlasse IS NOT NULL AND kndId IN (SELECT kndId FROM kundehatkurse WHERE season_id LIKE :season GROUP BY kndId) 
 GROUP BY ku.kurMaxKlasse";
 		
 		try
 		{
 			$sth = $dbh->prepare($q);
-			$sth->execute();
+			$sth->execute($condition);
 			$res = $sth->fetchAll(PDO::FETCH_KEY_PAIR);
 			
 			return $res;

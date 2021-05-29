@@ -56,17 +56,17 @@
 				<i class="material-icons blue-text lighten-1-text">edit</i>
 			</a>
 		</td>
-		<td>{{ payment.logo_path }}
+		<td>{{ payment.logo_file }}
 			<a class="modal-trigger editItem" href="#edit_item"
 			   data-payId="{{ payment.payment_id }}"
 			   data-payItemName="Logo in /Public/img/payment_logo"
-			   data-payItemId="logo_path"
-			   data-payItemVal="{{ payment.logo_path }}"
+			   data-payItemId="logo_file"
+			   data-payItemVal="{{ payment.logo_file }}"
 			>
 				<i class="material-icons blue-text lighten-1-text">edit</i>
 			</a>
 		</td>
-		<td><img class="logo-image" src="{{constant('PUBLIC_URL')}}/img/payment_logo/{{ payment.logo_path }}" /></td>
+		<td><img class="logo-image" src="{{constant('PUBLIC_URL')}}/img/payment_logo/{{ payment.logo_file }}" /></td>
 		<td>{{ payment.is_active }}
 			<div class="switch">
 				<label>

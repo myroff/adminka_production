@@ -4,7 +4,7 @@
 	.modal-trigger i {font-size:14px;cursor:pointer;}
 	
 	#updateItemTable, #addKursTable, #updateItem_Anrede, #UpdateKur_Table, #Zahlungsformular, #updateItem_istFotoErlaubt, 
-	#updateBankDates, #updateBankDates_isCash, #editSonderPreis_Table, #editKundenKursKomm_Table, #changeKurs_Table, #changeKursConfirm_Table
+	#updateBankDates, #updateBankDates_payment_id, #editSonderPreis_Table, #editKundenKursKomm_Table, #changeKurs_Table, #changeKursConfirm_Table
 	{
 		display:none;
 		border:2px solid #a1a1a1;
@@ -201,8 +201,8 @@
 				Zahlungsart
 			</p>
 			<p>
-				<span class="itemValue">{{ client.printZahlungsArt }}</span>
-				<a class="modal-trigger" href="#edit_isCash"><i class="material-icons blue-text lighten-1-text">edit</i></a>
+				<span class="itemValue">{{ client.payment_name }}</span>
+				<a class="modal-trigger" href="#edit_payment_id"><i class="material-icons blue-text lighten-1-text">edit</i></a>
 			</p>
 		</div>
 		<div class="col s12 m2">
@@ -364,14 +364,15 @@
 			<a href="#!" class="modal-close waves-effect waves-red btn red">Abbrechen</a>
 		</div>
 	</div>
-<!-- Update isCash -->
-	<div id="edit_isCash" class="modal">
-		<form id="edit_isCash_form" class="updateBankDates_Form" method="post" action="">
+<!-- Update payment_id -->
+	<div id="edit_payment_id" class="modal">
+		<form id="edit_payment_id_form" class="updateBankDates_Form" method="post" action="">
 			<div class="modal-content">
 				<h4>Zahlungsart</h4>
-				<input type="hidden" name="updateBankDates_Form_Name" value="isCash"/>
+				<input type="hidden" name="updateBankDates_Form_Name" value="payment_id"/>
 				<input type="hidden" name="kndId" value="{{ client.kndId}}"/>
 				<div>
+					{#
 					<select name="updateBankDates_Form_Value" class="browser-default">
 						<option value="bar">Bar</option>
 						<option value="lastschrift">Lastschrift</option>
@@ -380,11 +381,13 @@
 						<option value="selbstzahler">Selbstzahler</option>
 						<option value="ueberweisung">Überweisung</option>
 					</select>
+					#}
+					{{ zahlenMitSelector|raw }}
 				</div>
 			</div>
 		</form>
 		<div class="modal-footer">
-			<button form="edit_isCash_form" class="waves-effect waves-green btn" type='submit' >Speichern</button>
+			<button form="edit_payment_id_form" class="waves-effect waves-green btn" type='submit' >Speichern</button>
 			<a href="#!" class="modal-close waves-effect waves-red btn red">Abbrechen</a>
 		</div>
 	</div>
