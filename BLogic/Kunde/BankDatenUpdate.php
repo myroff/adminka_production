@@ -34,7 +34,7 @@ class BankDatenUpdate {
 			$dataPost[':varName'] = Fltr::deleteSpace($_POST['updateBankDates_Form_Name']);
 		}
 		
-		if(!isset($_POST['updateBankDates_Form_Value']) OR empty($_POST['updateBankDates_Form_Value']))
+		if(!isset($_POST['updateBankDates_Form_Value']) OR empty($_POST['updateBankDates_Form_Value']) AND (int)$_POST['updateBankDates_Form_Value'] !== 0)
 		{
 			$output['status'] = "Es wurde keine Variablen-Wert übermittelt.";
 			header("Content-type: application/json");
