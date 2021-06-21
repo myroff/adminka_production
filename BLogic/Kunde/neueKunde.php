@@ -345,7 +345,7 @@ class neueKunde
 		
 //Zahlungsadaten
 		//Bezahlen mit Bar oder Lastschrift
-		if(!empty($_POST['zahlenMit']))
+		if(!empty($_POST['zahlenMit']) || $_POST['zahlenMit'] === '0')
 		{
 			$dataBezahlung[':payment_id'] = (int)$_POST['zahlenMit'];
 		}
