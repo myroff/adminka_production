@@ -10,7 +10,7 @@ class DateTools {
 		}
 		
 		if(!$month){
-			$month = date('m');
+			$month = (int)date('m');
 		}
 		elseif( $month>0 AND $month<13 AND is_int($month) ){
 			$month = (int)$month;
@@ -20,7 +20,7 @@ class DateTools {
 		}
 		
 		if(!$year){
-			$year = date('Y');
+			$year = (int)date('Y');
 		}
 		elseif(preg_match("/\d\d\d\d/", $year)){
 			$year = (int)$year;
@@ -29,11 +29,12 @@ class DateTools {
 			return false;
 		}
 		
-		
-		
 		$dates = array();
 		for($m=$month,$mn=0; $mn<$mnthOffset; $mn++, $m++){
-			$number = cal_days_in_month(CAL_GREGORIAN, $m, $year);
+			// cal_days_in_month() causes the error "invalid date". there is problem with variable $m
+			// get the number of days in the month
+			#$number = cal_days_in_month((int)CAL_GREGORIAN, $m, $year);
+			$number = (int) date('t', strtotime("$year-$m-01") );
 			for($i=1; $i<=$number; $i++){
 				$d = date('N', strtotime("$i.$month.$year"));
 				if( in_array($d, $weeksDay)  ){
