@@ -106,7 +106,9 @@ class KundeBearbeiten
 			$meldung .= self::updateItemInDB($kndId,$itemName,$itemValue);
 		}
 		
-		$q = "SELECT k.*, pd.*, pm.payment_name, GROUP_CONCAT(m.anrede,' ',m.vorname,' ',m.name) as mitarbeiter, GROUP_CONCAT(empf.vorname,' ', empf.name) as empfohlenDurch"
+		$q = "SELECT k.*"
+				.", pd.zdId, pd.kontoinhaber, pd.zdStrasse, pd.zdHausnummer, pd.zdPlz, pd.zdOrt, pd.bankName, pd.iban, pd.bic, pd.payment_id"
+				.", pm.payment_name, GROUP_CONCAT(m.anrede,' ',m.vorname,' ',m.name) as mitarbeiter, GROUP_CONCAT(empf.vorname,' ', empf.name) as empfohlenDurch"
 				." FROM kunden as k"
 				." LEFT JOIN payment_data as pd USING(kndId)"
 				." LEFT JOIN payment_methods as pm USING(payment_id)"
