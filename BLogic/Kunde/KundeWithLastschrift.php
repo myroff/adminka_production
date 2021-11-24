@@ -69,7 +69,8 @@ class KundeWithLastschrift
 		}
 		if(isset($searchArr[':wochentag']))
 		{
-			$where .= " stn.wochentag = :wochentag AND";
+			#$where .= " stn.wochentag = :wochentag AND";
+			$where .= " khk.kurId IN (SELECT kurId FROM stundenplan WHERE wochentag = :wochentag) AND";
 		}
 		if(isset($searchArr[':season']))
 		{
@@ -87,9 +88,9 @@ class KundeWithLastschrift
 		$where = substr($where, 0, -4);
 		//echo "where = " . $where . "<br>";
 		
-		$q = "SELECT k.*, GROUP_CONCAT(kr.kurName) as kurse"
+		$q = "SELECT k.*, GROUP_CONCAT(kr.kurName, ' [', DATE_FORMAT(khk.von, '%d.%m.%y'), '-', DATE_FORMAT(khk.bis, '%d.%m.%y'), ']' SEPARATOR ', ') as kurse"
 			." FROM kunden as k JOIN kundehatkurse as khk USING(kndId) LEFT JOIN kurse as kr USING(kurId)"
-			." LEFT JOIN stundenplan as stn USING(kurId)"
+			#." LEFT JOIN stundenplan as stn USING(kurId)"
 			." LEFT JOIN payment_data as pd USING(kndId)"
 			." LEFT JOIN lehrer as l USING(lehrId)"
 			." WHERE ";
