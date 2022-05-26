@@ -48,12 +48,10 @@ if($requestUri !== '')
 			if($t === $RULength)
 			{
 				//$validation = new \Authentication\Validation();
-				require_once 'Authentication.php';
+				#require_once 'Authentication.php';
 				$validation = new \MVC\Authentication();
 				if(!$validation->isValid($requestUri))//BASIS_URL
 				{
-					include_once BASIS_DIR.'/BLogic/Login/LoginController.php';
-
 					$Login = new \Login\LoginController();
 					$Login->loginForm('/'.$requestUri);
 

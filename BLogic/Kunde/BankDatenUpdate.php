@@ -11,7 +11,7 @@ class BankDatenUpdate {
 		$output = array();
 		$varName = "";
 		$varVal = "";
-		
+
 		if(!isset($_POST['kndId']) OR empty($_POST['kndId']))
 		{
 			$output['status'] = "Es wurde keine kunden ID übermittelt.";
@@ -22,7 +22,7 @@ class BankDatenUpdate {
 		{
 			$kndId = Fltr::deleteSpace($_POST['kndId']);
 		}
-		
+
 		if(!isset($_POST['updateBankDates_Form_Name']) OR empty($_POST['updateBankDates_Form_Name']))
 		{
 			$output['status'] = "Es wurde keine Variablen-Namen übermittelt.";
@@ -33,7 +33,7 @@ class BankDatenUpdate {
 		{
 			$dataPost[':varName'] = Fltr::deleteSpace($_POST['updateBankDates_Form_Name']);
 		}
-		
+
 		if(!isset($_POST['updateBankDates_Form_Value']) OR empty($_POST['updateBankDates_Form_Value']) AND (int)$_POST['updateBankDates_Form_Value'] !== 0)
 		{
 			$output['status'] = "Es wurde keine Variablen-Wert übermittelt.";
@@ -44,7 +44,7 @@ class BankDatenUpdate {
 		{
 			$dataPost[':varWert'] = $_POST['updateBankDates_Form_Value'];
 		}
-		
+
 		switch ($dataPost[':varName']):
 			case 'payment_id':
 				$varName = "payment_id";
@@ -85,31 +85,31 @@ class BankDatenUpdate {
 				}
 				*/
 				break;
-				
+
 			case 'kontoinhaber':
 				$varName = 'kontoinhaber';
 				$varVal = Fltr::filterStr($dataPost[':varWert']);
 				break;
-			
+
 			case 'bank':
 				$varName = 'bankName';
 				$varVal = Fltr::filterStr($dataPost[':varWert']);
 				break;
-			
+
 			case 'iban':
 				$varName = 'iban';
 				$varVal = Fltr::deleteSpace($dataPost[':varWert']);
 				$varVal = Fltr::filterStr($varVal);
-				
+
 				break;
-			
+
 			case 'bic':
 				$varName = 'bic';
 				$varVal = Fltr::deleteSpace($dataPost[':varWert']);
 				$varVal = Fltr::filterStr($varVal);
-				
+
 				break;
-			
+
 			case 'strasse':
 				$varName = 'zdStrasse';
 				$varVal = Fltr::filterStr($dataPost[':varWert']);
@@ -121,31 +121,31 @@ class BankDatenUpdate {
 				{
 					$fehler = "Beim Strassennamen sind keine Ziffern erlaubt. Bspl.: Musterstr. Allee.";
 				}
-				
+
 				break;
-			
+
 			case 'hausnummer':
 				$varName = 'zdHausnummer';
 				$varVal = Fltr::filterStr($dataPost[':varWert']);
 				$varVal = Fltr::deleteSpace($varVal);
 				if(Fltr::isHausNr($varVal))
 				{
-					
+
 				}
 				else
 				{
 					$fehler = "Beim Hausnummer sind nur Ziffern und Buchstaben erlaubt. Bspl.: 123a.";
 				}
-				
+
 				break;
-			
+
 			case 'ort':
 				$varName = 'zdOrt';
 				$varVal = Fltr::filterStr($dataPost[':varWert']);
 				$varVal = $dataPost[':varWert'];
-				
+
 				break;
-			
+
 			case 'plz':
 				$varName = 'zdPlz';
 				$varVal = Fltr::deleteSpace($dataPost[':varWert']);
@@ -157,14 +157,14 @@ class BankDatenUpdate {
 				{
 					$fehler = "PLZ besteht aus genau 5 ziffern. Bspl.: 41469.";
 				}
-				
+
 				break;
-				
+
 			default :
 				$fehler = "kein passendes Item gefunden. itemName=$varName. itemValue=$varVal";
 				break;
 		endswitch;
-		
+
 		if(!empty($fehler))
 		{
 			$output['status'] = $fehler;
@@ -175,11 +175,11 @@ class BankDatenUpdate {
 		$q = "INSERT INTO zahlungsdaten (kndId, $varName) VALUES ('$kndId', '$varVal')"
 				. " ON DUPLICATE KEY UPDATE zahlungsdaten SET $varName = '$varVal' WHERE kndId = '$kndId'";
 		*/
-		
+
 		$q = "INSERT INTO payment_data (kndId, $varName) VALUES ('$kndId', '$varVal')"
 				. " ON DUPLICATE KEY UPDATE $varName = '$varVal'";
-		
-		require_once BASIS_DIR.'/MVC/DBFactory.php';
+
+
 		$dbh = \MVC\DBFactory::getDBH();
 		if(!$dbh)
 		{
@@ -197,7 +197,7 @@ class BankDatenUpdate {
 			exit(json_encode($output));
 		}
 		$r = ($res>0) ? "ok" : "$varName konnte nicht geändert werden. Wahrscheinlich, Fehler im Datenbank.";
-		
+
 		$output['status'] = $r;
 		header("Content-type: application/json");
 		exit(json_encode($output));

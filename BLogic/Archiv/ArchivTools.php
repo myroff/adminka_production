@@ -1,7 +1,7 @@
 <?php
 namespace Archiv;
 use PDO as PDO;
-require_once BASIS_DIR.'/MVC/DBFactory.php';
+
 use MVC\DBFactory as DBFactory;
 require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
@@ -39,27 +39,27 @@ class ArchivTools {
 		else{
 			$fehler .= "'kndId' fehlt.\n";
 		}
-		
+
 		$dbh = DBFactory::getDBH();
-		
+
 		if(!$dbh)
 		{
 			$fehler = "no connection to db (dbh).\n";
 		}
-		
+
 		if(!empty($fehler)){
 			$output = array('status' => "error", 'message' => $fehler);
 			header("Content-type: application/json");
 			exit(json_encode($output));
 		}
-		
+
 		$q = "INSERT INTO `swiff.crm.$toYear`.`kunden` SELECT * FROM `swiff.crm.".$fromYear."`.`kunden` WHERE kndId = :kndId";
 		$qZ = "INSERT INTO `swiff.crm.".$toYear."`.`payment_data` SELECT * FROM `swiff.crm.".$fromYear."`.`payment_data` WHERE kndId = :kndId".
 				" ON DUPLICATE KEY UPDATE `swiff.crm.".$toYear."`.`payment_data`.zdId=`swiff.crm.".$fromYear."`.`payment_data`.zdId;";
 		$tq = "SELECT count( * ) AS 'count', kundenNummer"
 			." FROM `swiff.crm.$toYear`.`kunden`"
 			." WHERE kndId = :kndId";
-		
+
 		try
 		{
 			$sthTest = $dbh->prepare($tq);
@@ -90,7 +90,7 @@ class ArchivTools {
 		catch (Exception $ex) {
 			$output = array('status'=>"error", message => $ex);
 		}
-		
+
 		header("Content-type: application/json");
 		exit(json_encode($output));
 	}

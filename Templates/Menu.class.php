@@ -1,11 +1,11 @@
 <?php
 namespace TemplateTools;
-require_once BASIS_DIR.'/Tools/User.php';
+
 use Tools\User as User;
 
 class Menu
 {
-	private static $menuArr= 
+	private static $menuArr=
 	[
 		['group'=>['Administrator','Editor'], 'user'=>array(),'link'=>'/admin/kundenListe', 'title'=>'Kunden',
 			'linksList'=>
@@ -56,9 +56,9 @@ class Menu
 			]
 		],
 		['group'=>[], 'user'=>['admin'],'link'=>'/admin/users', 'title'=>'Users'],
-		
+
 		['group'=>['Administrator','Editor'], 'user'=>array(),'link'=>'/admin/warteliste', 'title'=>'Warteliste'],
-		
+
 		['group'=>['Administrator'], 'user'=>array(),'link'=>'/admin/payments', 'title'=>'Payment Methods'],
 	];
 	public static function adminMenuOld() //adminMenu
@@ -140,18 +140,18 @@ class Menu
 </ul>
 	<?php
 	}//public static function adminMenu()
-	
+
 	public static function adminMenu(){
 		$login = User::getUserLogin();
 		$gruppen = User::getUserGroup();
-		
+
 		self::adminMenuDynam(self::$menuArr, $login, $gruppen);
 	}
-	
+
 	private static function adminMenuDynam($menuArray, $login, $gruppen){
 		echo "<ul>";
 		foreach($menuArray as $arr){
-			
+
 			if(in_array($login, $arr['user']) OR self::multi_in_array($gruppen, $arr['group'])){
 				echo "<li>";
 				echo "<a href='".BASIS_URL.$arr['link']."' >".$arr['title']."</a>";
@@ -162,7 +162,7 @@ class Menu
 		}
 		echo "</ul>";
 	}//public static function adminMenuDynam()
-	
+
 	private static function multi_in_array($needle, $stack) {
 		foreach ($needle as $n){
 			if(in_array($n, $stack))

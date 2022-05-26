@@ -11,7 +11,7 @@ class UpdateTermin {
 		$dataPost = array();
 		$testData = array();
 		$output = array();
-		
+
 		if(isset($_POST['stnPlId']) AND !empty($_POST['stnPlId']))
 		{
 			$stnPlId = $_POST['stnPlId'];
@@ -20,7 +20,7 @@ class UpdateTermin {
 		else{
 			$fehler .= "Stundenplan-ID fehlt.\n";
 		}
-		
+
 		if(isset($_POST['season_id']) AND !empty($_POST['season_id']))
 		{
 			$dataPost[':season_id'] = $_POST['season_id'];
@@ -29,7 +29,7 @@ class UpdateTermin {
 		else{
 			$fehler .= "Stundenplan-ID fehlt.\n";
 		}
-		
+
 		if(isset($_POST['raum']))
 		{
 			$dataPost[':raum'] = Fltr::filterStr($_POST['raum']);
@@ -38,7 +38,7 @@ class UpdateTermin {
 		else{
 			$fehler .= "Raum fehlt.\n";
 		}
-		
+
 		if(isset($_POST['wochentag']))
 		{
 			if(Fltr::isInt($_POST['wochentag'])){
@@ -52,7 +52,7 @@ class UpdateTermin {
 		else{
 			$fehler .= "Tag der Woche fehlt.\n";
 		}
-		
+
 		if(!empty($_POST['anfang']))
 		{
 			$_POST['anfang'] = str_replace("/\s/", "", $_POST['anfang']);
@@ -66,11 +66,11 @@ class UpdateTermin {
 				$fehler .= "Anfangszeit ist falsch eingegeben. Bspl.: 15:45.\n";
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Anfangszeit fehlt.\n";
 		}
-		
+
 		if(!empty($_POST['ende']))
 		{
 			$_POST['ende'] = str_replace("/\s/", "", $_POST['ende']);
@@ -84,16 +84,16 @@ class UpdateTermin {
 				$fehler .= "Endzeit ist falsch eingegeben. Bspl.: 15:45.\n";
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Anfangszeit fehlt.\n";
 		}
-		
+
 		if(empty($fehler))
-		{	
-			require_once BASIS_DIR.'/MVC/DBFactory.php';
+		{
+
 			$dbh = \MVC\DBFactory::getDBH();
-			
+
 			if(!$dbh)
 			{
 				$output = array('info' => "no connection to db (dbh).");
@@ -102,24 +102,24 @@ class UpdateTermin {
 			}
 
 			$set = "";
-			
+
 			foreach ($dataPost as $key=>$val)
 			{
 				$set .= substr($key, 1)."=".$key.", ";
 			}
 			$set = substr($set, 0, -2);
-			
+
 			$q = "UPDATE stundenplan SET ".$set." WHERE stnPlId=".$stnPlId;
 			$tq = "SELECT st.*, k.kurName FROM stundenplan as st LEFT JOIN kurse as k USING(kurId)"
 					. " WHERE stnPlId<>:stnPlId AND raum=:raum AND wochentag=:wochentag AND season_id = :season_id"
 					. " AND ( (:anfang > anfang AND :anfang < ende) OR (:ende > anfang AND :ende < ende) )";
-			
+
 			try
 			{
 				$sthTest = $dbh->prepare($tq);
 				$sthTest->execute($testData);
 				$resTest = $sthTest->fetchAll(PDO::FETCH_ASSOC);
-				
+
 				if(count($resTest) > 0)
 				{
 					$stn = "";
@@ -156,7 +156,7 @@ class UpdateTermin {
 		header("Content-type: application/json");
 		exit(json_encode($output));
 	}
-	
+
 	public function ajaxDelete()
 	{
 		$output = array();
@@ -165,8 +165,8 @@ class UpdateTermin {
 			if(Fltr::isInt($_POST['stnPlId']))
 			{
 				$q = "DELETE FROM stundenplan WHERE stnPlId=".$_POST['stnPlId'];
-				
-				require_once BASIS_DIR.'/MVC/DBFactory.php';
+
+
 				$dbh = \MVC\DBFactory::getDBH();
 
 				if(!$dbh)
@@ -175,7 +175,7 @@ class UpdateTermin {
 					header("Content-type: application/json");
 					exit(json_encode($output));
 				}
-				
+
 				try
 				{
 					$res = $dbh->exec($q);

@@ -11,7 +11,7 @@ class NeuerLehrer
 		include_once BASIS_DIR.'/Templates/Lehrer/LehrerNeu.tmpl.php';
 		return;
 	}
-	
+
 	public function saveNewLehrer()
 	{
 		$fehler = "";
@@ -24,7 +24,7 @@ class NeuerLehrer
 		{
 			$_POST['anrede'] = trim($_POST['anrede']);
 			$_POST['anrede'] = preg_replace("/\s+/", " ", $_POST['anrede']);
-			
+
 			if(Fltr::isRowString($_POST['anrede']))
 			{
 				$dataPost[':anrede'] = $_POST['anrede'];
@@ -36,7 +36,7 @@ class NeuerLehrer
 				$fehlerInput[] = 'anrede';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Anrede fehlt.<br>";
 			$fehlerInput[] = 'anrede';
@@ -47,7 +47,7 @@ class NeuerLehrer
 		{
 			$_POST['vorname'] = trim($_POST['vorname']);
 			$_POST['vorname'] = preg_replace("/\s+/", " ", $_POST['vorname']);
-			
+
 			if(Fltr::isRowString($_POST['vorname']))
 			{
 				$dataPost[':vorname'] = $_POST['vorname'];
@@ -59,7 +59,7 @@ class NeuerLehrer
 				$fehlerInput[] = 'vorname';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Vorname fehlt.<br>";
 			$fehlerInput[] = 'vorname';
@@ -70,7 +70,7 @@ class NeuerLehrer
 		{
 			$_POST['name'] = trim($_POST['name']);
 			$_POST['name'] = preg_replace("/\s+/", " ", $_POST['name']);
-			
+
 			if(Fltr::isRowString($_POST['name']))
 			{
 				$dataPost[':name'] = $_POST['name'];
@@ -82,12 +82,12 @@ class NeuerLehrer
 				$fehlerInput[] = 'name';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Name fehlt.<br>";
 			$fehlerInput[] = 'name';
 		}
-		
+
 		//Geburtsdatum
 		if(!empty($_POST['geburtsdatum']))
 		{
@@ -103,12 +103,12 @@ class NeuerLehrer
 				$fehlerInput[] = 'geburtsdatum';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Geburtsdatum fehlt.<br>";
 			$fehlerInput[] = 'geburtsdatum';
 		}
-		
+
 		//Telefon
 		if(!empty($_POST['telefon']))
 		{
@@ -123,7 +123,7 @@ class NeuerLehrer
 				$fehlerInput[] = 'telefon';
 			}
 		}
-		
+
 		//Handy
 		if(!empty($_POST['handy']))
 		{
@@ -138,7 +138,7 @@ class NeuerLehrer
 				$fehlerInput[] = 'handy';
 			}
 		}
-		
+
 		//Email
 		if(!empty($_POST['email']))
 		{
@@ -153,13 +153,13 @@ class NeuerLehrer
 				$fehlerInput[] = 'email';
 			}
 		}
-		
+
 		//Strasse
 		if(!empty($_POST['strasse']))
 		{
 			$_POST['strasse'] = trim($_POST['strasse']);
 			$_POST['strasse'] = preg_replace("/\s+/", " ", $_POST['strasse']);
-			
+
 			if(Fltr::isStrasse($_POST['strasse']))
 			{
 				$dataPost[':strasse'] = $_POST['strasse'];
@@ -171,12 +171,12 @@ class NeuerLehrer
 				$fehlerInput[] = 'strasse';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Strasse fehlt.<br>";
 			$fehlerInput[] = 'strasse';
 		}
-		
+
 		//Hausnummer
 		if(!empty($_POST['haus']))
 		{
@@ -192,18 +192,18 @@ class NeuerLehrer
 				$fehlerInput[] = 'haus';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Hausnummer fehlt.<br>";
 			$fehlerInput[] = 'haus';
 		}
-		
+
 		//Stadt
 		if(!empty($_POST['stadt']))
 		{
 			$_POST['stadt'] = trim($_POST['stadt']);
 			$_POST['stadt'] = preg_replace("/\s+/", " ", $_POST['stadt']);
-			
+
 			if(Fltr::isRowString($_POST['stadt']))
 			{
 				$dataPost[':stadt'] = $_POST['stadt'];
@@ -215,12 +215,12 @@ class NeuerLehrer
 				$fehlerInput[] = 'stadt';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Stadt fehlt.<br>";
 			$fehlerInput[] = 'stadt';
 		}
-		
+
 		//PLZ
 		if(!empty($_POST['plz']))
 		{
@@ -241,7 +241,7 @@ class NeuerLehrer
 			$fehler .= "PLZ fehlt.<br>";
 			$fehlerInput[] = 'plz';
 		}
-		
+
 		//Geburtsdatum
 		if(!empty($_POST['eingestelltAm']))
 		{
@@ -256,12 +256,12 @@ class NeuerLehrer
 				$fehlerInput[] = 'eingestelltAm';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Einstellungsdatum fehlt.<br>";
 			$fehlerInput[] = 'eingestelltAm';
 		}
-		
+
 		//Fach
 		if(!empty($_POST['fach']))
 		{
@@ -278,12 +278,12 @@ class NeuerLehrer
 				$fehlerInput[] = 'fach';
 			}
 		}
-		
+
 		if(empty($fehler))
-		{	
-			require_once BASIS_DIR.'/MVC/DBFactory.php';
+		{
+
 			$dbh = \MVC\DBFactory::getDBH();
-			
+
 			if(!$dbh)
 			{
 				$output = array('info' => "no connection to db (dbh).");
@@ -312,15 +312,15 @@ class NeuerLehrer
 			//$tbl = substr($tbl, 0, -1);
 			//$vl = substr($vl, 0, -1);
 			$q = "INSERT INTO lehrer (".$tbl.") VALUES(".$vl.")";
-			
+
 			$tq = "SELECT count(*) as 'count' FROM lehrer WHERE anrede=:anrede AND vorname=:vorname AND name=:name AND geburtsdatum=:geburtsdatum AND strasse=:strasse AND strNr=:strNr AND stadt=:stadt AND plz=:plz";
-			
+
 			try
 			{
 				$sthTest = $dbh->prepare($tq);
 				$sthTest->execute($testData);
 				$resTest = $sthTest->fetch(PDO::FETCH_ASSOC, 1);
-				
+
 				if($resTest['count'] > 0)
 				{
 					$output = array('info' => "Der Lehrer ist schon eingetragen.", 'data' => $dataPost);

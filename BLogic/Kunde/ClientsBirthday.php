@@ -1,17 +1,17 @@
 <?php
 namespace Kunde;
-require_once BASIS_DIR.'/MVC/DBFactory.php';
+
 use PDO as PDO;
 //twig
 require_once BASIS_DIR . '/Vendor/autoload.php';
 
 class ClientsBirthday {
   public function showList(){
-	
+
 	$vars = array();
 	#$startMonth = !empty($_GET['start_month']) ? $_GET['start_month'] : "";
 	#$endMonth = !empty($_GET['end_month']) ? $_GET['end_month'] : "";
-	
+
 	//date to check
 	$date = date("m");
 	$searchArr = array(":month" => $date);
@@ -19,7 +19,7 @@ class ClientsBirthday {
 		." FROM kunden"
 		." WHERE MONTH(geburtsdatum) = :month"
 		." ORDER BY vorname ASC, name ASC, geburtsdatum ASC";
-	
+
 	$dbh = \MVC\DBFactory::getDBH();
 	if(!$dbh)
 	{

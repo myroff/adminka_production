@@ -24,25 +24,25 @@ class KursEntfernen {
 				$fehler .= "EintragID ist KEIN INT-Wert";
 			}
 		}
-		
+
 		if(empty($fehler))
 		{
-			require_once BASIS_DIR.'/MVC/DBFactory.php';
+
 			$dbh = \MVC\DBFactory::getDBH();
-			
+
 			if(!$dbh)
 			{
 				$output = array('fehler' => "no connection to db (dbh).");
 				header("Content-type: application/json");
 				exit(json_encode($output));
 			}
-			
+
 			$q = "DELETE FROM kundehatkurse WHERE eintrId=".$dataPost[':eintrId'];
-			
+
 			try
 			{
 				$resCount = $dbh->exec($q);
-				
+
 				if($resCount > 0)
 				{
 					$output = array('info' => "Der Kurs wurde erfolgreich entfernt.");
@@ -59,7 +59,7 @@ class KursEntfernen {
 		else {
 			$output['fehler'] = $fehler;
 		}
-		
+
 		header("Content-type: application/json");
 		exit(json_encode($output));
 	}

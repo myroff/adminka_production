@@ -12,7 +12,7 @@ class addKursToKunde
 		$dataPost = array();
 		$testData = array();
 		$output = array();
-		
+
 		if( !isset($_POST['kndId']) OR empty($_POST['kndId']) OR !Fltr::isInt(($_POST['kndId'])))
 		{
 			$fehler .= "Kunden Id fehlt oder ist kein Integer.";
@@ -22,7 +22,7 @@ class addKursToKunde
 			$dataPost[':kndId'] = $_POST['kndId'];
 			$testData[':kndId'] = $_POST['kndId'];
 		}
-		
+
 		if( !isset($_POST['kurId']) OR empty($_POST['kurId']) OR !Fltr::isInt(($_POST['kurId'])))
 		{
 			$fehler .= "Kurs-Id fehlt oder ist kein Integer.";
@@ -32,7 +32,7 @@ class addKursToKunde
 			$dataPost[':kurId'] = $_POST['kurId'];
 			$testData[':kurId'] = $_POST['kurId'];
 		}
-		
+
 		if( !isset($_POST['seasonId']) OR empty($_POST['seasonId']) OR !Fltr::isInt(($_POST['seasonId'])))
 		{
 			$fehler .= "Season-Id fehlt oder ist kein Integer.";
@@ -42,7 +42,7 @@ class addKursToKunde
 			$dataPost[':season_id'] = $_POST['seasonId'];
 			$testData[':season_id'] = $_POST['seasonId'];
 		}
-		
+
 		if(!isset($_POST['von']) OR empty($_POST['von']))
 		{
 			$fehler .= "Anfangsmonat fehlt.";
@@ -59,7 +59,7 @@ class addKursToKunde
 				$fehler .= "Anfangsmonat: falsher format.";
 			}
 		}
-		
+
 		if(!isset($_POST['bis']) OR empty($_POST['bis']))
 		{
 			$fehler .= "Endmonat fehlt.";
@@ -76,7 +76,7 @@ class addKursToKunde
 				$fehler .= "Endmonat: falsher format.";
 			}
 		}
-		
+
 		if(isset($_POST['isSonderPreisSet']))
 		{
 			if(isset($_POST['sonderPreis']) )//AND !empty($_POST['sonderPreis'])
@@ -95,7 +95,7 @@ class addKursToKunde
 			else{
 				$fehler .= "Sonderpreis fehlt. SonderPrice = ".$_POST['sonderPreis'];
 			}
-			
+
 			if(isset($_POST['khkIsStdPreis']) AND !empty($_POST['khkIsStdPreis']))
 			{
 				$dataPost[':khkIsStdPreis'] = $_POST['khkIsStdPreis'] === "proStunde" ? 1 : 0;
@@ -104,18 +104,17 @@ class addKursToKunde
 				$fehler .= "Zahlungstype fehlt.";
 			}
 		}
-		
+
 		if(isset($_POST['khkKomm']) OR !empty($_POST['khkKomm']))
 		{
 			$dataPost[':khkKomm'] = Fltr::filterStr($_POST['khkKomm']);
-			
+
 		}
-		
+
 		if(empty($fehler))
-		{	
-			require_once BASIS_DIR.'/MVC/DBFactory.php';
+		{
 			$dbh = \MVC\DBFactory::getDBH();
-			
+
 			if(!$dbh)
 			{
 				$output = array('status' => 'error', 'info' => "no connection to db (dbh).");
@@ -143,17 +142,17 @@ class addKursToKunde
 
 			$q = "INSERT INTO kundehatkurse (".$tbl.") VALUES(".$vl.")";
 			$tq = "SELECT count(*) as 'count' FROM kundehatkurse WHERE kndId=:kndId AND season_id=:season_id AND kurId=:kurId AND ( (:von BETWEEN von AND bis) OR (:bis BETWEEN von AND bis) )";
-			
+
 			try
 			{
 				$sthTest = $dbh->prepare($tq);
 				$sthTest->execute($testData);
 				$resTest = $sthTest->fetch(PDO::FETCH_ASSOC, 1);
-				
+
 				if($resTest['count'] > 0)
 				{
 					$output = array('status' => 'error', 'info' => "Der Kunde ist schon zu diesem Unterricht zu diesem Zeitraum angemeldet.");
-					
+
 					header("Content-type: application/json");
 					exit(json_encode($output));
 				}
@@ -180,17 +179,17 @@ class addKursToKunde
 		{
 			$output = array('status' => 'error', 'info' => $fehler);
 		}
-		
+
 		header("Content-type: application/json");
 		exit(json_encode($output));
 	}
-	
+
 	public function ajaxUpdateKurs()
 	{
 		$fehler = "";
 		$dataPost = array();
 		$output = array();
-		
+
 		if( !isset($_POST['eintrId']) OR empty($_POST['eintrId']) OR !Fltr::isInt(($_POST['eintrId'])))
 		{
 			$fehler .= "EintragId fehlt oder ist kein Integer.";
@@ -199,7 +198,7 @@ class addKursToKunde
 		{
 			$dataPost[':eintrId'] = $_POST['eintrId'];
 		}
-		
+
 		if( !isset($_POST['kndId']) OR empty($_POST['kndId']) OR !Fltr::isInt(($_POST['kndId'])))
 		{
 			$fehler .= "Kunden Id fehlt oder ist kein Integer.";
@@ -208,7 +207,7 @@ class addKursToKunde
 		{
 			$dataPost[':kndId'] = $_POST['kndId'];
 		}
-		
+
 		if( !isset($_POST['kurId']) OR empty($_POST['kurId']) OR !Fltr::isInt(($_POST['kurId'])))
 		{
 			$fehler .= "Unterricht Id fehlt oder ist kein Integer.";
@@ -217,7 +216,7 @@ class addKursToKunde
 		{
 			$dataPost[':kurId'] = $_POST['kurId'];
 		}
-		
+
 		if(isset($_POST['typeVal']) AND !empty($_POST['typeVal']) AND ($_POST['typeVal']==="von" OR $_POST['typeVal']==="bis") )
 		{
 			$dataPost[':typeVal'] = $_POST['typeVal'];
@@ -241,28 +240,27 @@ class addKursToKunde
 		{
 			$fehler .= "Type des Datum fehlt oder ist falsch.";
 		}
-		
+
 		if(empty($fehler))
 		{
-			require_once BASIS_DIR.'/MVC/DBFactory.php';
 			$dbh = \MVC\DBFactory::getDBH();
-			
+
 			if(!$dbh)
 			{
 				$output = array('fehler' => "no connection to db (dbh).");
 				header("Content-type: application/json");
 				exit(json_encode($output));
 			}
-			
+
 			$tq = "SELECT * FROM kundehatkurse WHERE eintrId=:eintrId";
 			$q = "UPDATE kundehatkurse SET  ".$dataPost[':typeVal']."=:dateVal WHERE eintrId=:eintrId";
-			
+
 			try
 			{
 				$sthTest = $dbh->prepare($tq);
 				$sthTest->execute(array(':eintrId' => $dataPost[':eintrId']));
 				$resTest = $sthTest->fetch(PDO::FETCH_ASSOC, 1);
-				
+
 				$d1; $d2;
 				if($dataPost[':typeVal'] === "von")
 				{
@@ -274,7 +272,7 @@ class addKursToKunde
 					$d1 = new \DateTime($resTest['von']);
 					$d2 = new \DateTime($dataPost[':dateVal']);
 				}
-				
+
 				if($d1 <= $d2)
 				{
 					$sth = $dbh->prepare($q);
@@ -289,14 +287,14 @@ class addKursToKunde
 			catch (Exception $ex) {
 				$output['fehler'] = $ex;
 			}
-			
+
 			$output['info'] = json_encode($dataPost);
 		}
 		else
 		{
 			$output['fehler'] = $fehler;
 		}
-		
+
 		header("Content-type: application/json");
 		exit(json_encode($output));
 	}

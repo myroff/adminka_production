@@ -14,43 +14,43 @@ class User
 		else
 			return false;
 	}//end public static getCurrentUser()
-	
+
 	public static function getCurrentUserInfo()
 	{
 		$uId = self::getCurrentUserId();
-		
+
 		if(!$uId) return FALSE;
-		
-		require_once BASIS_DIR.'/MVC/DBFactory.php';
+
+
         $dbh = \MVC\DBFactory::getDBH();
         if(!$dbh)
         {
             echo "no Connection to DB";
             return FALSE;
         }
-		
+
 		$res = array();
 		$q = "SELECT * FROM mitarbeiter WHERE mtId=:mtId";
-		
+
 		try
 		{
 			$sth = $dbh->prepare($q);
 			$sth->execute(array(':mtId' => $uId));
 			$res = $sth->fetch(PDO::FETCH_ASSOC, 1);
-			
+
 		} catch (Exception $ex) {
 			print($ex);
 			return FALSE;
 		}
-		
+
 		return $res;
 	}
-	
+
 	public static function getUserByPswd()
 	{
-		
+
 	}
-	
+
 	public static function getUserLogin()
 	{
 		$tmpKey;
@@ -60,17 +60,17 @@ class User
 		}
 		else
 			return false;
-		
-		require_once BASIS_DIR.'/MVC/DBFactory.php';
+
+
         $dbh = \MVC\DBFactory::getDBH();
         if(!$dbh)
         {
             return FALSE;
         }
-		
+
 		$q = "SELECT login FROM mtblogin LEFT JOIN tmplogin USING(mtId) WHERE tmpPswd=:tmpPswd";
 		$res = array();
-		
+
 		try{
 			$sth = $dbh->prepare($q);
 			$sth->execute(array(':tmpPswd' => $tmpKey));
@@ -78,10 +78,10 @@ class User
 		}catch (Exception $ex) {
 			return FALSE;
 		}
-		
+
 		return $res['login'];
 	}
-	
+
 	public static function getUserGroup()
 	{
 		$tmpKey;
@@ -91,17 +91,17 @@ class User
 		}
 		else
 			return false;
-		
-		require_once BASIS_DIR.'/MVC/DBFactory.php';
+
+
         $dbh = \MVC\DBFactory::getDBH();
         if(!$dbh)
         {
             return FALSE;
         }
-		
+
 		$q = "SELECT grpName FROM groups LEFT JOIN mtbingrp USING(grpId) LEFT JOIN mtblogin USING(mtId) LEFT JOIN tmplogin USING(mtId) WHERE tmpPswd=:tmpPswd";
 		$res = array();
-		
+
 		try{
 			$sth = $dbh->prepare($q);
 			$sth->execute(array(':tmpPswd' => $tmpKey));

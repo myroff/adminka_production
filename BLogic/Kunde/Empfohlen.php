@@ -3,7 +3,7 @@ namespace Kunde;
 use PDO as PDO;
 require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
-require_once BASIS_DIR.'/MVC/DBFactory.php';
+
 use MVC\DBFactory as DBFactory;
 
 class Empfohlen
@@ -20,7 +20,7 @@ class Empfohlen
 {
 	display:none;
 	border:2px solid #a1a1a1;
-	padding:20px; 
+	padding:20px;
 	background:#dddddd;
 	min-width:450px;
 	border-radius:20px;
@@ -33,7 +33,7 @@ class Empfohlen
 #empfohlenMessageBox_message {overflow:scroll;max-height:300px;}
 </style>
 	<button id="getEmpfohlenListe">Wählen</button><br>
-	<input name='<?=$name?>' id="empfohlenKndIdInput" type='text' disabled/>	
+	<input name='<?=$name?>' id="empfohlenKndIdInput" type='text' disabled/>
 <script>
 $("body").append("<div id='empfohlenMessageBox'>"
 			+"<div id='empfohlenMessageBox_message'></div>"
@@ -71,17 +71,17 @@ $(".setEmpfohlen").on("click", function(e){
 });
 </script>
 	<?php
-	
+
 		if($asString)
 		{
 			$out = ob_get_contents();
-			
+
 			ob_end_clean();
-			
+
 			return $out;
 		}
 	}
-	
+
 	public function getGadget()
 	{
 	?>
@@ -108,14 +108,14 @@ $(".setEmpfohlen").on("click", function(e){
 			echo $this->getTable();
 		?>
 			</div>
-		
+
 		</div>
 <script>
 selector = $('#EmpfohlenResults');
 $putKndIdIn = "";
 $("#searchEmpfForm").submit(function(e){
 	e.preventDefault();
-	
+
 	var postData = $(this).serializeArray();
 
 	$.ajax({
@@ -140,9 +140,9 @@ $("#searchEmpfForm").submit(function(e){
 		$sArr = array();
 		$sArr[':vorname'] = empty($_POST['vorname']) ? '' : Fltr::filterStr($_POST['vorname']);
 		$sArr[':name'] = empty($_POST['name']) ? '' : Fltr::filterStr($_POST['name']);
-		
+
 		$res = $this->getDates($sArr);
-		
+
 		$op = "<table>";
 		if(empty($res))
 		{
@@ -161,12 +161,12 @@ $("#searchEmpfForm").submit(function(e){
 						."</tr>";
 			}
 		}
-		
+
 		$op .= "</table>";
 		$op .= "<script>$('.setEmpfohlen').on('click', function(e){e.preventDefault();$('#empfohlenKndIdInput').val( $(this).attr('kndId') );});</script>";
 		return $op;
 	}//public function getList()
-	
+
 	private function getDates($searchArr)
 	{
 		$dbh = DBFactory::getDBH();
@@ -174,12 +174,12 @@ $("#searchEmpfForm").submit(function(e){
 		{
 			return FALSE;
 		}
-		
+
 		$searchArr = array_filter($searchArr);
-		
+
 		$q = "SELECT kndId, vorname, name, strasse, strNr, plz, stadt FROM kunden";
 		$where = "";
-		
+
 		if(!empty($searchArr))
 		{
 			if(isset($searchArr[':vorname']))
@@ -192,25 +192,25 @@ $("#searchEmpfForm").submit(function(e){
 				$where .= " name LIKE :name AND";
 				$searchArr[':name'] .= "%";
 			}
-			
+
 			$where = substr($where, 0, -4);
 			$q .= empty($where) ? '' : " WHERE " . $where;
 		}
-		
+
 		try
 		{
 			$sth = $dbh->prepare($q);
 			$sth->execute($searchArr);
 			$rs = $sth->fetchAll(PDO::FETCH_ASSOC);
-			
+
 			return $rs;
-			
+
 		} catch (Exception $ex) {
 			//print $ex;
 			return FALSE;
 		}
 	}//private function getDates($searchArr)
-	
+
 	public function updateTable()
 	{
 		exit($this->getTable());

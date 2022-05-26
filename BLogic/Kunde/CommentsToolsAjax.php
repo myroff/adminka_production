@@ -2,7 +2,7 @@
 namespace Kunde;
 require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
-require_once BASIS_DIR.'/MVC/DBFactory.php';
+
 use MVC\DBFactory as DBFactory;
 use PDO as PDO;
 
@@ -26,7 +26,7 @@ class CommentsToolsAjax {
 				$fehler .= "kndId ist kein Integer.\n";
 			}
 		}
-		
+
 	//get Current Admin Id
 		require_once BASIS_DIR.'/Tools/User.php';
 		$curAdminId = \Tools\User::getCurrentUserId();
@@ -37,7 +37,7 @@ class CommentsToolsAjax {
 		else{
 			$fehler .= "mtId konnte nicht bestimmt werden.\n";
 		}
-		
+
 	//text
 		if(empty($_POST['comment']))
 		{
@@ -46,21 +46,21 @@ class CommentsToolsAjax {
 		else{
 			$dataPost[':comment'] = Fltr::filterStr($_POST['comment']);
 		}
-		
+
 		if(empty($fehler))
 		{
 			$dbh = DBFactory::getDBH();
-			
+
 			if(!$dbh)
 			{
 				$output = array('status' => "error", 'message' => "Keine Verbindung mit DB.");
 				header("Content-type: application/json");
 				exit(json_encode($output));
 			}
-			
+
 			$tbl = "";
 			$vl = "";
-			
+
 			foreach ($dataPost as $key=>$val)
 			{
 				$tbl .= substr($key, 1).",";
@@ -70,9 +70,9 @@ class CommentsToolsAjax {
 			$vl .= "NOW()";
 			//$tbl = substr($tbl, 0, -1);
 			//$vl = substr($vl, 0, -1);
-			
+
 			$q = "INSERT INTO kndComments (".$tbl.") VALUES(".$vl.")";
-			
+
 			try
 			{
 				$sth = $dbh->prepare($q);
@@ -94,11 +94,11 @@ class CommentsToolsAjax {
 		else{
 			$output = array('status' => "error", 'message' => $fehler);
 		}
-		
+
 		header("Content-type: application/json");
 		exit(json_encode($output));
 	}//end public function newComment()
-	
+
 	public function deleteComment()
 	{
 		$fehler = "";
@@ -119,7 +119,7 @@ class CommentsToolsAjax {
 				$fehler .= "cmntId ist kein Integer.\n";
 			}
 		}
-		
+
 	//get Current Admin Id
 		require_once BASIS_DIR.'/Tools/User.php';
 		$curAdminId = \Tools\User::getCurrentUserId();
@@ -130,27 +130,27 @@ class CommentsToolsAjax {
 		else{
 			$fehler .= "mtId konnte nicht bestimmt werden.\n";
 		}
-		
+
 		if(empty($fehler))
 		{
 			$dbh = DBFactory::getDBH();
-			
+
 			if(!$dbh)
 			{
 				$output = array('status' => "error", 'message' => "Keine Verbindung mit DB.");
 				header("Content-type: application/json");
 				exit(json_encode($output));
 			}
-			
+
 			$q = "SELECT cmntId, kndId, mtId FROM kndComments WHERE cmntId=:cmntId";
 			$qD = "DELETE FROM kndComments WHERE cmntId=:cmntId";
-			
+
 			try
 			{
 				$sth = $dbh->prepare($q);
 				$sth->execute(array(':cmntId' => $cmntId));
 				$res = $sth->fetch(PDO::FETCH_ASSOC, 1);
-				
+
 				if(isset($res['cmntId']))
 				{
 					if($res['mtId'] === $mtId)
@@ -173,7 +173,7 @@ class CommentsToolsAjax {
 				}
 				else{
 					$output = array('status' => "error", 'message' => "[DB] Der Kommentar existiert nicht.");
-				}			
+				}
 			}
 			catch (Exception $ex) {
 				$output = array('status' => "error", 'message' => "try exception");
@@ -182,11 +182,11 @@ class CommentsToolsAjax {
 		else{
 			$output = array('status' => "error",'message' => $fehler);
 		}
-		
+
 		header("Content-type: application/json");
 		exit(json_encode($output));
 	}//end public function deleteComment()
-	
+
 	public function updateComment()
 	{
 		$fehler = "";
@@ -216,7 +216,7 @@ class CommentsToolsAjax {
 		else{
 			$comment = Fltr::filterStr($_POST['comment']);
 		}
-		
+
 	//get Current Admin Id
 		require_once BASIS_DIR.'/Tools/User.php';
 		$curAdminId = \Tools\User::getCurrentUserId();
@@ -227,27 +227,27 @@ class CommentsToolsAjax {
 		else{
 			$fehler .= "mtId konnte nicht bestimmt werden.\n";
 		}
-		
+
 		if(empty($fehler))
 		{
 			$dbh = DBFactory::getDBH();
-			
+
 			if(!$dbh)
 			{
 				$output = array('status' => "error", 'message' => "Keine Verbindung mit DB.");
 				header("Content-type: application/json");
 				exit(json_encode($output));
 			}
-			
+
 			$q = "SELECT cmntId, kndId, mtId FROM kndComments WHERE cmntId=:cmntId";
 			$qU = "UPDATE kndComments SET comment=:comment, updated=NOW() WHERE cmntId=:cmntId";
-			
+
 			try
 			{
 				$sth = $dbh->prepare($q);
 				$sth->execute(array(':cmntId' => $cmntId));
 				$res = $sth->fetch(PDO::FETCH_ASSOC, 1);
-				
+
 				if(isset($res['cmntId']))
 				{
 					if($res['mtId'] === $mtId)
@@ -270,7 +270,7 @@ class CommentsToolsAjax {
 				}
 				else{
 					$output = array('status' => "error", 'message' => "[DB] Der Kommentar existiert nicht.");
-				}			
+				}
 			}
 			catch (Exception $ex) {
 				$output = array('status' => "error", 'message' => $ex);
@@ -279,7 +279,7 @@ class CommentsToolsAjax {
 		else{
 			$output = array('status' => "error",'message' => $fehler);
 		}
-		
+
 		header("Content-type: application/json");
 		exit(json_encode($output));
 	}//end public function updateComment()

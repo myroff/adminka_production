@@ -37,7 +37,7 @@ class LoginController
     {
         //echo 'login = '.$login.'<br>';
         //echo 'pswd = '.$pswd.'<br>';
-        require_once BASIS_DIR.'/MVC/DBFactory.php';
+
         $dbh = \MVC\DBFactory::getDBH();
         if (!$dbh) {
             echo "ho dbh<br>";

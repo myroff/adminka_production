@@ -1,7 +1,7 @@
 <?php
 namespace Statistik;
 use PDO as PDO;
-require_once BASIS_DIR.'/MVC/DBFactory.php';
+
 use MVC\DBFactory as DBFactory;
 require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
@@ -24,13 +24,13 @@ class PayDay {
 			$month = "";
 			$res = NULL;
 		}
-		
+
 		include_once BASIS_DIR.'/Templates/Statistik/PayDay.tmpl.php';
 		return;
 	}
-	
+
 	private function getDayDate($date) {
-		
+
 		if(Fltr::isDate($date))
 		{
 			$dbh = DBFactory::getDBH();
@@ -38,7 +38,7 @@ class PayDay {
 			{
 				return FALSE;
 			}
-			
+
 			$d = Fltr::strToSqlDate($date);
 			//2015-05-19
 			$q = "SELECT r.*, SUM(rndBetrag) as 'summe', m.vorname as 'mtbVorname', m.name as 'mtbName',"
@@ -65,9 +65,9 @@ class PayDay {
 			return NULL;
 		}
 	}
-	
+
 	private function getMonthDate($date) {
-		
+
 		if(preg_match("/\d\d\.\d\d\d\d/", $date))
 		{
 			$dbh = DBFactory::getDBH();
@@ -75,7 +75,7 @@ class PayDay {
 			{
 				return FALSE;
 			}
-			
+
 			$d = Fltr::strToSqlDate("01.".$date);
 			//2015-05-19
 			$q = "SELECT r.*, SUM(rndBetrag) as 'summe', m.vorname as 'mtbVorname', m.name as 'mtbName',"

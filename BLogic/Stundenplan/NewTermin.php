@@ -4,7 +4,7 @@ use PDO as PDO;
 require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
 
-class NewTermin 
+class NewTermin
 {
 	public function addNewTermin()
 	{
@@ -13,7 +13,7 @@ class NewTermin
 		$dataPost = array();
 		$output = array();
 		$testData = array();
-		
+
 	//seasonId
 		if(!empty($_POST['season_id']))
 		{
@@ -29,7 +29,7 @@ class NewTermin
 				$fehlerInput[] = 'kurId';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Saison-ID für Unterricht fehlt.<br>";
 			$fehlerInput[] = 'season_id';
@@ -48,7 +48,7 @@ class NewTermin
 				$fehlerInput[] = 'kurId';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "ID für Unterricht fehlt.<br>";
 			$fehlerInput[] = 'kurId';
@@ -72,7 +72,7 @@ class NewTermin
 			$fehler .= "Tag der Woche fehlt (1 bis 7).<br>";
 			$fehlerInput[] = 'wochentag';
 		}
-		
+
 		if(!empty($_POST['anfang']))
 		{
 			$_POST['anfang'] = str_replace("/\s/", "", $_POST['anfang']);
@@ -87,12 +87,12 @@ class NewTermin
 				$fehlerInput[] = 'anfang';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Anfangszeit fehlt.<br>";
 			$fehlerInput[] = 'anfang';
 		}
-		
+
 		if(!empty($_POST['ende']))
 		{
 			$_POST['ende'] = str_replace("/\s/", "", $_POST['ende']);
@@ -107,12 +107,12 @@ class NewTermin
 				$fehlerInput[] = 'ende';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Anfangszeit fehlt.<br>";
 			$fehlerInput[] = 'ende';
 		}
-		
+
 		if(!empty($_POST['raum']))
 		{
 			$_POST['raum'] = Fltr::deleteSpace($_POST['raum']);
@@ -127,17 +127,17 @@ class NewTermin
 				$fehlerInput[] = 'raum';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Der Raum des Unterrichts fehlt.<br>Erlaubt sind Ziffern 0 bis 9, Buchstaben, Leerzeichen, Symbolen (. , : ; ! ? ' * = # / \ \" - + _).<br>";
 			$fehlerInput[] = 'raum';
 		}
-		
+
 		if(empty($fehler))
-		{	
-			require_once BASIS_DIR.'/MVC/DBFactory.php';
+		{
+
 			$dbh = \MVC\DBFactory::getDBH();
-			
+
 			if(!$dbh)
 			{
 				$output = array('info' => "no connection to db (dbh).");
@@ -155,17 +155,17 @@ class NewTermin
 			}
 			$tbl = substr($tbl, 0, -1);
 			$vl = substr($vl, 0, -1);
-			
+
 			$q = "INSERT INTO stundenplan (".$tbl.") VALUES(".$vl.")";
 			$tq = "SELECT count(*) as 'count' FROM stundenplan WHERE raum=:raum AND wochentag=:wochentag AND season_id = :season_id"
 					. " AND ( (:anfang > anfang AND :anfang < ende) OR (:ende > anfang AND :ende < ende) OR (:anfang = anfang AND :ende = ende) )";
-			
+
 			try
 			{
 				$sthTest = $dbh->prepare($tq);
 				$sthTest->execute($testData);
 				$resTest = $sthTest->fetch(PDO::FETCH_ASSOC, 1);
-				
+
 				if($resTest['count'] > 0)
 				{
 					$output = array('info' => "Die Zeit oder der Raum ist schon besetz.<br>q = $tq", 'data' => $dataPost);

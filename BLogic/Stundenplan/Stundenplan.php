@@ -1,7 +1,7 @@
 <?php
 namespace Stundenplan;
 use PDO as PDO;
-require_once BASIS_DIR.'/MVC/DBFactory.php';
+
 use MVC\DBFactory as DBFactory;
 
 //twig
@@ -24,10 +24,10 @@ class Stundenplan {
 		$sArr[':alter']		= !empty($_GET['search_alter'])		? trim($_GET['search_alter'])		: '';
 		$sArr[':klasse']	= !empty($_GET['search_klasse'])	? trim($_GET['search_klasse'])		: '';
 		$sArr[':season_id']	= !empty($_GET['search_season'])	? trim($_GET['search_season'])		: '';
-		
+
 		$res = $this->searchDates($sArr);
 		$raum = $this->getRaum();
-		
+
 		$this->loadTemplate($res, $raum, $sArr);
 		return;
 	}
@@ -45,26 +45,26 @@ class Stundenplan {
 		$vars['s_alter']	= TmplTls::getAlterSelector("search_alter", "search_alter", $sArr[':alter'], "Alter", 1);
 		$vars['editTerminForm_wochentag']	= TmplTls::getWeekdaySelector("wochentag", "editTerminForm_wochentag", $sArr[':wochentag'], "Tag", 1);
 		$vars['s_season']	= TmplTls::getSeasonsSelector("search_season", "s_season_id", $sArr[':season_id'], "Saisons", 1);
-		
+
 		$vars['userGroups']	= User::getUserGroup();
-		
+
 		$options = []; #array('cache' => TWIG_CACHE_DIR);
 		$loader = new \Twig_Loader_Filesystem(TWIG_TEMPLATE_DIR);
 		$twig = new \Twig_Environment($loader, $options);
 		$twigTmpl = $twig->load('/Stundenplan/StundenplanListe.twig');
 		echo $twigTmpl->render($vars);
-		
-		
+
+
 		#include_once  BASIS_DIR.'/Templates/Stundenplan/StundenplanListe.tmpl.php';
 	}
-	
+
 	/* @param array $lessons - array with lessons ordered by: day, hour, room in ASC order.
 	 * @return array: array('week_day' => array('hour' => array('room' =>'lesson info') ));
 	 */
 	public function sortStundenPlan($lessons)
 	{
 		$out = array();
-		
+
 		foreach($lessons as $stn)
 		{
 			$_d = (int)$stn['wochentag'];
@@ -72,10 +72,10 @@ class Stundenplan {
 			$_r = $stn['raum'];
 			$out[$_d][$_h][$_r][] = $stn;
 		}
-		
+
 		return $out;
 	}
-	
+
 	public function searchDates($searchArr)
 	{
 		$dbh = \MVC\DBFactory::getDBH();
@@ -83,13 +83,13 @@ class Stundenplan {
 		{
 			return FALSE;
 		}
-		
+
 		$where = " k.isKurInactive is NOT TRUE AND ";
 		$having = "";
-		
+
 		//delete empty entries
 		$searchArr = array_filter($searchArr);
-		
+
 		if(isset($searchArr[':raum']))
 		{
 			$having .= " stpl.raum = :raum AND";
@@ -123,10 +123,10 @@ class Stundenplan {
 		{
 			$curSeason = "stpl.season_id = :season_id";
 		}
-		
+
 		$having = substr($having, 0, -4);
 		$where = substr($where, 0, -4);
-		
+
 		$q = "SELECT ( (TIME_TO_SEC(ende) - TIME_TO_SEC(anfang) )/60 ) as kurLength,"
 				. " TIME_FORMAT(anfang, '%H:%i') as anfang, TIME_FORMAT(ende, '%H:%i') as ende, wochentag, raum,"
 				. " k.*, l.name, l.vorname, l.lehrId, count(khk.kndId) as countKnd, k.maxKnd, stpl.stnPlId"
@@ -136,28 +136,28 @@ class Stundenplan {
 				. " LEFT JOIN lehrer as l USING(lehrId)"
 				. " LEFT JOIN (SELECT * FROM kundehatkurse WHERE NOW() <= bis) as khk USING(kurId)"//BETWEEN von AND
 				. " WHERE ".$curSeason;
-		
+
 		$q .= empty($where) ? '' : " AND ".$where;
 		$q .= " GROUP By stpl.stnPlId ";
-		
+
 		$q .= empty($having) ? '' : " HAVING " . $having;
 		$q .= " ORDER By stpl.wochentag, HOUR(stpl.anfang), cast(stpl.raum as unsigned) ASC";
-		
+
 		try
 		{
-			
+
 			$sth = $dbh->prepare($q);
 			$sth->execute($searchArr);
 			$rs = $sth->fetchAll(PDO::FETCH_ASSOC);
-			
+
 			return $rs;
-			
+
 		} catch (Exception $ex) {
 			//print $ex;
 			return FALSE;
 		}
 	}
-	
+
 	private function getRaum()
 	{
 		$dbh = DBFactory::getDBH();
@@ -165,20 +165,20 @@ class Stundenplan {
 		{
 			return FALSE;
 		}
-		
+
 		$q = "SELECT raum FROM stundenplan"
 			." GROUP BY raum"
 			." ORDER BY CAST(raum AS UNSIGNED) ASC";
-		
+
 		try
 		{
-			
+
 			$sth = $dbh->prepare($q);
 			$sth->execute();
 			$rs = $sth->fetchAll(PDO::FETCH_ASSOC);
-			
+
 			return $rs;
-			
+
 		} catch (Exception $ex) {
 			//print $ex;
 			return FALSE;

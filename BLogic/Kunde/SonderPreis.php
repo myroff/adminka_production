@@ -10,7 +10,7 @@ class SonderPreis {
 		$fehler = "";
 		$dataPost = array();
 		$output = array();
-		
+
 		if(!isset($_POST['eintrId']) AND empty($_POST['eintrId']))
 		{
 			$fehler .= "eintrId fehlt.\n";
@@ -19,7 +19,7 @@ class SonderPreis {
 		{
 			$dataPost[':eintrId'] = $_POST['eintrId'];
 		}
-		
+
 		if(!isset($_POST['sonderPreis']) AND empty($_POST['sonderPreis']))
 		{
 			$fehler .= "sonderPreis fehlt.\n";
@@ -37,7 +37,7 @@ class SonderPreis {
 				$fehler .= "sonderPreis ist kein Zahl.\n";
 			}
 		}
-		
+
 		if(!isset($_POST['khkIsStdPreis']) AND empty($_POST['khkIsStdPreis']))
 		{
 			$fehler .= "Zahlungstype fehlt.\n";
@@ -47,18 +47,18 @@ class SonderPreis {
 			$_POST['khkIsStdPreis'] = Fltr::deleteSpace($_POST['khkIsStdPreis']);
 			$dataPost[':khkIsStdPreis'] = $_POST['khkIsStdPreis'] === 'proStunde' ? 1 : 0;
 		}
-		
+
 		if(!empty($fehler))
 		{
 			$output['status'] = $fehler;
 			header("Content-type: application/json");
 			exit(json_encode($output));
 		}
-		
+
 		$q = "UPDATE kundehatkurse SET sonderPreis=:sonderPreis,khkIsStdPreis=:khkIsStdPreis WHERE eintrId=:eintrId";
 		$res ="";
-		
-		require_once BASIS_DIR.'/MVC/DBFactory.php';
+
+
 		$dbh = \MVC\DBFactory::getDBH();
 		if(!$dbh)
 		{
@@ -66,7 +66,7 @@ class SonderPreis {
 			header("Content-type: application/json");
 			exit(json_encode($output));
 		}
-		
+
 		try
 		{
 			$sth = $dbh->prepare($q);
@@ -78,12 +78,12 @@ class SonderPreis {
 			exit(json_encode($output));
 		}
 		$r = ($res>0) ? "ok" : "Update fehlgeschlagen\n".print_r($dataPost,1);
-		
+
 		$output['status'] = $r;
 		header("Content-type: application/json");
 		exit(json_encode($output));
 	}
-	
+
 	public function ajaxDelete()
 	{
 		if(!isset($_POST['eintrId']) AND empty($_POST['eintrId']))
@@ -94,18 +94,18 @@ class SonderPreis {
 		{
 			$dataPost[':eintrId'] = $_POST['eintrId'];
 		}
-		
+
 		if(!empty($fehler))
 		{
 			$output['status'] = $fehler;
 			header("Content-type: application/json");
 			exit(json_encode($output));
 		}
-		
+
 		$q = "UPDATE kundehatkurse SET sonderPreis=NULL, khkIsStdPreis=NULL WHERE eintrId=:eintrId";
 		$res ="";
-		
-		require_once BASIS_DIR.'/MVC/DBFactory.php';
+
+
 		$dbh = \MVC\DBFactory::getDBH();
 		if(!$dbh)
 		{
@@ -113,7 +113,7 @@ class SonderPreis {
 			header("Content-type: application/json");
 			exit(json_encode($output));
 		}
-		
+
 		try
 		{
 			$sth = $dbh->prepare($q);
@@ -125,7 +125,7 @@ class SonderPreis {
 			exit(json_encode($output));
 		}
 		$r = ($res>0) ? "ok" : "Entfeernen fehlgeschlagen\n".print_r($dataPost,1);
-		
+
 		$output['status'] = $r;
 		header("Content-type: application/json");
 		exit(json_encode($output));

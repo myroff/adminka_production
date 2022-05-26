@@ -4,14 +4,14 @@ require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
 use PDO as PDO;
 
-class NeuerMitarbeiter 
+class NeuerMitarbeiter
 {
 	public function showForm()
 	{
 		include_once BASIS_DIR.'/Templates/Mitarbeiter/MitarbeiterNeu.tmpl.php';
 		return;
 	}
-	
+
 	public function saveNewMitarbeiter()
 	{
 		$fehler = "";
@@ -35,7 +35,7 @@ class NeuerMitarbeiter
 				$fehlerInput[] = 'anrede';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Anrede fehlt.<br>";
 			$fehlerInput[] = 'anrede';
@@ -57,7 +57,7 @@ class NeuerMitarbeiter
 				$fehlerInput[] = 'vorname';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Vorname fehlt.<br>";
 			$fehlerInput[] = 'vorname';
@@ -79,12 +79,12 @@ class NeuerMitarbeiter
 				$fehlerInput[] = 'name';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Name fehlt.<br>";
 			$fehlerInput[] = 'name';
 		}
-		
+
 		//Geburtsdatum
 		if(!empty($_POST['geburtsdatum']))
 		{
@@ -100,12 +100,12 @@ class NeuerMitarbeiter
 				$fehlerInput[] = 'geburtsdatum';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Geburtsdatum fehlt.<br>";
 			$fehlerInput[] = 'geburtsdatum';
 		}
-		
+
 		//Telefon
 		if(!empty($_POST['telefon']))
 		{
@@ -120,7 +120,7 @@ class NeuerMitarbeiter
 				$fehlerInput[] = 'telefon';
 			}
 		}
-		
+
 		//Handy
 		if(!empty($_POST['handy']))
 		{
@@ -135,7 +135,7 @@ class NeuerMitarbeiter
 				$fehlerInput[] = 'handy';
 			}
 		}
-		
+
 		//Email
 		if(!empty($_POST['email']))
 		{
@@ -150,7 +150,7 @@ class NeuerMitarbeiter
 				$fehlerInput[] = 'email';
 			}
 		}
-		
+
 		//Strasse
 		if(!empty($_POST['strasse']))
 		{
@@ -167,12 +167,12 @@ class NeuerMitarbeiter
 				$fehlerInput[] = 'strasse';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Strasse fehlt.<br>";
 			$fehlerInput[] = 'strasse';
 		}
-		
+
 		//Hausnummer
 		if(!empty($_POST['haus']))
 		{
@@ -188,12 +188,12 @@ class NeuerMitarbeiter
 				$fehlerInput[] = 'haus';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Hausnummer fehlt.<br>";
 			$fehlerInput[] = 'haus';
 		}
-		
+
 		//Stadt
 		if(!empty($_POST['stadt']))
 		{
@@ -210,12 +210,12 @@ class NeuerMitarbeiter
 				$fehlerInput[] = 'stadt';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Stadt fehlt.<br>";
 			$fehlerInput[] = 'stadt';
 		}
-		
+
 		//PLZ
 		if(!empty($_POST['plz']))
 		{
@@ -236,7 +236,7 @@ class NeuerMitarbeiter
 			$fehler .= "PLZ fehlt.<br>";
 			$fehlerInput[] = 'plz';
 		}
-		
+
 		//Geburtsdatum
 		if(!empty($_POST['eingestelltAm']))
 		{
@@ -251,17 +251,17 @@ class NeuerMitarbeiter
 				$fehlerInput[] = 'eingestelltAm';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Einstellungsdatum fehlt.<br>";
 			$fehlerInput[] = 'eingestelltAm';
 		}
-		
+
 		if(empty($fehler))
-		{	
-			require_once BASIS_DIR.'/MVC/DBFactory.php';
+		{
+
 			$dbh = \MVC\DBFactory::getDBH();
-			
+
 			if(!$dbh)
 			{
 				$output = array('info' => "no connection to db (dbh).");
@@ -290,15 +290,15 @@ class NeuerMitarbeiter
 			//$tbl = substr($tbl, 0, -1);
 			//$vl = substr($vl, 0, -1);
 			$q = "INSERT INTO mitarbeiter (".$tbl.") VALUES(".$vl.")";
-			
+
 			$tq = "SELECT count(*) as 'count' FROM mitarbeiter WHERE anrede=:anrede AND vorname=:vorname AND name=:name AND geburtsdatum=:geburtsdatum AND strasse=:strasse AND strNr=:strNr AND stadt=:stadt AND plz=:plz";
-			
+
 			try
 			{
 				$sthTest = $dbh->prepare($tq);
 				$sthTest->execute($testData);
 				$resTest = $sthTest->fetch(PDO::FETCH_ASSOC, 1);
-				
+
 				if($resTest['count'] > 0)
 				{
 					$output = array('info' => "Der Mitarbeiter ist schon eingetragen.", 'data' => $dataPost);

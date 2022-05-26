@@ -12,13 +12,13 @@ class UpdateKundenKursKommentar
 		$dataPost = array();
 		$output = array();
 		$eId; $komm;
-		
+
 		if(isset($_POST['eintrId']) AND !empty($_POST['eintrId']))
 		{
 			$dataPost[':eintrId'] = Fltr::deleteSpace($_POST['eintrId']);
 			if(Fltr::isInt($dataPost[':eintrId']))
 			{
-				
+
 			}
 			else {
 				$fehler = "Eintrags-ID ist kein Integer.";
@@ -28,7 +28,7 @@ class UpdateKundenKursKommentar
 		{
 			$fehler = "Eintrags-ID fehlt.";
 		}
-		
+
 		if(isset($_POST['khkKomm']))
 		{
 			if(empty($_POST['khkKomm']))
@@ -44,18 +44,18 @@ class UpdateKundenKursKommentar
 		{
 			$fehler = "Kommentar fehlt.";
 		}
-		
+
 		if(!empty($fehler))
 		{
 			$output['status'] = $fehler;
 			header("Content-type: application/json");
 			exit(json_encode($output));
 		}
-		
+
 		$q = "UPDATE kundehatkurse SET khkKomm=:khkKomm WHERE eintrId=:eintrId";
 		$res ="";
-		
-		require_once BASIS_DIR.'/MVC/DBFactory.php';
+
+
 		$dbh = \MVC\DBFactory::getDBH();
 		if(!$dbh)
 		{
@@ -63,7 +63,7 @@ class UpdateKundenKursKommentar
 			header("Content-type: application/json");
 			exit(json_encode($output));
 		}
-		
+
 		try
 		{
 			$sth = $dbh->prepare($q);
@@ -75,7 +75,7 @@ class UpdateKundenKursKommentar
 			exit(json_encode($output));
 		}
 		$r = ($res>0) ? "ok" : "Update fehlgeschlagen\n".print_r($dataPost,1);
-		
+
 		$output['status'] = $r;
 		header("Content-type: application/json");
 		exit(json_encode($output));

@@ -1,7 +1,7 @@
 <?php
 namespace Login;
 use PDO as PDO;
-require_once BASIS_DIR.'/MVC/DBFactory.php';
+
 use MVC\DBFactory as DBFactory;
 
 require_once BASIS_DIR.'/Tools/Filter.php';

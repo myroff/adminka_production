@@ -1,13 +1,13 @@
 <?php
 namespace Kurse;
-require_once BASIS_DIR.'/MVC/DBFactory.php';
+
 use PDO as PDO;
 require_once BASIS_DIR.'/Tools/TmplTools.php';
 use Tools\TmplTools as TmplTls;
 require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
 
-class KursSelector 
+class KursSelector
 {
 	static public function getKursSelector($selectorName="", $selectorId="", $size="", $update_url="", $asString=FALSE)
 	{
@@ -18,15 +18,15 @@ class KursSelector
 		$sArr[':wochentag'] = empty($_POST['wochentag']) ? '' : $_POST['wochentag'];
 		$sArr[':wochentag'] = empty($_POST['wochentag']) ? '' : $_POST['wochentag'];
 		$sArr[':season_id']	= empty($_POST['search_season'])? self::getCurrentSeasonId() : $_POST['search_season'];
-		
+
 		$res = self::searchDates($sArr);
-		
+
 		$name = empty($selectorName) ? "" : "name=$selectorName";
 		$id = empty($selectorId) ? "" : "id=$selectorId";
 		$size = empty($size) ? "" : "size=$size";
-		
+
 		$SearchPanel_formId = $selectorName."_searchPanel";
-		
+
 		if($asString)
 		{
 			ob_start();
@@ -52,7 +52,7 @@ class KursSelector
 					Klasse
 				</th>
 				<td>
-					
+
 				</td>
 			</tr>
 			<tr>
@@ -90,9 +90,9 @@ class KursSelector
 			$klasse = $r['kurMinKlasse'];
 			$klasse .= $r['kurMinKlasse'] < $r['kurMaxKlasse'] ? " bis ".$r['kurMaxKlasse'] : "";
 			$klasse .= empty($klasse) ? '' : " Klasse.";
-			
+
 			//echo"<option value='".$r['kurId']."'>".$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."</option>";
-			
+
 			echo"<option value='".$r['kurId']."' season_id='".$r['season_id']."'>".$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."<br>"
 					. " ".$r['season_name']
 					. " Termine: <br>"
@@ -143,15 +143,15 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 		if($asString)
 		{
 			$out = ob_get_contents();
-			
+
 			ob_end_clean();
-			
+
 			return $out;
 		}
-		
+
 		return;
 	}
-	
+
 	public function updateKursSelector()
 	{
 		$sArr = array();
@@ -160,9 +160,9 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 		$sArr[':kurAlter']	= empty($_POST['kurAlter'])		? '' : $_POST['kurAlter'];
 		$sArr[':kurKlasse']	= empty($_POST['kurKlasse'])	? '' : $_POST['kurKlasse'];
 		$sArr[':wochentag']	= empty($_POST['wochentag'])	? '' : $_POST['wochentag'];
-		
+
 		$res = $this->searchDates($sArr);
-		
+
 		if(empty($res))
 		{
 			$output = "<option>keine passende Einträge gefunden</option>";
@@ -195,7 +195,7 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 		header("Content-type: text/html");
 		exit($output);
 	}
-	
+
 	private static function searchDates($searchArr)
 	{
 		$dbh = \MVC\DBFactory::getDBH();
@@ -203,16 +203,16 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 		{
 			return FALSE;
 		}
-		
+
 		$where = "";
-		
+
 		//delete empty entries
 		$searchArr = array_filter($searchArr);
 		$q = "SELECT k.*, l.vorname, l.name, se.season_id, se.season_name"
 			. ", group_concat('{\"wochentag\":\"',wochentag,'\",\"time\":\"', TIME_FORMAT(anfang, '%H:%i'),' - ', TIME_FORMAT(ende, '%H:%i'),'\"}' SEPARATOR',') as termin"
 			. " FROM kurse as k LEFT JOIN stundenplan as st USING(kurId) LEFT JOIN lehrer as l USING(lehrId)"
 			. " LEFT JOIN seasons as se USING(season_id)";
-		
+
 		if(!empty($searchArr))
 		{
 			if(isset($searchArr[':kurName']))
@@ -236,27 +236,27 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 			{
 				$where .= " season_id=:season_id AND";
 			}
-			
+
 			$where = substr($where, 0, -4);
 			$q .= empty($where) ? '' : " WHERE " . $where;
 		}
-		
+
 		$q .= " GROUP BY k.kurId";
-		
+
 		try
 		{
 			$sth = $dbh->prepare($q);
 			$sth->execute($searchArr);
 			$rs = $sth->fetchAll(PDO::FETCH_ASSOC);
-			
+
 			return $rs;
-			
+
 		} catch (Exception $ex) {
 			//print $ex;
 			return FALSE;
 		}
 	}
-	
+
 	static public function getCurrentSeasonId()
 	{
 		$dbh = \MVC\DBFactory::getDBH();
