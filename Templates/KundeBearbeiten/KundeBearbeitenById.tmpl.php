@@ -14,22 +14,22 @@ $nextYear = ACTUAL_YEAR + 1;
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" media="screen" />
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/jquery-2.1.1.min.js"></script>
-		
+
 		<script src="<?=BASIS_URL?>/Public/jquery-ui/jquery-ui.min.js"></script>
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/jquery-ui/jquery-ui.min.css">
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/zebra_datepicker.js"></script>
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/zebra_default.css">
-		
+
 		<style>
-			#updateItemTable, #addKursTable, #updateItem_Anrede, #UpdateKur_Table, #Zahlungsformular, #updateItem_istFotoErlaubt, 
+			#updateItemTable, #addKursTable, #updateItem_Anrede, #UpdateKur_Table, #Zahlungsformular, #updateItem_istFotoErlaubt,
 			#updateBankDates, #updateBankDates_isCash, #editSonderPreis_Table, #editKundenKursKomm_Table, #changeKurs_Table, #changeKursConfirm_Table
 			{
 				display:none;
 				border:2px solid #a1a1a1;
-				padding:20px; 
+				padding:20px;
 				background:#dddddd;
 				min-width:450px;
 				border-radius:20px;
@@ -39,13 +39,13 @@ $nextYear = ACTUAL_YEAR + 1;
 				left:30%;
 				z-index:100;
 			}
-			
+
 			.zebra_datepicker, .zebra_datepicker_dmy{width:70px;}
-			
+
 			#privateDates{overflow: hidden;}
 			#privateDates table{float:left;}
 			#privateDates table th{text-align: right;}
-			
+
 			#chooseKurs{}
 			#chooseKurs{margin-left:10px;}
 			#kurListe{clear:both;margin-top:10px;}
@@ -365,12 +365,12 @@ $nextYear = ACTUAL_YEAR + 1;
 					</tr>
 				</table>
 			</div>
-			
+
 			<div id="chooseKurs">
 				<?php KurSel::getKursSelector("kurId", 'k_kurId', "10", "/admin/ajaxKursSelectorUpdate"); ?>
 				<button onclick="addKurs()">Hinzufügen</button>
 			</div>
-			
+
 			<div id="kurListe">
 				<table id="kundenResTbl">
 					<tr>
@@ -423,20 +423,20 @@ $nextYear = ACTUAL_YEAR + 1;
 					{
 						$alter = $r['kurMinAlter'];
 						$alter .= $r['kurMinAlter'] < $r['kurMaxAlter'] ? " bis ".$r['kurMaxAlter'] : '';
-						
+
 						$klasse = $r['kurMinKlasse'];
 						$klasse .= $r['kurMinKlasse'] < $r['kurMaxKlasse'] ? " bis ".$r['kurMaxKlasse'] : "";
-						
+
 						$vonVal = Fltr::sqlDateToStr($r['von']);
 						$bisVal = Fltr::sqlDateToStr($r['bis']);
-						
+
 						echo "<tr>";
-						
+
 						echo "<td>".$r['kurName']."<br>";
 						echo Fltr::printSqlTermin($r['termin']);
 						echo "<br><button class='changeKursButton'  kurId='".$r['kurId']."' eintrId='".$r['eintrId']."'>Ändern</button>";
 						echo "</td>";
-						
+
 						echo "<td>".$r['vorname']." ".$r['name']."</td>";
 						//Preis
 						echo "<td>".$r['kurPreis']." ";
@@ -461,7 +461,7 @@ $nextYear = ACTUAL_YEAR + 1;
 						echo "<td>".$bisVal."<button class='updateKurDateButton' "
 								. "kurId='".$r['kurId']."' kurName='".$r['kurName']."' kurDateType='bis' dateVal='$bisVal' eintrId='".$r['eintrId']."' ></button></td>";
 						echo "<td><button class='kurEntfernenButton' eintrId='".$r['eintrId']."' >Löschen</button></td>";
-						
+
 						echo "</tr>";
 					}
 				}
@@ -755,21 +755,21 @@ $nextYear = ACTUAL_YEAR + 1;
 			var Update_ValueContainter = $('#upateItemTable_Form_ValueContainer');
 			var updateTable_Form_Value = $('#updateItemTable_Form_Value');
 			var updateTable_Form_ButtonAbbrechen = $('#updateItemTable_Form_ButtonAbbrechen');
-			
+
 			//$("form [name=vorname]").css({'background':'red'});
 			//$('form').attr("name", "plz").css({'background':'red'});
 			var itemName;
-			
+
 			$(".zebra_datepicker").Zebra_DatePicker({
 				format: 'm.Y'   //  note that becase there's no day in the format
 								//  users will not be able to select a day!
 			});
-			
+
 			$(".zebra_datepicker_dmy").Zebra_DatePicker({
 				format: 'd.m.Y',	//note that becase there's no day in the format
 						//users will not be able to select a day!
 			});
-			  
+
 			//click at button "Bearbeiten"
 			$('.editItem').click(function()
 			{
@@ -777,28 +777,28 @@ $nextYear = ACTUAL_YEAR + 1;
 				itemName = parent.children('.itemName').text().trim();
 				itemName = itemName.replace(/\s+/, ' ');
 				var itemValue = parent.children('.itemValue').text().trim();
-				
+
 				if(typeof(itemName) === "undefined")
 				{
 					meldung.html("itemName ist nicht definiert.");
 					return;
 				}
-				
+
 				if(itemName === "Anrede")
 				{
 					$('#updateItem_Anrede').slideDown(1000);
 					return;
 				}
-				
+
 				if(itemName === "istFotoErlaubt")
 				{
 					$('#updateItem_istFotoErlaubt').slideDown(1000);
 					return;
 				}
-				
+
 				if(itemName === "Geburtsdatum (dd.mm.yyyy)")
 				{
-					
+
 					updateTable_Form_Value.datepicker({
 						dateFormat: "dd.mm.yy",
 						changeMonth: true,
@@ -816,29 +816,29 @@ $nextYear = ACTUAL_YEAR + 1;
 						format: 'd.m.Y'
 					  });*/
 				}
-				
+
 				updateTable_Title.text(itemName);
 				updateTable_Form_Value.val(itemValue);
 				updateTable_Form_Name.val(itemName);
-				
+
 				updateTable.slideDown(1000);
 			});
-			
+
 			$('#updateItem_Anrede_ButtonAbbrechen').click(function(e){
 				e.preventDefault();
 				$('#updateItem_Anrede').slideUp('slow');
 			});
-			
+
 			$('#updateItem_istFotoErlaubt_ButtonAbbrechen').click(function(e){
 				e.preventDefault();
 				$('#updateItem_istFotoErlaubt').slideUp('slow');
 			});
-			
+
 			//close update pop-up
 			updateTable_Form_ButtonAbbrechen.click(function(e){
 				e.preventDefault();
 				updateTable.slideUp('slow');
-				
+
 				if(itemName === "Geburtsdatum (dd.mm.yyyy)")
 				{
 					updateTable_Form_Value.datepicker('destroy');
@@ -849,29 +849,29 @@ $nextYear = ACTUAL_YEAR + 1;
 					*/
 				}
 			});
-			
+
 //unterricht hinzufügen
 			function addKurs()
 			{
 				var kurId = $('#k_kurId').val();
 				var text = $('#k_kurId option:selected').text();
-				
+
 				$('#addKursTable_KurName').html(text);
 				$('#addKursTable_Form_kndId').val(kndId);
 				$('#addKursTable_Form_kurId').val(kurId);
-				
+
 				$('#addKursTable').slideDown('slow');
 			}
-			
+
 			$('#addKursTable_Form_ButtonAbbrechen').click(function(e){
 				e.preventDefault();
 				$('#addKursTable').slideUp('slow');
 			});
-			
+
 			$('#addKursTable_Form').submit(function(e){
 				e.preventDefault();
 				var postData = $(this).serializeArray();
-				
+
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/ajaxAddKursToKunde',
 					type:'POST',
@@ -894,9 +894,9 @@ $nextYear = ACTUAL_YEAR + 1;
 					}
 				});
 			});
-			
+
 //change Kurs
-			
+
 			$('.changeKursButton').click(function(){
 				kurId = $(this).attr('kurid');
 				eintrId = $(this).attr('eintrid');
@@ -904,25 +904,25 @@ $nextYear = ACTUAL_YEAR + 1;
 				$('#changeKurs_eintrId').val(eintrId);
 				$('#changeKurs_Table').slideDown('slow');
 			});
-			
+
 			$('#changeKurs_Table_ButtonAbbrechen').click(function(e){
 				e.preventDefault();
 				$('#changeKurs_Table').slideUp('slow');
 			});
-			
+
 			$('#changeKurs_Table_ButtonSpeichern').click(function(e){
 				eintrId = $('#changeKurs_eintrId').val();
 				oldKurId = $('#changeKurs_oldKurId').val();
 				newKurId = $('#changeKurs_newKurId option:selected').val();
-				
+
 				//<input type="hidden" id="changeKursConfirm_Form_kndId" name="kndId"/>
 				//<input type="hidden" id="changeKursConfirm_Form_oldKurId" name="oldKurId"/>
-				
+
 				$('#changeKursConfirm_Form_oldKurId').val(oldKurId);
 				$('#changeKursConfirm_Form_eintrId').val(eintrId);
 				$('#changeKursConfirm_Form_newKurId').val(newKurId);
 				$('#changeKursConfirm_Form_kndId').val(kndId);
-				
+
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/ajaxChangeKursInfo',
 					type:'POST',
@@ -934,7 +934,7 @@ $nextYear = ACTUAL_YEAR + 1;
 							//kur = JSON.parse(response.message);
 							$('#changeKursConfirm_Table_oldKurName').html(response.message.oldKur);
 							$('#changeKursConfirm_Table_newKurName').html(response.message.newKur);
-							
+
 							//alert(response.message.oldKur);
 						}
 						else
@@ -947,19 +947,19 @@ $nextYear = ACTUAL_YEAR + 1;
 						meldung.html(errorThrown);
 					}
 				});
-				
+
 				$('#changeKursConfirm_Table').slideDown('slow');
 			});
-			
+
 			$('#changeKursConfirm_Form_ButtonAbbrechen').click(function(e){
 				e.preventDefault();
 				$('#changeKursConfirm_Table').slideUp('slow');
 			});
-			
+
 			$('#changeKursConfirm_Form').submit(function(e){
 				e.preventDefault();
 				var postData = $(this).serializeArray();
-				
+
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/ajaxChangeKursReallyDo',
 					type:'POST',
@@ -982,16 +982,16 @@ $nextYear = ACTUAL_YEAR + 1;
 					}
 				});
 			});
-			
+
 		//update Kurs
-			
+
 			$('.updateKurDateButton').click(function()
 			{
 				kurDateType = $(this).attr('kurDateType').trim();
 				kurId = $(this).attr('kurId');
 				date = $(this).attr('dateVal').trim();
 				eintrId = $(this).attr('eintrId');
-				
+
 				$('#UpdateKur_eintrId').val(eintrId);
 				$('#UpdateKur_kndId').val(kndId);
 				$('#UpdateKur_kurId').val(kurId);
@@ -1000,11 +1000,11 @@ $nextYear = ACTUAL_YEAR + 1;
 				$('#UpdateKur_Title').text(kurDateType);
 				$('#UpdateKur_Table').slideDown('slow');
 			});
-			
+
 			$('#UpdateKur_Form').submit(function(e){
 				e.preventDefault();
 				var postData = $(this).serializeArray();
-				
+
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/ajaxUpdateKursToKunde',
 					type:'POST',
@@ -1024,39 +1024,39 @@ $nextYear = ACTUAL_YEAR + 1;
 						meldung.html(errorThrown);
 					}
 				});
-				
+
 				$('#UpdateKur_Table').slideUp('slow');
 			});
-			
+
 			$('#UpdateKur_ButtonAbbrechen').click(function(e){
 				e.preventDefault();
 				$('#UpdateKur_Table').slideUp('slow');
 			});
-			
+
 		//Bezahlungsformular
-			
+
 			$('.kurBezahlenButton').click(function()
 			{
 				untName = $(this).attr('kurName').trim();
 				kurId = $(this).attr('kurId');
 				eintrId = $(this).attr('eintrId');
-				
+
 				$('#zfEintrId').val(eintrId);
 				$('#zfKndId').val(kndId);
 				$('#zfKurId').val(kurId);
 				$('#zfKurName').html(untName);
 				$('#Zahlungsformular').slideDown('slow');
 			});
-			
+
 			$('#zfButtonAbbrechen').click(function(e){
 				e.preventDefault();
 				$('#Zahlungsformular').slideUp('slow');
 			});
-			
+
 			$('#zfForm').submit(function(e){
 				e.preventDefault();
 				var postData = $(this).serializeArray();
-				
+
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/ajaxKurBezahlen',
 					type:'POST',
@@ -1077,14 +1077,14 @@ $nextYear = ACTUAL_YEAR + 1;
 						meldung.html(errorThrown);
 					}
 				});
-				
+
 				//$('#Zahlungsformular').slideUp('slow');
 			});
 		//Kurs entfernen
 			$('.kurEntfernenButton').click(function()
 			{
 				eintrId = $(this).attr('eintrId');
-				
+
 				if (confirm('Wollen Sie wirklich diesen Kurs von dem Kunde entfernen?')) {
 					$.ajax({
 						url:'<?=BASIS_URL?>/admin/ajaxKursVomKundeEntfernen',
@@ -1117,42 +1117,42 @@ $nextYear = ACTUAL_YEAR + 1;
 				bitemName = parent.children('.itemName').text().trim().toLowerCase();
 				bitemName = bitemName.replace(/\s+/, ' ');
 				var bitemValue = parent.children('.itemValue').text().trim();
-				
+
 				if(typeof(bitemName) === "undefined")
 				{
 					alert("BankItemName ist nicht definiert.");
 					return;
 				}
-				
+
 				if(bitemName === "zahlungsart")
 				{
 					$('#updateBankDates_isCash').slideDown(1000);
 					return;
 				}
-				
+
 				$('#updateBankDates_Title').text(bitemName);
 				$('#updateBankDates_Form_Name').val(bitemName);
 				$('#updateBankDates_Form_Value').val(bitemValue);
-				
+
 				$('#updateBankDates').slideDown(1000);
 			});
-			
+
 		//close update BankDates
 			$('#updateBankDates_Form_ButtonAbbrechen').click(function(e){
 				e.preventDefault();
 				$('#updateBankDates').slideUp('slow');
 			});
-			
+
 			$('#updateBankDates_isCash_ButtonAbbrechen').click(function(e){
 				e.preventDefault();
 				$('#updateBankDates_isCash').slideUp('slow');
 			});
-			
+
 		//update BankDates
 			$('.updateBankDates_Form').submit(function (e){
 				e.preventDefault();
 				var postData = $(this).serializeArray();
-				
+
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/ajaxBankDatesUpdate',
 					type:'POST',
@@ -1175,28 +1175,28 @@ $nextYear = ACTUAL_YEAR + 1;
 					}
 				});
 			});
-			
+
 		//edit SonderPreis deleteSonderPreisButton
 			$('.editSonderPreis').click(function(){
 				eId = $(this).attr('eintrId');
 				$('#editSonderPreis_Titel').prepend($(this).attr('kurName')+': ');
 				$('#editSonderPreis_eintrId').val(eId);
-				
+
 			//prepare deleteButton
 				$('#deleteSonderPreisButton').attr({eintrId:eId});
-				
+
 				$('#editSonderPreis_Table').slideDown(1000);
 			});
-			
+
 			$('#editSonderPreis_Form_ButtonAbbrechen').click(function(e){
 				e.preventDefault();
 				$('#editSonderPreis_Table').slideUp('slow');
 			});
-			
+
 			$('#editSonderPreis_Form').submit(function(e){
 				e.preventDefault();
 				var postData = $(this).serializeArray();
-				
+
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/ajaxEditSonderPreis',
 					type:'POST',
@@ -1219,10 +1219,10 @@ $nextYear = ACTUAL_YEAR + 1;
 					}
 				});
 			});
-			
+
 			$('#deleteSonderPreisButton').click(function(){
 				eId = $(this).attr('eintrId');
-				
+
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/ajaxDeleteSonderPreis',
 					type:'POST',
@@ -1245,29 +1245,29 @@ $nextYear = ACTUAL_YEAR + 1;
 					}
 				});
 			});
-			
+
 	//edit Beschreibung
 			$('.editBeschreibung').click(function(){
 				$('#KursBeschreibung_Form_Textarea').val($(this).parent().text());
-				
+
 				eId = $(this).attr('eintrId');
 				$('#editKundenKursKomm_eintrId').val(eId);
-				
+
 				$('#editKundenKursKomm_Titel').text("Kommentar: "+$(this).attr('kurName'));
-				
+
 				$('#editKundenKursKomm_Table').slideDown(1000);
 			});
-			
+
 			$('#editKundenKursKomm_Form_ButtonAbbrechen').click(function(e){
 				e.preventDefault();
 				$('#editKundenKursKomm_Table').slideUp(1000);
 			});
-			
+
 			//admin/ajaxUpdateKhkKomm
 			$('#editKundenKursKomm_Form').submit(function(e){
 				e.preventDefault();
 				var postData = $(this).serializeArray();
-				
+
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/ajaxUpdateKhkKomm',
 					type:'POST',
@@ -1326,14 +1326,14 @@ $nextYear = ACTUAL_YEAR + 1;
 			$('#messageBox').slideUp(1000);
 			$('#messageBox_message').html("");
 		});
-		
+
 	//update empfohlenId
 		$("#empfohlenIdSpeichern").click(function(){
 			kndId = $("#empfohlenKndIdInput").val().trim();
-			
+
 			updateTable_Form_Value.val(kndId);
 			updateTable_Form_Name.val("empfohlenId");
-			
+
 			upateTable_Form.submit();
 		});
 	//Kommentaren newKndCmntTable
