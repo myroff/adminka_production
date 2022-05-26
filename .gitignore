@@ -8,4 +8,4 @@
 *.csv
 *.dat
 /BLogic/mpdf/ttfontdata/
-
+config.php
