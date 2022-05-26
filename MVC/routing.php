@@ -1,4 +1,5 @@
 <?php
+
 function getRoutingList()
 {
     $routingList = array(
@@ -32,9 +33,10 @@ function getRoutingList()
 		'/admin/ajaxGetEmpfohlenGadget'			=> 'Kunde:Empfohlen:getGadget',
 		'/admin/ajaxGetEmpfohlenGadgetUpdate'	=> 'Kunde:Empfohlen:updateTable',
 		'/admin/ajaxGetClientsCoursesUpdate'	=> 'Kunde:ClientsCourses:updateTable',
-		
+
 		'/login/' => 'Login:LoginController:loginForm',
 		'/logout/' => 'Login:LoginController:logout',
+		'/admin/logout/' => 'Login:LoginController:logout',
 		'/admin/mitarbeiter' => 'Mitarbeiter:Mitarbeiter:showList',
 		'/admin/neuerMitarbeiter' => 'Mitarbeiter:NeuerMitarbeiter:showForm',
 		'/admin/ajaxSaveNewMitarbeiter' => 'Mitarbeiter:NeuerMitarbeiter:saveNewMitarbeiter',

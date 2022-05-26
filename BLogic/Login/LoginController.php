@@ -116,7 +116,11 @@ class LoginController
     public function logout($link=BASIS_URL)
     {
         if ($_COOKIE['uTmpK']) {
-            setcookie('uTmpK', '', time()-3600, BASIS_URL);
+            setcookie('uTmpK', '', time()-3600, BASIS_URL?: '/');
+            setcookie('uTmpId', '', time()-3600, BASIS_URL?: '/');
+        }
+        if(empty($link)){
+            $link = '/';
         }
         header('Location: '.$link);
         exit();

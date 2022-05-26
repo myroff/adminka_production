@@ -1,52 +1,57 @@
 <!DOCTYPE html>
 <html>
-  <head>
-	<title>SWIFF: {{pageName}}</title>
-	
-	<link rel="stylesheet" href="{{ constant('BASIS_URL') }}/Public/css/style.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="{{ constant('BASIS_URL') }}/Public/css/style-print.css" type="text/css" media="print" />
-	<link rel="stylesheet" href="{{ constant('BASIS_URL') }}/Public/material_icons/material_icon.css">
-	<script src="{{ constant('BASIS_URL') }}/Public/js/jquery-3.4.1.min.js"></script>
-	{#
-	<script src="{{ constant('BASIS_URL') }}/Public/jquery-ui/jquery-ui.min.js"></script>
- 
-	<link rel="stylesheet" href="{{ constant('BASIS_URL') }}/Public/jquery-ui/jquery-ui.min.css">
-	
-	<link rel="stylesheet" href="{{ constant('BASIS_URL') }}/Public/bootstrap/css/bootstrap.min.css">
-	<script src="{{ constant('BASIS_URL') }}/Public/bootstrap/js/bootstrap.min.js"></script>
-	#}
-	
-	<link rel="stylesheet" href="{{ constant('BASIS_URL') }}/Public/materialize/css/materialize.min.css">
-	<script src="{{ constant('BASIS_URL') }}/Public/materialize/js/materialize.min.js"></script>
-	
-	{# custom style #}
-	<style>
-	  {{customStyleContent}}
-	</style>
-  </head>
-  <body>
-	
-	  <div id="horizontalMenu" class="nav-wrapper" >
-		  {{getAdminMenu()}}
-	  </div>
-	
-	  <!-- START OF CONTENT -->
-	  <div id="mainContent">
-		<div id="systemMessage">
-		  {{ systemMessage }}
-		</div>
+    <head>
+        <title>SWIFF: {{pageName}}</title>
 
-		{% block content %}{% endblock%}
+        <link rel="stylesheet" href="{{ constant('BASIS_URL') }}/Public/css/style.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="{{ constant('BASIS_URL') }}/Public/css/style-print.css" type="text/css" media="print" />
+        <link rel="stylesheet" href="{{ constant('BASIS_URL') }}/Public/material_icons/material_icon.css">
+        <script src="{{ constant('BASIS_URL') }}/Public/js/jquery-3.4.1.min.js"></script>
+        {#
+        <script src="{{ constant('BASIS_URL') }}/Public/jquery-ui/jquery-ui.min.js"></script>
 
-	  </div>
-	
-	  <div id="hiddenFooter">
-		{% block hiddenFooter %}{% endblock%}
-	  </div>
-	
-	  <script>
-		{% block jsFooter %}{% endblock%}
-		  {{customJsFooter}}
-	  </script>
-	</body>
+        <link rel="stylesheet" href="{{ constant('BASIS_URL') }}/Public/jquery-ui/jquery-ui.min.css">
+
+        <link rel="stylesheet" href="{{ constant('BASIS_URL') }}/Public/bootstrap/css/bootstrap.min.css">
+        <script src="{{ constant('BASIS_URL') }}/Public/bootstrap/js/bootstrap.min.js"></script>
+        #}
+
+        <link rel="stylesheet" href="{{ constant('BASIS_URL') }}/Public/materialize/css/materialize.min.css">
+        <script src="{{ constant('BASIS_URL') }}/Public/materialize/js/materialize.min.js"></script>
+
+        {# custom style #}
+        <style>
+        {{customStyleContent}}
+        </style>
+    </head>
+    <body>
+
+        <div id="horizontalMenu" class="nav-wrapper" >
+            {{getAdminMenu()}}
+            <div id="logout-block">
+                <a href="/admin/logout">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1.5em" height="1.5em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path fill="currentColor" d="M16 17v-3H9v-4h7V7l5 5l-5 5M14 2a2 2 0 0 1 2 2v2h-2V4H5v16h9v-2h2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9Z"/></svg>
+                </a>
+            </div>
+        </div>
+
+      <!-- START OF CONTENT -->
+      <div id="mainContent">
+        <div id="systemMessage">
+          {{ systemMessage }}
+        </div>
+
+        {% block content %}{% endblock%}
+
+      </div>
+
+      <div id="hiddenFooter">
+        {% block hiddenFooter %}{% endblock%}
+      </div>
+
+      <script>
+        {% block jsFooter %}{% endblock%}
+          {{customJsFooter}}
+      </script>
+    </body>
 </html>
