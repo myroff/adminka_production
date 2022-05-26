@@ -69,6 +69,20 @@ start horizontal Menu
 /*
 end horizontal Menu
 */
+
+/* logout button */
+#logout-block
+{
+	float:right;
+}
+
+#logout-block > a
+{
+	display:block;
+	padding:5px 10px 0px;
+	overflow: hidden;
+}
+
 #searchPanel{margin-left:5px;}
 /*
 start Main Content
@@ -82,7 +96,7 @@ start Main Content
 {
 	display:none;
 	border:2px solid #a1a1a1;
-	padding:20px; 
+	padding:20px;
 	background:#dddddd;
 	min-width:450px;
 	border-radius:20px;
@@ -98,7 +112,7 @@ start Main Content
 {
 	display:none;
 	border:2px solid #a1a1a1;
-	padding:20px; 
+	padding:20px;
 	background:#dddddd;
 	min-width:450px;
 	border-radius:20px;
