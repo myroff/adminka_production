@@ -4,27 +4,11 @@
 wenn die Webseite aus einem Unterordner ausgeführt wird(z.B. www.myPage.com/myOrder),
 definiere BASIS_URL als "/myOrder/"
 */
-#error_reporting(E_ALL);
-#ini_set('display_errors', 1);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-if ( !defined('BASIS_URL') )
-	define('BASIS_URL', "/production");
-if ( !defined('BASIS_DIR') )
-	define('BASIS_DIR', __DIR__); //z.B. D:\www\tut
-if ( !defined('ACTUAL_YEAR') )
-	define('ACTUAL_YEAR', "2019");
-if ( !defined('BASIS_RECHNUNG_URL') )
-	define('BASIS_RECHNUNG_URL', BASIS_URL."/Public/Rechnungen");
-if ( !defined('BASIS_RECHNUNG_DIR') )
-	define('BASIS_RECHNUNG_DIR', BASIS_DIR."/Public/Rechnungen");
-if ( !defined('TWIG_TEMPLATE_DIR') )
-	define('TWIG_TEMPLATE_DIR', BASIS_DIR."/TemplatesTwig");
-if ( !defined('TWIG_CACHE_DIR') )
-	define('TWIG_CACHE_DIR', BASIS_DIR."/TemplatesTwigCache");
-/*
-if ( !defined('AJAX_URL') )
-	define('AJAX_URL', '/admin/ajax'); //z.B. D:\www\tut
-*/
+require_once(__DIR__.'/config.php');
 
-require_once './MVC/config.php';
+#phpinfo();
+#require_once './MVC/config.php';
 require_once './MVC/MVC.php';

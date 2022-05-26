@@ -15,13 +15,13 @@
 		<tr><th colspan="{{ _colspan }}">{{ getWeekdayFromInt(day) }}</th></tr>
 		{% set lessonsEndHour = -1 %}
 		{% for hour in 0..24 %}
-			{% if stunden[day][hour] is not empty 
+			{% if stunden[day][hour] is not empty
 				or hour <= lessonsEndHour
 			%}
 				<tr>
 					<th>{{ hour }}:00</th>
 					{% for r in raum %}
-					<td> 
+					<td>
 					{% if stunden[day][hour][r.raum] is not empty %}
 						{% for lesson in stunden[day][hour][r.raum] %}
 							{% set _EndHour = date(lesson.ende) | date('H') %}
@@ -29,11 +29,11 @@
 								{% set lessonsEndHour = _EndHour %}
 							{% endif %}
 							{% if lesson.countKnd > 0 and lesson.countKnd < lesson.maxKnd %}
-								{% set _class = "light-green lighten-3" %}
+								{% set _class = " light-green lighten-3" %}
 							{% elseif lesson.countKnd >= lesson.maxKnd %}
-								{% set _class = "deep-orange darken-3" %}
+								{% set _class = " deep-orange darken-3" %}
 							{% else %}
-								{% set _class = "grey lighten-3" %}
+								{% set _class = " grey lighten-3" %}
 							{% endif %}
 							{% set _top = date(lesson.anfang) | date('i') * 4 %}
 							{% set start = date(lesson.anfang) %}

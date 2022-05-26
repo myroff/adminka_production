@@ -7,7 +7,8 @@ use MVC\DBFactory as DBFactory;
 require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
 
-class LoginTools {
+class LoginTools
+{
 	public function ajaxSetPassword()
 	{
 		$newPswd = "";
@@ -60,7 +61,7 @@ class LoginTools {
 //generate password
 		$salt = substr(md5(time()), 0, 10);
 		$newPswd = hash('sha512', $salt.$pswd);
-		
+
 		$dbh = DBFactory::getDBH();
 		if(!$dbh)
 		{
@@ -68,7 +69,7 @@ class LoginTools {
 			header("Content-type: application/json");
 			exit(json_encode($output));
 		}
-		
+
 		$q = "INSERT INTO mtblogin(mtId, login, pswd, salt, istAktiv) VALUES (:mtId, :login, :pswd, :salt, :istAktiv)";
 		$tq ="SELECT count(mtId) as 'count' FROM mtblogin WHERE login=:login";
 		try
@@ -104,12 +105,12 @@ class LoginTools {
 		header("Content-type: application/json");
 		exit(json_encode($output));
 	}
-	
+
 	public function ajaxUpdateLogin()
 	{
 		$login = "";
 		$mtId = "";
-		
+
 		//login
 		if( !isset($_POST['login']) OR empty($_POST['login']) ){
 			$output = array('status' => "error", 'message' => "[POST] Login fehlt.");
@@ -138,7 +139,7 @@ class LoginTools {
 			header("Content-type: application/json");
 			exit(json_encode($output));
 		}
-		
+
 		$tq ="SELECT count(mtId) as 'count' FROM mtblogin WHERE login=:login";
 		$q = "";
 	}

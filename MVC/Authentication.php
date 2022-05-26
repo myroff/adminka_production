@@ -7,7 +7,7 @@ class Authentication
 	{
 		include_once 'security.php';
 		$securityArray = getSecurityArray();
-		
+
 		if (empty($securityArray)) {
 			return true;
 		}
@@ -18,11 +18,12 @@ class Authentication
 		$ruleIsFounded = false;
 		$currentTmpUser = false;
 		$currentUsersGroups = array();
-		
+
 		if(isset($_COOKIE['uTmpK']) && isset($_COOKIE['uTmpId']))
 		{
 			$currentTmpUser = $this->getTmpUserFrom_uTmpId($_COOKIE['uTmpId']);
-			if($currentTmpUser['mtId']!==$_COOKIE['uTmpId'] || $currentTmpUser['tmpPswd']!==$_COOKIE['uTmpK'])
+
+			if((int)$currentTmpUser['mtId']!==(int)$_COOKIE['uTmpId'] || $currentTmpUser['tmpPswd']!==$_COOKIE['uTmpK'])
 			{
 				return FALSE;
 			}
@@ -30,7 +31,7 @@ class Authentication
 		}
 		//echo '<br>currentTmpUser=<br>';
 		//print_r($currentTmpUser, false);
-		
+
 		//key is URI, value is array with group and user
 		foreach ($securityArray as $key => $value)
 		{
@@ -38,11 +39,11 @@ class Authentication
 			$keyArray = explode('/', $key);
 			$keyArrayLength = count($keyArray);
 			$t=0;
-			
+
 			if($requestUriArrayLength >= $keyArrayLength)
 			{
 				$t = $requestUriArrayLength - $keyArrayLength;
-				
+
 				for($i=0; $i<$keyArrayLength; $i++)
 				{
 					if($requestUriArray[$i] === $keyArray[$i])
@@ -65,7 +66,7 @@ class Authentication
 				if($t === $requestUriArrayLength)
 				{
 					$ruleIsFounded = true;
-					
+
 					if($currentTmpUser)
 					{
 						//get group and user
@@ -78,7 +79,7 @@ class Authentication
 						echo '<br>group=';
 						print_r($group);
 						*/
-					//if group does match						
+					//if group does match
 						if($group!==false)
 						{
 							foreach($group as $g)
@@ -132,7 +133,7 @@ class Authentication
 		if(!$dbh){
 			return false;
 		}
-		
+
 		try
 		{
 			$q = "SELECT l.login, t.mtId, t.tmpPswd"
@@ -141,7 +142,7 @@ class Authentication
 			$sth = $dbh->prepare($q);
 			$sth->execute(array(':mtId'=>$cookiesTmpId));
 			$res = $sth->fetch(PDO::FETCH_ASSOC);
-			
+
 			if(count($res)>0)
 			{
 				return $res;
@@ -162,22 +163,22 @@ class Authentication
 		{
 			return FALSE;
 		}
-		
+
 		$dbh = DBFactory::getDBH();
 		if(!$dbh){
 			return false;
 		}
-		
+
 		try
 		{
 			$q = "SELECT g.grpName"
 				." FROM mtbingrp AS m LEFT JOIN groups AS g USING(grpId)"
 				." WHERE m.mtId=:mtId";
-			
+
 			$sth = $dbh->prepare($q);
 			$sth->execute(array(':mtId'=>$uId));
 			$res = $sth->fetchAll(PDO::FETCH_COLUMN);//FETCH_ASSOC
-			
+
 			if(count($res)>0)
 			{
 				return $res;

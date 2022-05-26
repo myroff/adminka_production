@@ -4,10 +4,10 @@ use PDO as PDO;
 //twig
 require_once BASIS_DIR . '/Vendor/autoload.php';
 
-require_once BASIS_DIR.'/Tools/TmplTools.php';
-use Tools\TmplTools as TmplTls;
+#require_once BASIS_DIR.'/Tools/TmplTools.php';
+use \Tools\TmplTools as TmplTls;
 
-class Kunde 
+class Kunde
 {
 	private $isCashImg = array(
 		0 => "lastschrift.001.png",
@@ -17,7 +17,7 @@ class Kunde
 		4 => "euro_cash.jpg",
 		5 => "ueberweisung.logo.png",
 		);
-	
+
 	private function filterPostData()
 	{
 		$sArr = array();
@@ -30,16 +30,16 @@ class Kunde
 		$sArr[':showIntegra'] = empty($_POST['showIntegra'])? '' : $_POST['showIntegra'];
 		$sArr[':abgemeldet']  = empty($_POST['abgemeldet']) ? '' : $_POST['abgemeldet'];
 		$sArr[':season']	  = empty($_POST['s_season'])	? '' : $_POST['s_season'];
-		
+
 		return $sArr;
 	}
-	
+
 	public function showList()
 	{
 		$sArr = $this->filterPostData();
-		
+
 		$vars['clients']	= $this->searchDates($sArr);
-		
+
 		$vars['pageName']	= "Kundenliste";
 		$vars['sArr']		= $sArr;
 		$vars['s_kurId']	= TmplTls::getKursSelectorById("s_kurId", "s_kurId", $sArr[':kurId'], "Kurse", 1);
@@ -48,7 +48,7 @@ class Kunde
 		$vars['zeit']		= TmplTls::getTimeSelector("zeit", "zeit", $sArr[':zeit'], "Zeit");
 		$vars['s_season']	= TmplTls::getSeasonsSelector("s_season", "s_season", $sArr[':season'], "Season", 1);
 		#$vars['isCashImg']	= $this->isCashImg;
-		
+
 		$options = []; #array('cache' => TWIG_CACHE_DIR);
 		$loader = new \Twig_Loader_Filesystem(TWIG_TEMPLATE_DIR);
 		$twig = new \Twig_Environment($loader, $options);
@@ -59,7 +59,7 @@ class Kunde
 	{
 		$sArr = array();
 		$sArr = $this->filterPostData();
-		
+
 		$selectArr = "";
 		$selectArr[] = isset($_POST['print_kndnr']) ? "k.kundenNummer as 'Knd.-Nr.'" : '';
 		$selectArr[] = isset($_POST['print_anrede']) ? "k.anrede as 'Anrede'" : '';
@@ -70,13 +70,13 @@ class Kunde
 		$selectArr[] = isset($_POST['print_telefon']) ? "k.telefon as 'Telefon'" : '';
 		$selectArr[] = isset($_POST['print_handy']) ? "k.handy as 'Handy'" : '';
 		$selectArr[] = isset($_POST['print_email']) ? "k.email as 'Email'" : '';
-		
+
 		$arrayToPrint = $this->searchDates($sArr, $selectArr);
 //add title over table
 		if( isset($_POST['print_titel']) && !empty($_POST['print_titel']) ){
 			$arrayToPrint['print_titel'] = $_POST['print_titel'];
 		}
-		
+
 		include_once BASIS_DIR.'/Templates/PrintArray.tmpl.php';
 		return;
 	}
@@ -90,10 +90,10 @@ class Kunde
 		}
 		//$dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, 10);
 		$where = "";
-		
+
 	//delete empty entries
 		$searchArr = array_filter($searchArr);
-		
+
 		if(isset($searchArr[':vorname']))
 		{
 			$where .= " k.vorname LIKE :vorname AND";
@@ -120,43 +120,43 @@ class Kunde
 		{
 			$where .= " TIME(:zeit) BETWEEN st.anfang AND st.ende AND";
 		}
-		
+
 		if(isset($searchArr[':showIntegra']))//showIntegra = "i"
 		{
 			unset($searchArr[':showIntegra']);
 		}else{
 			$where .= " k.kundenNummer NOT LIKE 'i%' AND";
 		}
-		
+
 		if(isset($searchArr[':abgemeldet']))//showIntegra = "i"
 		{
 			unset($searchArr[':abgemeldet']);
 		}else{
 			$where .= " NOW() BETWEEN kndKurse.von AND kndKurse.bis AND";
 		}
-		
+
 		if(isset($searchArr[':season']))
 		{
 			$where .= " kndKurse.season_id=:season AND";
 		}
-		
+
 		$where = substr($where, 0, -4);
-		
+
 		$select = "";
 		if($selectArr){
 			$selectArr = array_filter($selectArr);
 			$select = implode(",", $selectArr);
 		}
 		else{
-			$select = 
+			$select =
 "khk.kndId as kndIdInKhk,k.*, pd.payment_id, pm.logo_file, TIMESTAMPDIFF(YEAR,k.geburtsdatum,CURDATE()) as 'alter',
 	GROUP_CONCAT('{\"name\":\"',l.name, '\",\"vorname\":\"',l.vorname, '\",\"kurName\":\"', kr.KurName,'\",\"von\":\"',kndKurse.von,'\",\"bis\":\"',kndKurse.bis,'\",\"termin\":[', st.termin, ']}' SEPARATOR ',') as kurse";
 		}
-		
-		$q = 
+
+		$q =
 "SELECT ".$select."
-FROM kunden as k 
-LEFT JOIN kundehatkurse as kndKurse USING(kndId) 
+FROM kunden as k
+LEFT JOIN kundehatkurse as kndKurse USING(kndId)
 LEFT JOIN kurse as kr USING(kurId)
 LEFT JOIN lehrer as l USING(lehrId)
 LEFT JOIN payment_data as pd USING(kndId)
@@ -176,21 +176,21 @@ LEFT JOIN
 )
 as st USING (kurId)
 ";
-		
+
 		$q .= empty($where) ? '' : " WHERE " . $where;
 		$q .= " GROUP BY k.kndId";
 		//$q .= empty($where) ? '' : " HAVING " . $where;
 		$q .= " ORDER BY LENGTH(k.kundenNummer) DESC, k.kundenNummer DESC";
-		
+
 		try
 		{
 			$dbh->exec("SET SESSION group_concat_max_len = 10000;");
 			$sth = $dbh->prepare($q);
 			$sth->execute($searchArr);
 			$rs = $sth->fetchAll(PDO::FETCH_ASSOC);
-			
+
 			return $rs;
-			
+
 		} catch (Exception $ex) {
 			//print $ex;
 			return FALSE;

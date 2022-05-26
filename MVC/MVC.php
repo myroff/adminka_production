@@ -1,5 +1,6 @@
 <?php
-include_once 'routing.php';
+require_once __DIR__.'/autoloader.php';
+require_once __DIR__.'/routing.php';
 
 $routingList = getRoutingList();
 
@@ -17,20 +18,20 @@ if($requestUri !== '')
     //Request URL Array
     $RUArray = explode('/', $requestUri);
     $RULength = count($RUArray);
-	
+
 	foreach ($routingList as $key => $value)
 	{
 		$key = trim($key, '/');
 		$keyArray = explode('/', $key);
-		
+
 		if($RULength == count($keyArray))
 		{
 			// $t -> Anzahl der treffer
 			$t = 0;
-			
+
 			//$argumentArray -> da werden gefundende in URL "Variablen" gespeichert
 			$argumentArray = array();
-			
+
 			for($i=0; $i<$RULength; $i++)
 			{
 				if($RUArray[$i] === $keyArray[$i])
@@ -48,20 +49,20 @@ if($requestUri !== '')
 			{
 				//$validation = new \Authentication\Validation();
 				require_once 'Authentication.php';
-				$validation = new MVC\Authentication();
+				$validation = new \MVC\Authentication();
 				if(!$validation->isValid($requestUri))//BASIS_URL
 				{
 					include_once BASIS_DIR.'/BLogic/Login/LoginController.php';
-					
-					$Login = new LoginController();
+
+					$Login = new \Login\LoginController();
 					$Login->loginForm('/'.$requestUri);
-					
+
 					return false;
 				}
-				
+
 				$call = explode(':', $value);
 				include_once BASIS_DIR.'/BLogic/'.$call[0].'/'.$call[1].'.php';
-				
+
 				if(empty($argumentArray))
 				{
 					$nc = $call[0].'\\'.$call[1];
@@ -81,12 +82,12 @@ if($requestUri !== '')
 					//call_user_func_array(array($tmpObj, $call[2]), $argumentArray);
 					return true;
 				}
-				
+
 				break;
 			}
 			else
 			{
-				
+
 			}
 		}
 	}
