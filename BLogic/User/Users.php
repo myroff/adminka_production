@@ -1,7 +1,7 @@
 <?php
 namespace User;
 use PDO as PDO;
-require_once BASIS_DIR.'/MVC/DBFactory.php';
+
 use MVC\DBFactory as DBFactory;
 
 require_once BASIS_DIR.'/Tools/Filter.php';
@@ -17,48 +17,48 @@ class Users {
 		{
 			$meldung = "DBFactory failed.";
 		}
-		
+
 		$qGroups = "SELECT * FROM groups";
-		
+
 		$qUsers = "SELECT ln.mtId, ln.istAktiv, ln.login, mt.anrede, mt.vorname, mt.name, GROUP_CONCAT(grpName SEPARATOR ', ') as 'gruppen'"
 			." FROM mtblogin as ln LEFT JOIN mitarbeiter as mt USING(mtId) LEFT JOIN mtbingrp USING(mtId) LEFT JOIN groups as grp USING(grpId)"
 			." GROUP BY mtId";
-		
+
 		$groups = [];
 		$users = [];
-		
+
 		try
 		{
 			$sth = $dbh->prepare($qGroups);
 			$sth->execute();
 			$groups = $sth->fetchAll(PDO::FETCH_ASSOC);
-			
+
 			$sth = $dbh->prepare($qUsers);
 			$sth->execute();
 			$users = $sth->fetchAll(PDO::FETCH_ASSOC);
-		
+
 		} catch (Exception $ex) {
 			//print $ex;
 			$meldung = $ex;
 		}
-		
+
 		include_once BASIS_DIR.'/Templates/User/UsersListe.tmpl.php';
 		return;
 	}
-	
+
 	public function updatePassword(){
 		$pswd = "";
 		$mtId = "";
 		$output = "";
-		
+
 		$userGroups = User::getUserGroup();
-		
+
 		if(!in_array("SuperAdmin", $userGroups)){
 			$output = array('status' => "error", 'message' => "Sie haben keine Rechte für diese Operation.\n");
 			header("Content-type: application/json");
 			exit(json_encode($output));
 		}
-		
+
 //mtId
 		if( !isset($_POST['mtId']) OR empty($_POST['mtId']) ){
 			$output = array('status' => "error", 'message' => "[POST] mtId fehlt.");
@@ -73,7 +73,7 @@ class Users {
 			header("Content-type: application/json");
 			exit(json_encode($output));
 		}
-		
+
 //newPswd
 		if( !isset($_POST['pswd']) OR empty($_POST['pswd']) )
 		{
@@ -92,7 +92,7 @@ class Users {
 //generate password
 		$salt = substr(md5(time()),0, 10);
 		$newPswd = hash('sha512', $salt.$pswd);
-		
+
 		$dbh = DBFactory::getDBH();
 		if(!$dbh)
 		{
@@ -100,10 +100,10 @@ class Users {
 			header("Content-type: application/json");
 			exit(json_encode($output));
 		}
-		
+
 		$qUpdate = "UPDATE mtblogin SET pswd=:pswd, salt=:salt, istAktiv=1 WHERE mtId=:mtId";
 		$qTest = "SELECT count(mtId) as 'count' FROM mtblogin WHERE mtId=:mtId";
-		
+
 		try
 		{
 			$sthTest = $dbh->prepare($qTest);

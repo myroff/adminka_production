@@ -11,7 +11,7 @@ class NeuerKurs
 		include_once BASIS_DIR.'/Templates/Kurse/NeuerKurs.tmpl.php';
 		return;
 	}
-	
+
 	public function saveNewKurs()
 	{
 		$fehler = "";
@@ -19,7 +19,7 @@ class NeuerKurs
 		$dataPost = array();
 		$output = array();
 		$testData = array();
-		
+
 		//kurName - Name des Kurses
 		if(!empty($_POST['kurName']))
 		{
@@ -36,12 +36,12 @@ class NeuerKurs
 				$fehlerInput[] = 'kurName';
 			}
 		}
-		else 
+		else
 		{
 			$fehler .= "Der Name des Kurses fehlt.<br>Erlaubt sind Ziffern 0 bis 9, Buchstaben, Leerzeichen, Symbolen (. , : ; ! ? ' * = # / \ \" - + _).<br>";
 			$fehlerInput[] = 'kurName';
 		}
-		
+
 		//maxKnd - maximale Anzahl der Teilnehmern in der Gruppe
 		if(!empty($_POST['maxKnd']))
 		{
@@ -56,7 +56,7 @@ class NeuerKurs
 				$fehlerInput[] = 'maxKnd';
 			}
 		}
-		
+
 		//Lehrer
 		if(!empty($_POST['lehrId']))
 		{
@@ -71,7 +71,7 @@ class NeuerKurs
 				$fehlerInput[] = 'kurBeschreibung';
 			}
 		}
-		
+
 		//Beschreigung des Kurses
 		if(!empty($_POST['kurBeschreibung']))
 		{
@@ -87,7 +87,7 @@ class NeuerKurs
 				$fehlerInput[] = 'kurBeschreibung';
 			}
 		}
-		
+
 		//Preis des Unterrichts
 		if(!empty($_POST['kurPreis']))
 		{
@@ -103,7 +103,7 @@ class NeuerKurs
 				$fehlerInput[] = 'kurPreis';
 			}
 		}
-		
+
 		//Preis-Typ: pro Monat oder Stunde
 		if(!empty($_POST['kurIsStdPreis']))
 		{
@@ -118,14 +118,14 @@ class NeuerKurs
 				$fehlerInput[] = 'kurIsStdPreis';
 			}
 		}
-		
+
 		//Altersgruppen
 		//Jahren
 		if(!empty($_POST['kurMinAlter']) OR !empty($_POST['kurMaxAlter']))
 		{
 			$_POST['kurMinAlter'] = str_replace(" ", "", $_POST['kurMinAlter']);
 			$_POST['kurMaxAlter'] = str_replace(" ", "", $_POST['kurMaxAlter']);
-			
+
 //wenn beide grenzalter gesetz sind
 			if(!empty($_POST['kurMinAlter']) AND !empty($_POST['kurMaxAlter']))
 			{
@@ -138,7 +138,7 @@ class NeuerKurs
 					$fehler .= "Jungstes Alter ist falsch eingegeben.<br>";
 					$fehlerInput[] = 'kurMinAlter';
 				}
-				
+
 				if(Fltr::isInt($_POST['kurMaxAlter']))
 				{
 					$dataPost[':kurMaxAlter'] = intval($_POST['kurMaxAlter']);
@@ -185,13 +185,13 @@ class NeuerKurs
 				}
 			}
 		}
-		
+
 	//Klassen
 		if(!empty($_POST['kurMinKlasse']) OR !empty($_POST['kurMaxKlasse']))
 		{
 			$_POST['kurMinKlasse'] = str_replace(" ", "", $_POST['kurMinKlasse']);
 			$_POST['kurMaxKlasse'] = str_replace(" ", "", $_POST['kurMaxKlasse']);
-			
+
 //wenn beide grenzklassen gesetz sind
 			if(!empty($_POST['kurMinKlasse']) AND !empty($_POST['kurMaxKlasse']))
 			{
@@ -204,7 +204,7 @@ class NeuerKurs
 					$fehler .= "Jungste Klasse ist falsch eingegeben.<br>";
 					$fehlerInput[] = 'kurMinKlasse';
 				}
-				
+
 				if(Fltr::isInt($_POST['kurMaxKlasse']))
 				{
 					$dataPost[':kurMaxKlasse'] = intval($_POST['kurMaxKlasse']);
@@ -251,12 +251,12 @@ class NeuerKurs
 				}
 			}
 		}
-		
+
 		if(empty($fehler))
-		{	
-			require_once BASIS_DIR.'/MVC/DBFactory.php';
+		{
+
 			$dbh = \MVC\DBFactory::getDBH();
-			
+
 			if(!$dbh)
 			{
 				$output = array('info' => "no connection to db (dbh).");
@@ -274,16 +274,16 @@ class NeuerKurs
 			}
 			$tbl = substr($tbl, 0, -1);
 			$vl = substr($vl, 0, -1);
-			
+
 			$q = "INSERT INTO kurse (".$tbl.") VALUES(".$vl.")";
 			$tq = "SELECT count(*) as 'count' FROM kurse WHERE kurName=:kurName";
-			
+
 			try
 			{
 				$sthTest = $dbh->prepare($tq);
 				$sthTest->execute($testData);
 				$resTest = $sthTest->fetch(PDO::FETCH_ASSOC, 1);
-				
+
 				if($resTest['count'] > 0)
 				{
 					$output = array('info' => "Der Unterricht ist schon eingetragen.<br>q = $q", 'data' => $dataPost);

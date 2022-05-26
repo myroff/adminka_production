@@ -130,17 +130,17 @@ class UntBezahlen {
 		$dataPost[':mtId'] = User::getCurrentUserId();
 //Output
 		if(empty($fehler))
-		{	
-			require_once BASIS_DIR.'/MVC/DBFactory.php';
+		{
+
 			$dbh = \MVC\DBFactory::getDBH();
-			
+
 			if(!$dbh)
 			{
 				$output = array('fehler' => "no connection to db (dbh).");
 				header("Content-type: application/json");
 				exit(json_encode($output));
 			}
-			
+
 			$tbl = "";
 			$vl = "";
 
@@ -151,7 +151,7 @@ class UntBezahlen {
 			}
 			$tbl = substr($tbl, 0, -1);
 			$vl = substr($vl, 0, -1);
-			
+
 			$q = "INSERT INTO bezahlungen (".$tbl.") VALUES(".$vl.")";
 			$tq = "SELECT count(*) as 'count' FROM bezahlungen WHERE kndId=:kndId AND untId=:untId AND eintrId=:eintrId";
 			/*
@@ -160,7 +160,7 @@ class UntBezahlen {
 				$sthTest = $dbh->prepare($tq);
 				$sthTest->execute($testData);
 				$resTest = $sthTest->fetch(PDO::FETCH_ASSOC, 1);
-				
+
 				if($resTest['count'] > 0)
 				{
 					$output = array('info' => "Der Unterricht ist schon eingetragen.<br>q = $q", 'data' => $dataPost);
@@ -192,7 +192,7 @@ class UntBezahlen {
 						'fehlerInput' => $fehlerInput
 					);
 		}
-		
+
 		header("Content-type: application/json");
 		exit(json_encode($output));
 	}

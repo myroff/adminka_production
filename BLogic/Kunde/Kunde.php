@@ -82,7 +82,7 @@ class Kunde
 	}
 	private function searchDates($searchArr, $selectArr=false)
 	{
-		require_once BASIS_DIR.'/MVC/DBFactory.php';
+
 		$dbh = \MVC\DBFactory::getDBH();
 		if(!$dbh)
 		{

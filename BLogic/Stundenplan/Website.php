@@ -2,7 +2,7 @@
 namespace Stundenplan;
 
 use PDO as PDO;
-require_once BASIS_DIR.'/MVC/DBFactory.php';
+
 use MVC\DBFactory as DBFactory;
 
 class Website

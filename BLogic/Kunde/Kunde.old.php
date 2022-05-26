@@ -2,7 +2,7 @@
 namespace Kunde;
 use PDO as PDO;
 
-class Kunde 
+class Kunde
 {
 	private function filterPostData()
 	{
@@ -15,16 +15,16 @@ class Kunde
 		$sArr[':zeit'] = empty($_POST['zeit']) ? '' : $_POST['zeit'];
 		$sArr[':showIntegra'] = empty($_POST['showIntegra']) ? '' : $_POST['showIntegra'];
 		$sArr[':abgemeldet'] = empty($_POST['abgemeldet']) ? '' : $_POST['abgemeldet'];
-		
+
 		return $sArr;
 	}
-	
+
 	public function showList()
 	{
 		$sArr = array();
 		$sArr = $this->filterPostData();
 		$res = $this->searchDates($sArr);
-		
+
 		include_once BASIS_DIR.'/Templates/KundenListe.tmpl.php';
 		return;
 	}
@@ -32,7 +32,7 @@ class Kunde
 	{
 		$sArr = array();
 		$sArr = $this->filterPostData();
-		
+
 		$selectArr = "";
 		$selectArr[] = isset($_POST['print_kndnr']) ? "k.kundenNummer as 'Knd.-Nr.'" : '';
 		$selectArr[] = isset($_POST['print_anrede']) ? "k.anrede as 'Anrede'" : '';
@@ -43,19 +43,19 @@ class Kunde
 		$selectArr[] = isset($_POST['print_telefon']) ? "k.telefon as 'Telefon'" : '';
 		$selectArr[] = isset($_POST['print_handy']) ? "k.handy as 'Handy'" : '';
 		$selectArr[] = isset($_POST['print_email']) ? "k.email as 'Email'" : '';
-		
+
 		$arrayToPrint = $this->searchDates($sArr, $selectArr);
 //add title over table
 		if( isset($_POST['print_titel']) && !empty($_POST['print_titel']) ){
 			$arrayToPrint['print_titel'] = $_POST['print_titel'];
 		}
-		
+
 		include_once BASIS_DIR.'/Templates/PrintArray.tmpl.php';
 		return;
 	}
 	private function searchDates($searchArr, $selectArr=false)
 	{
-		require_once BASIS_DIR.'/MVC/DBFactory.php';
+
 		$dbh = \MVC\DBFactory::getDBH();
 		if(!$dbh)
 		{
@@ -63,10 +63,10 @@ class Kunde
 		}
 		//$dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, 10);
 		$where = "";
-		
+
 	//delete empty entries
 		$searchArr = array_filter($searchArr);
-		
+
 		if(isset($searchArr[':vorname']))
 		{
 			$where .= " k.vorname LIKE :vorname AND";
@@ -93,36 +93,36 @@ class Kunde
 		{
 			$where .= " TIME(:zeit) BETWEEN st.anfang AND st.ende AND";
 		}
-		
+
 		if(isset($searchArr[':showIntegra']))//showIntegra = "i"
 		{
 			unset($searchArr[':showIntegra']);
 		}else{
 			$where .= " k.kundenNummer NOT LIKE 'i%' AND";
 		}
-		
+
 		if(isset($searchArr[':abgemeldet']))//showIntegra = "i"
 		{
-			
+
 			unset($searchArr[':abgemeldet']);
 		}else{
 			$where .= " NOW() BETWEEN kndKurse.von AND kndKurse.bis AND";
 		}
-		
+
 		$where = substr($where, 0, -4);
-		
+
 		$select = "";
 		if($selectArr){
 			$selectArr = array_filter($selectArr);
 			$select = implode(",", $selectArr);
 		}
 		else{
-			$select = 
+			$select =
 "khk.kndId as kndIdInKhk,k.*, z.isCash, TIMESTAMPDIFF(YEAR,k.geburtsdatum,CURDATE()) as 'alter',
 	GROUP_CONCAT('{\"name\":\"',l.name, '\",\"vorname\":\"',l.vorname, '\",\"kurName\":\"', kr.KurName,'\",\"von\":\"',kndKurse.von,'\",\"bis\":\"',kndKurse.bis,'\",\"termin\":[', st.termin, ']}' SEPARATOR ',') as kurse";
 		}
-		
-		$q = 
+
+		$q =
 "SELECT ".$select."
 FROM kunden as k LEFT JOIN kundehatkurse as kndKurse USING(kndId) LEFT JOIN kurse as kr USING(kurId)
 LEFT JOIN lehrer as l USING(lehrId)
@@ -141,21 +141,21 @@ LEFT JOIN
 	WHERE EXTRACT(YEAR_MONTH FROM NOW()) BETWEEN EXTRACT(YEAR_MONTH FROM khk.von) AND EXTRACT(YEAR_MONTH FROM khk.bis)
 	GROUP BY khk.kndId
 ) as khk USING (kndId)";
-		
+
 		$q .= empty($where) ? '' : " WHERE " . $where;
 		$q .= " GROUP BY k.kndId";
 		//$q .= empty($where) ? '' : " HAVING " . $where;
 		$q .= " ORDER BY cast(k.kundenNummer as unsigned) DESC";
-		
+
 		try
 		{
 			$dbh->exec("SET SESSION group_concat_max_len = 10000;");
 			$sth = $dbh->prepare($q);
 			$sth->execute($searchArr);
 			$rs = $sth->fetchAll(PDO::FETCH_ASSOC);
-			
+
 			return $rs;
-			
+
 		} catch (Exception $ex) {
 			//print $ex;
 			return FALSE;

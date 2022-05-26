@@ -2,45 +2,45 @@
 namespace Kunde;
 require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
-require_once BASIS_DIR.'/MVC/DBFactory.php';
+
 use MVC\DBFactory as DBFactory;
 use PDO as PDO;
 
-class CommentToolsHtml 
+class CommentToolsHtml
 {
 	private static function getComments($kndId)
 	{
 		$dbh = DBFactory::getDBH();
-			
+
 		if(!$dbh)
 		{
 			return false;
 		}
-		
+
 		$q = "SELECT cmnt.cmntId, cmnt.kndId, cmnt.mtId, cmnt.comment, m.vorname, m.name"
 			.", DATE_FORMAT(created, '%d.%m.%Y %H:%i') as created"
 			.", DATE_FORMAT(updated, '%d.%m.%Y %H:%i') as updated"
 			." FROM kndComments as cmnt LEFT JOIN mitarbeiter as m USING(mtId)"
 			." WHERE cmnt.kndId=:kndId"
 			." ORDER BY cmnt.cmntId DESC";
-		
+
 		try
 		{
 			$sth = $dbh->prepare($q);
 			$sth->execute(array(':kndId' => $kndId));
 			$rs = $sth->fetchAll(PDO::FETCH_ASSOC);
-			
+
 			return $rs;
 		}
 		catch (Exception $ex) {
 			$output = array('status' => "error", 'message' => $ex);
 		}
 	}//end private function getComments($kndId)
-	
+
 	public static function showComments($kndId)
 	{
 		$out = "";
-		
+
 	//kndId
 		if(empty($kndId))
 		{
@@ -85,14 +85,14 @@ class CommentToolsHtml
 				$out .= "kndId ist kein Integer.";
 			}
 		}
-		
+
 		return $out;
 	}//end public function showComments($kndId)
-	
+
 	public static function newCommentsForm($kndId)
 	{
 		$out = "";
-		
+
 		if(empty($kndId))
 		{
 			$out .= "Kommentarform kann nicht erstellt werden: kndId fehlt.";
@@ -111,10 +111,10 @@ class CommentToolsHtml
 				$out .= "kndId ist kein Integer.";
 			}
 		}
-		
+
 		return $out;
 	}//end public function newCommentsForm($kndId)
-	
+
 	public static function newCommentsJsFnct($kndId)
 	{
 		ob_start();
@@ -144,7 +144,7 @@ class CommentToolsHtml
 				}
 			});
 		});
-		
+
 		$('.editKndKmnt').click(function()
 		{
 			cmntId = $(this).attr('cmntId').trim();
@@ -155,7 +155,7 @@ class CommentToolsHtml
 
 			$('#UpdateCmntTable').slideDown();
 		});
-		
+
 		$('#UpdateCmntForm').submit(function(e){
 			e.preventDefault();
 			var postData = $(this).serializeArray();
@@ -181,15 +181,15 @@ class CommentToolsHtml
 				}
 			});
 		});
-		
+
 		$('#UpdateCmntForm_ButtonAbbrechen').click(function(e){
 			e.preventDefault();
 			$('#UpdateCmntTable').slideUp();
 		});
-		
+
 		$('.deleteKndKmnt').click(function(){
 		cmntId = $(this).attr('cmntId').trim();
-		
+
 		if(confirm("Wollen Sie wirklich diesen Kommentar löschen?? :-0") == true)
 		{
 			$.ajax({

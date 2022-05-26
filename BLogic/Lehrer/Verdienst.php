@@ -1,7 +1,7 @@
 <?php
 namespace Lehrer;
 use PDO as PDO;
-require_once BASIS_DIR.'/MVC/DBFactory.php';
+
 use MVC\DBFactory as DBFactory;
 
 class Verdienst
@@ -13,13 +13,13 @@ class Verdienst
 		$sArr[':name'] = empty($_POST['name']) ? '' : $_POST['name'];
 		$sArr[':startMnt'] = empty($_POST['startMnt']) ? '' : trim($_POST['startMnt']);
 		$sArr[':endMnt'] = empty($_POST['endMnt']) ? '' : trim($_POST['endMnt']);
-		
+
 		$res = $this->searchDates($sArr);
-		
+
 		include_once BASIS_DIR.'/Templates/Lehrer/LehrerVerdienstListe.tmpl.php';
 		return;
 	}
-	
+
 	private function searchDates($searchArr)
 	{
 		$dbh = DBFactory::getDBH();
@@ -27,24 +27,24 @@ class Verdienst
 		{
 			return FALSE;
 		}
-		
+
 		$where = "";
-		
+
 		//delete empty entries
 		$searchArr = array_filter($searchArr);
-		
+
 		if(isset($searchArr[':name']))
 		{
 			$where .= " name LIKE :name AND";
 			$searchArr[':name'] .= '%';
 		}
-		
+
 		if(isset($searchArr[':vorname']))
 		{
 			$where .= " vorname LIKE :vorname AND";
 			$searchArr[':vorname'] .= '%';
 		}
-		
+
 		if(isset($searchArr[':startMnt']) AND isset($searchArr[':endMnt']))
 		{
 			$where .= " EXTRACT(YEAR_MONTH FROM rnMonat) BETWEEN EXTRACT(YEAR_MONTH FROM :startMnt) AND EXTRACT(YEAR_MONTH FROM :endMnt) AND";
@@ -58,34 +58,34 @@ class Verdienst
 			isset($searchArr[':startMnt']) ? $searchArr[':startMnt'] .= '-10' : $searchArr[':endMnt'] .= '-10';
 			$where .= " AND";
 		}
-		
+
 		$where = substr($where, 0, -4);
-		
+
 		$q = "SELECT r.rnMonat, l.lehrId, l.anrede, l.vorname, l.name, SUM(rndBetrag) as summe"
 			." FROM lehrer as l JOIN kurse USING(lehrId) JOIN rechnungsdaten as rd USING(kurId) LEFT JOIN rechnungen as r USING(rnId)";
 		$q .= empty($where) ? '' : " WHERE " . $where;
 		$q .= " GROUP BY l.lehrId, r.rnMonat"
 			." ORDER BY r.rnMonat DESC, l.vorname, l.name";
-                
+
 		try
 		{
 			$sth = $dbh->prepare($q);
 			$sth->execute($searchArr);
 			$rs = $sth->fetchAll(PDO::FETCH_ASSOC);
-			
+
 			return $rs;
-			
+
 		} catch (Exception $ex) {
 			//print $ex;
 			return FALSE;
 		}
 	}//private function searchDates($searchArr)
-	
+
 	public function showLehrersChildren()
 	{
 		$postData = array();
 		$fehler = "";
-		
+
 		if(isset($_POST['lehrId']) AND !empty($_POST['lehrId']))
 		{
 			$postData['lehrId'] = $_POST['lehrId'];
@@ -93,7 +93,7 @@ class Verdienst
 		else{
 			$fehler .= "lehrId fehlt\n";
 		}
-		
+
 		if(isset($_POST['rnMonat']) AND !empty($_POST['rnMonat']))
 		{
 			$postData['rnMonat'] = date('Y-m-d', strtotime($_POST['rnMonat'])) ;
@@ -101,7 +101,7 @@ class Verdienst
 		else{
 			$fehler .= "rnMonat fehlt\n";
 		}
-		
+
 		$dbh = DBFactory::getDBH();
 		if(!$dbh)
 		{
@@ -114,14 +114,14 @@ class Verdienst
 			header("Content-type: application/json");
 			exit(json_encode($output));
 		}
-		
-		$q = 
+
+		$q =
 "SELECT ku.kurId, ku.kurName, rn.*, rnd.*, knd.vorname, knd.name, knd.kndId, knd.kundenNummer
 FROM lehrer as l JOIN kurse as ku USING(lehrId) LEFT JOIN rechnungsdaten as rnd USING(kurId) JOIN rechnungen as rn USING(rnId) LEFT JOIN kunden as knd USING(kndId)
 WHERE l.lehrId=:lehrId AND EXTRACT(YEAR_MONTH FROM rn.rnMonat) = EXTRACT(YEAR_MONTH FROM :rnMonat)
 ORDER BY knd.name";
 		$rs = array();
-		
+
 		try
 		{
 			$sth = $dbh->prepare($q);
@@ -153,7 +153,7 @@ ORDER BY knd.name";
 		}
 		$out .= "</table>";
 		$out .= "Summe = $summe";
-		
+
 		$output = array('status' => "ok", "message" => $out);
 		header("Content-type: application/json");
 		exit(json_encode($output));
