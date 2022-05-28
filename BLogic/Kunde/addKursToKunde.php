@@ -1,7 +1,6 @@
 <?php
 namespace Kunde;
 use PDO as PDO;
-require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
 
 class addKursToKunde
@@ -54,6 +53,10 @@ class addKursToKunde
 				$dataPost[':von'] = Fltr::strToSqlDate($_POST['von']);
 				$testData[':von'] = $dataPost[':von'];
 			}
+			elseif(Fltr::isSqlDate($_POST['von'])) {
+				$dataPost[':von'] = $_POST['von'];
+				$testData[':von'] = $dataPost[':von'];
+			}
 			else
 			{
 				$fehler .= "Anfangsmonat: falsher format.";
@@ -69,6 +72,10 @@ class addKursToKunde
 			if(Fltr::isDate($_POST['bis']))
 			{
 				$dataPost[':bis'] = Fltr::strToSqlDate($_POST['bis']);
+				$testData[':bis'] = $dataPost[':bis'];
+			}
+			elseif(Fltr::isSqlDate($_POST['bis'])) {
+				$dataPost[':bis'] = $_POST['bis'];
 				$testData[':bis'] = $dataPost[':bis'];
 			}
 			else
@@ -134,7 +141,6 @@ class addKursToKunde
 			$vl .= "NOW(),";
 
 			//get Current Admin Id
-			require_once BASIS_DIR.'/Tools/User.php';
 			$curAdminId = \Tools\User::getCurrentUserId();
 
 			$tbl .= "erstelltVom";

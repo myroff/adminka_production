@@ -2,14 +2,14 @@
 {% block content %}
 <style>
 	.modal-trigger i {font-size:14px;cursor:pointer;}
-	
-	#updateItemTable, #addKursTable, #updateItem_Anrede, #UpdateKur_Table, #Zahlungsformular, #updateItem_istFotoErlaubt, 
+
+	#updateItemTable, #addKursTable, #updateItem_Anrede, #UpdateKur_Table, #Zahlungsformular, #updateItem_istFotoErlaubt,
 	#updateBankDates, #updateBankDates_payment_id, #editSonderPreis_Table, #editKundenKursKomm_Table, #changeKurs_Table, #changeKursConfirm_Table
 	{
 		display:none;
 		border:2px solid #a1a1a1;
-		padding:20px; 
-		background:#dddddd;
+		padding:20px;
+		background:#fdfdfd;
 		min-width:450px;
 		border-radius:20px;
 
@@ -288,7 +288,7 @@
 			<button onclick="addKurs()">Hinzufügen</button>
 		</div>
 	</div>
-	
+
 <!-- Kommentaren -->
 	<div class="divider"></div>
 	<div class="row">
@@ -417,8 +417,8 @@
 				<input type="hidden" id="addKursTable_Form_kndId" name="kndId" value=""/>
 				<input type="hidden" id="addKursTable_Form_kurId" name="kurId" value=""/>
 				<input type="hidden" id="addKursTable_Form_seasonId" name="seasonId" value=""/>
-				von <input type="text" id="addKursTable_Form_von" name="von" class="zebra_datepicker_dmy" />
-				bis <input type="text" id="addKursTable_Form_von" name="bis" class="zebra_datepicker_dmy" />
+				von <input type="date" placeholder="dd.mm.yyyy" id="addKursTable_Form_von" name="von"/>
+				bis <input type="date" id="addKursTable_Form_bis" name="bis"/>
 				<div>
 					<b>Sonderpreis</b> <input type="checkbox" name="isSonderPreisSet" value="1"/><br>
 					Preis <input style="width:40px;" type="text" name="sonderPreis" />
@@ -443,50 +443,50 @@
 <script>
 	var kndId = {{client.kndId}};
 	var meldung = $('#meldung');
-	
+
 	document.addEventListener('DOMContentLoaded', function() {
-		
+
 		var elems = document.querySelectorAll('.modal');
 		var instances = M.Modal.init(elems);
-		
+
 		var editItemLabel	= document.getElementById('edit_item_label');
 		var inputValueName	= document.getElementById('input_value_name');
 		var inputValueValue	= document.getElementById('input_value_value');
-		
+
 		editButtonList = document.getElementsByClassName('editItem');
-		
+
 		for(var i=0; i<editButtonList.length; i++) {
-		
+
 			editButtonList[i].onclick = function(e){
 				var parent		= e.currentTarget.parentNode.parentNode.parentNode;
 				var itemName	= parent.getElementsByClassName('itemName')[0].textContent.replace(/\s+/, ' ').trim();
 				var itemValue	= parent.getElementsByClassName('itemValue')[0].textContent.trim();
-				
+
 				console.log('itemName = '+itemName);
 				console.log('itemValue = '+itemValue);
-				
+
 				editItemLabel.textContent	= itemName;
 				inputValueName.value		= itemName;
 				inputValueValue.value		= itemValue;
 			};
 		}
-		
+
 		//update empfohlenId
 		document.getElementById("empfohlenIdSpeichern").onclick = function(){
-			
+
 			inputValueValue.value = document.getElementById("empfohlenKndIdInput").value.trim();
 			inputValueName.value = "empfohlenId";
-			
+
 			document.getElementById("edit_item_form").submit();
 		};
-		
+
 	});
-	
+
 	$('#updateItem_Anrede_ButtonAbbrechen').click(function(e){
 		e.preventDefault();
 		$('#updateItem_Anrede').slideUp('slow');
 	});
-	
+
 //edit Bankdaten
 	$('.editBankDates').click(function()
 	{
@@ -499,7 +499,7 @@
 		$('#updateBankDates_Form_Value').val(bitemValue);
 
 	});
-	
+
 	//update BankDates
 	$('.updateBankDates_Form').submit(function (e){
 		e.preventDefault();
@@ -527,7 +527,7 @@
 			}
 		});
 	});
-	
+
 	//Kommentaren newKndCmntTable
 	$('#newKndCmntTable_Open').click(function(){
 		$('#newKndCmntTable').slideToggle(1000);
@@ -535,7 +535,9 @@
 	$('#newKndCmntTable_Close').click(function(){
 		$('#newKndCmntTable').slideUp(1000);
 	});
-	//KommentarFunktionen
+
+	/* KommentarFunktionen */
+
 	{{ commentsJs | raw }}
 
 //unterricht hinzufügen
@@ -544,7 +546,7 @@
 		var kurId = $('#k_kurId').val();
 		var text = $('#k_kurId option:selected').text();
 		var seasonId = $('#k_kurId option:selected').attr('season_id');
-		
+
 		$('#addKursTable_KurName').html(text);
 		$('#addKursTable_Form_kndId').val(kndId);
 		$('#addKursTable_Form_kurId').val(kurId);
@@ -557,7 +559,7 @@
 		e.preventDefault();
 		$('#addKursTable').slideUp('slow');
 	});
-			
+
 	$('#addKursTable_Form').submit(function(e){
 		e.preventDefault();
 		var postData = $(this).serializeArray();
@@ -586,29 +588,29 @@
 	});
 
 		//Bezahlungsformular
-			
+
 			$('.kurBezahlenButton').click(function()
 			{
 				untName = $(this).attr('kurName').trim();
 				kurId = $(this).attr('kurId');
 				eintrId = $(this).attr('eintrId');
-				
+
 				$('#zfEintrId').val(eintrId);
 				$('#zfKndId').val(kndId);
 				$('#zfKurId').val(kurId);
 				$('#zfKurName').html(untName);
 				$('#Zahlungsformular').slideDown('slow');
 			});
-			
+
 			$('#zfButtonAbbrechen').click(function(e){
 				e.preventDefault();
 				$('#Zahlungsformular').slideUp('slow');
 			});
-			
+
 			$('#zfForm').submit(function(e){
 				e.preventDefault();
 				var postData = $(this).serializeArray();
-				
+
 				$.ajax({
 					url:'{{ constant('BASIS_URL') }}/admin/ajaxKurBezahlen',
 					type:'POST',
@@ -629,7 +631,7 @@
 						meldung.html(errorThrown);
 					}
 				});
-				
+
 				//$('#Zahlungsformular').slideUp('slow');
 			});
 
