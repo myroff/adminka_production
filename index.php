@@ -10,7 +10,8 @@ error_reporting(E_ALL);
 
 require_once(__DIR__.'/config.php');
 
-require_once './MVC/config_db.php';
-require_once './MVC/MVC.php';
+require_once __DIR__.'/MVC/config_db.php';
+require_once __DIR__.'/Vendor/autoload.php';
+require_once __DIR__.'/MVC/MVC.php';
 
 #
