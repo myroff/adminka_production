@@ -1,8 +1,6 @@
 <?php
 namespace Kunde;
 use PDO as PDO;
-//twig
-require_once BASIS_DIR . '/Vendor/autoload.php';
 
 #require_once BASIS_DIR.'/Tools/TmplTools.php';
 use \Tools\TmplTools as TmplTls;
@@ -50,8 +48,8 @@ class Kunde
 		#$vars['isCashImg']	= $this->isCashImg;
 
 		$options = []; #array('cache' => TWIG_CACHE_DIR);
-		$loader = new \Twig_Loader_Filesystem(TWIG_TEMPLATE_DIR);
-		$twig = new \Twig_Environment($loader, $options);
+		$loader = new \Twig\Loader\FilesystemLoader(TWIG_TEMPLATE_DIR);
+		$twig = new \Twig\Environment($loader, $options);
 		$twigTmpl = $twig->load('/Kunde/KundenListe.twig');
 		echo $twigTmpl->render($vars);
 	}
