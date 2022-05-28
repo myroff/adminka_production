@@ -57,7 +57,7 @@ class KursSelector
 			</tr>
 			<tr>
 				<td>
-					<?php echo TmplTls::getSeasonsSelector("search_season", "s_season_id", $sArr[':season_id'], "Saisons", 0); ?>
+					<?php echo TmplTls::getSeasonsSelector("search_season", $id."_s_season_id", $sArr[':season_id'], "Saisons", 0); ?>
 				</td>
 				<td>
 					<input name="kurName" type="text" value="<?=$sArr[':kurName']?>" />
