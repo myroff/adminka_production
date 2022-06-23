@@ -12,18 +12,18 @@ use DateInterval as DateInterval;
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" media="screen" />
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/jquery-2.1.1.min.js"></script>
-		
+
 		<script src="<?=BASIS_URL?>/Public/jquery-ui/jquery-ui.min.js"></script>
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/jquery-ui/jquery-ui.min.css">
-		
+
 		<style>
 			#editTermin
 			{
 				display:none;
 				border:2px solid #a1a1a1;
-				padding:20px; 
+				padding:20px;
 				background:#dddddd;
 				width:400px;
 				border-radius:20px;
@@ -33,7 +33,7 @@ use DateInterval as DateInterval;
 				left:30%;
 				z-index:100;
 			}
-			
+
 			#stnPlFlex
 			{
 				width:1200px;
@@ -44,15 +44,15 @@ use DateInterval as DateInterval;
 			.timeLine{width:120px;float:left;height:300px;}
 			.time{height:180px;border-top:1px solid black;border-bottom:1px solid black;z-index:0;}
 			.lessons{width:118px;height:178px;float:left;position:absolute;font:12px arial, sans-serif;z-index:10;border:1px solid black;}
-			
+
 			#stnPlTable td, stnPlTable th{padding:0px;text-align:left;vertical-align:top;width:120px;}
-			
+
 		</style>
 	</head>
 	<body>
 		<div id="horizontalMenu">
 			<?php
-			require_once BASIS_DIR.'/Templates/Menu.class.php';
+
 			TemplateTools\Menu::adminMenu();
 			?>
 		</div>
@@ -87,19 +87,19 @@ use DateInterval as DateInterval;
 <!-- flexibler Stundenplan -->
 				<?php
 				$kAnfHour = new DateTime($res[0]['anfang']);
-				
+
 				$curTime = "";
 				$endTime = "";
 				$curDay = 0;
 				$maxRaum = 10;
-				
+
 				$oneLesson = DateInterval::createFromDateString('45 min'); // 1 Lesson = 45 minut
 				$oneHour = DateInterval::createFromDateString('1 hour'); // 1 hour
 				$endOfHour = new DateTime('10:00');
-				
+
 				$startTime = new DateTime('09:00');
 				$endTime = new DateTime('20:00');
-				
+
 				$countRes = count($res);
 				?>
 				<table id="stnPlTable" >
@@ -118,23 +118,23 @@ use DateInterval as DateInterval;
 				$i = 0;
 				while( $i < $countRes )
 				{
-					
+
 					if( $curDay !== $res[$i]['wochentag'])
 					{
 						echo "<tr style='background:#575757;color:white;font-weight:bold;' ><td colspan='$maxRaum'>"
 							.Fltr::indxToWeekday($res[$i]['wochentag'])."</td></tr>";
 						$curDay = (int)$res[$i]['wochentag'];
-						
+
 					}
-					
+
 					for( $ct = $startTime, $et = $endOfHour; $ct <= $endTime && $i < $countRes; $ct->add($oneHour), $et->add($oneHour))
 					{
 						echo "<tr class='time' >";
 						echo "<td >".$ct->format('H:i')."</td>";
-						
+
 						for($n=2; $n<=$maxRaum; $n++)
 						{
-							
+
 							if( isset($res[$i]) )
 							{
 								if($n === (int)$res[$i]['raum'] AND $curDay === $res[$i]['wochentag'])
@@ -146,7 +146,7 @@ use DateInterval as DateInterval;
 									echo "<td>";
 
 									echo "<div class='lessons' style='background:rgba(0,250,0,0.7);margin-top:".$top."px;height:".$tl."px;' >";
-										echo "<button class='editItemButton editTerminButton' stnPlId='".$res[$i]['stnPlId']."' anf='".$res[$i]['anfang']."'" 
+										echo "<button class='editItemButton editTerminButton' stnPlId='".$res[$i]['stnPlId']."' anf='".$res[$i]['anfang']."'"
 												." end='".$res[$i]['ende']."' raum='".$res[$i]['raum']."' wTag='".$res[$i]['wochentag']."' >"
 												."</button>";
 
@@ -171,7 +171,7 @@ use DateInterval as DateInterval;
 								echo "<td></td>";
 							}
 						}
-						
+
 						echo "</tr>";
 					}
 				}
@@ -198,7 +198,7 @@ use DateInterval as DateInterval;
 					{
 						$alter = $r['kurMinAlter'];
 						$alter .= $r['kurMinAlter'] < $r['kurMaxAlter'] ? " bis ".$r['kurMaxAlter'] : '';
-						
+
 						$klasse = $r['kurMinKlasse'];
 						$klasse .= $r['kurMinKlasse'] < $r['kurMaxKlasse'] ? " bis ".$r['kurMaxKlasse'] : "";
 					?>
@@ -219,7 +219,7 @@ use DateInterval as DateInterval;
 					?>
 				</table>
 			</div>
-			
+
 		</div><!-- Main Content Ende -->
 		<!-- Form für neuen Termin -->
 		<div id="editTermin">
@@ -266,13 +266,13 @@ use DateInterval as DateInterval;
 //edit Termin
 $('.editTerminButton').click(function(){
 	$('#deleteButton_Termin').attr('stnPlId', $(this).attr('stnPlId'));
-	
+
 	$('#editTerminForm_stnPlId').val($(this).attr('stnPlId'));
 	$('#editTerminForm_raum').val($(this).attr('raum'));
 	$('#editTerminForm_wochentag').val($(this).attr('wTag'));
 	$('#editTerminForm_anfang').val($(this).attr('anf'));
 	$('#editTerminForm_ende').val($(this).attr('end'));
-	
+
 	$('#editTermin').slideDown(1000);
 });
 

@@ -13,18 +13,18 @@ use DateInterval as DateInterval;
 
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" media="screen" />
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style-print.css" type="text/css" media="print" />
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/jquery-2.1.1.min.js"></script>
-		
+
 		<script src="<?=BASIS_URL?>/Public/jquery-ui/jquery-ui.min.js"></script>
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/jquery-ui/jquery-ui.min.css">
-		
+
 		<style>
 			#editTermin, #KursInfoTable
 			{
 				display:none;
 				border:2px solid #a1a1a1;
-				padding:20px; 
+				padding:20px;
 				background:#dddddd;
 				width:450px;
 				border-radius:20px;
@@ -39,7 +39,7 @@ use DateInterval as DateInterval;
 				width:1200px;
 				overflow:hidden;
 			}
-			
+
 			.timeLine{width:120px;float:left;}
 			.time{height:180px;border-top:1px solid black;border-bottom:1px solid black;z-index:0;}
 			.lessons{width:120px;height:180px;float:left;position:relative;font:12px arial, sans-serif;}
@@ -48,7 +48,7 @@ use DateInterval as DateInterval;
 	<body>
 		<div id="horizontalMenu">
 			<?php
-			require_once BASIS_DIR.'/Templates/Menu.class.php';
+
 			TemplateTools\Menu::adminMenu();
 			?>
 		</div>
@@ -89,19 +89,19 @@ use DateInterval as DateInterval;
 			</div>
 
 			<?php
-			
+
 				$curTime = "";
 				$endTime = "";
 				$curDay = "";
 				$maxRaum = count($raum)+1;
-				
+
 				$oneLesson = DateInterval::createFromDateString('45 min'); // 1 Lesson = 45 minut
 				$oneHour = DateInterval::createFromDateString('1 hour'); // 1 hour
-				
+
 				$startTime = new DateTime('09:00');
 				$endOfHour = new DateTime('10:00');
 				$endTime = new DateTime('20:00');
-			
+
 			?>
 
 			<!--<div id="">-->
@@ -120,7 +120,7 @@ use DateInterval as DateInterval;
 						?>
 					</tr>
 					<?php
-					
+
 					$curTime = "";
 					$endTime = isset($res[0]['ende']) ? strtotime($res[0]['ende']) : 0;
 					$curDay = 0;
@@ -134,11 +134,11 @@ use DateInterval as DateInterval;
 					{
 						//$curHourTime = strtotime($res[$i]['anfang']);
 						//$curHour = intval( date('G', strtotime($res[$i]['anfang'])) );
-						
-						
+
+
 						if( $curDay !== intval($res[$i]['wochentag']) )
 						{
-							
+
 				//if curTime != endTime
 							$endHour = intval( date('G', $endTime) );
 							++$curHour;
@@ -158,28 +158,28 @@ use DateInterval as DateInterval;
 									echo "</tr>";
 								}
 							}
-							
+
 							$curHour = intval( date('G', strtotime($res[$i]['anfang']) ) );
 							$curDay = intval($res[$i]['wochentag']);
 							echo "<tr ><th colspan='$maxRaum' class='headerWeekday'>".Fltr::getWeekdayFromInt($res[$i]['wochentag'])."</th></tr>";
-							
+
 					//reset endTime
 							$endTime = strtotime($res[$i]['ende']);
 						}
 						else{
 							++$curHour;
-							
+
 						}
 						$curHourTime = strtotime($curHour.':00');
 						echo "<tr >";
-						
+
 						echo "<td class='timeTR'>".$curHour.":00</td>"; //
-						
+
 						//for($r=2; $r<11; ++$r)
 						foreach ($raum as $r)
 						{
 							echo "<td>";
-							
+
 							if(isset($res[$i]))
 							{
 								while( $r['raum'] == $res[$i]['raum'] AND $curHour == date('G', strtotime($res[$i]['anfang'])) AND isset($res[$i])
@@ -191,10 +191,10 @@ use DateInterval as DateInterval;
 										$endTime = $tmpEndTime;
 									}
 									$anfangTime = strtotime($res[$i]['anfang']);
-									
+
 									$style = "";
 									$class = "";
-									
+
 									if($res[$i]['countKnd'] > 0 AND $res[$i]['countKnd'] < $res[$i]['maxKnd'])
 									{
 										$class .= "belegt_mit_freien_plaetzen";
@@ -204,7 +204,7 @@ use DateInterval as DateInterval;
 										$class .= " belegt_voll";
 									}
 									else{
-										
+
 									}
 									$unterrichtsDauer = (strtotime($res[$i]['ende']) - strtotime($res[$i]['anfang']) ) / 60 ;
 						//Dauer in pixel -2px für border top & bottom
@@ -220,10 +220,10 @@ use DateInterval as DateInterval;
 									echo "<button class='editItemButton editTerminButton' stnPlId='".$res[$i]['stnPlId']."' anf='".$res[$i]['anfang']."' end='".$res[$i]['ende']."'"
 											. " raum='".$res[$i]['raum']."' wTag='".$res[$i]['wochentag']."'>"
 											. "</button>";
-									
+
 									echo $res[$i]['kurName']."<br>"
 										.$res[$i]['vorname']." ".$res[$i]['name']."<br>";
-									
+
 									if(!empty($res[$i]['kurMinAlter']) AND !empty($res[$i]['kurMaxAlter'])
 										AND ($res[$i]['kurMinAlter'] != $res[$i]['kurMaxAlter']) )
 									{
@@ -242,17 +242,17 @@ use DateInterval as DateInterval;
 									{
 										echo "Klasse: ".$res[$i]['kurMinKlasse']."<br>";
 									}
-									
+
 									echo "<span class='dont-print' >"
 											.$res[$i]['countKnd']."/".$res[$i]['maxKnd']
 										."</span>";
-									
+
 									echo "</div>";
 									++$i;
 									if( !isset($res[$i]) ){
 										break;
 									}
-									
+
 								}
 							}
 							/*
@@ -287,7 +287,7 @@ use DateInterval as DateInterval;
 					{
 						$alter = $r['kurMinAlter'];
 						$alter .= $r['kurMinAlter'] < $r['kurMaxAlter'] ? " bis ".$r['kurMaxAlter'] : '';
-						
+
 						$klasse = $r['kurMinKlasse'];
 						$klasse .= $r['kurMinKlasse'] < $r['kurMaxKlasse'] ? " bis ".$r['kurMaxKlasse'] : "";
 					?>
@@ -308,7 +308,7 @@ use DateInterval as DateInterval;
 					?>
 				</table>
 			</div>
-			
+
 		</div><!-- Main Content Ende -->
 		<!-- Form für neuen Termin -->
 		<div id="editTermin">
@@ -350,7 +350,7 @@ use DateInterval as DateInterval;
 				</table>
 			</form>
 		</div>
-		
+
 	<!-- Kursinfo -->
 		<div id="KursInfoTable">
 			<div id="KursInfoTable_Info"></div>
@@ -362,13 +362,13 @@ use DateInterval as DateInterval;
 //edit Termin
 $('.editTerminButton').click(function(){
 	$('#deleteButton_Termin').attr('stnPlId', $(this).attr('stnPlId'));
-	
+
 	$('#editTerminForm_stnPlId').val($(this).attr('stnPlId'));
 	$('#editTerminForm_raum').val($(this).attr('raum'));
 	$('#editTerminForm_wochentag').val($(this).attr('wTag'));
 	$('#editTerminForm_anfang').val($(this).attr('anf'));
 	$('#editTerminForm_ende').val($(this).attr('end'));
-	
+
 	$('#editTermin').slideDown(1000);
 });
 
@@ -457,12 +457,12 @@ $('#closeKursInfoTable').click(function(){
 
 $('.printButton').click(function(){
 	div = $(this).attr('printDiv');
-	
+
 	w=window.open();
 	//doc = document.implementation.createHTMLDocument("Test Print");
 	//doc.innerHTML = $('#'+div).html();
 	//w.document.write(doc);
-	
+
 	w.document.write('<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" />');
 	w.document.write($('#'+div).html());
 	//w.print();
@@ -474,11 +474,11 @@ $('.printButton').click(function(){
         Popup($(elem).html());
     }
 
-    function Popup(data) 
+    function Popup(data)
     {
         var mywindow = window.open('', 'my div', 'height=400,width=600');
         mywindow.document.write('<html><head><title>my div</title>');
-        //optional stylesheet 
+        //optional stylesheet
 		//mywindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
         mywindow.document.write('</head><body >');
         mywindow.document.write(data);

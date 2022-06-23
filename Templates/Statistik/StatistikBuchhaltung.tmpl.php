@@ -5,16 +5,15 @@
 
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" media="screen" />
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style-print.css" type="text/css" media="print" />
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/jquery-2.1.1.min.js"></script>
-		
+
 		<style>
 		</style>
 	</head>
 	<body>
 		<div id="horizontalMenu">
 			<?php
-			require_once BASIS_DIR.'/Templates/Menu.class.php';
 			TemplateTools\Menu::adminMenu();
 			?>
 		</div>

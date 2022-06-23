@@ -1,8 +1,6 @@
 <?php
 namespace Kunde;
 use PDO as PDO;
-
-#require_once BASIS_DIR.'/Tools/TmplTools.php';
 use \Tools\TmplTools as TmplTls;
 
 class Kunde
@@ -46,12 +44,15 @@ class Kunde
 		$vars['zeit']		= TmplTls::getTimeSelector("zeit", "zeit", $sArr[':zeit'], "Zeit");
 		$vars['s_season']	= TmplTls::getSeasonsSelector("s_season", "s_season", $sArr[':season'], "Season", 1);
 		#$vars['isCashImg']	= $this->isCashImg;
-
+		/*
 		$options = []; #array('cache' => TWIG_CACHE_DIR);
 		$loader = new \Twig\Loader\FilesystemLoader(TWIG_TEMPLATE_DIR);
 		$twig = new \Twig\Environment($loader, $options);
 		$twigTmpl = $twig->load('/Kunde/KundenListe.twig');
 		echo $twigTmpl->render($vars);
+		*/
+		$viewer = new \Viewer\Viewer();
+		$viewer->display('/Kunde/KundenListe.twig', $vars);
 	}
 	public function printList()
 	{

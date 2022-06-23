@@ -9,12 +9,12 @@ use Tools\TmplTools as TmplTls;
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" media="screen" />
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/jquery-2.1.1.min.js"></script>
-		
+
 		<script src="<?=BASIS_URL?>/Public/jquery-ui/jquery-ui.min.js"></script>
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/jquery-ui/jquery-ui.min.css">
-		
+
 		<style>
 			.decimalSpiner{width:30px;};
 		</style>
@@ -22,7 +22,7 @@ use Tools\TmplTools as TmplTls;
 	<body>
 		<div id="horizontalMenu">
 			<?php
-			require_once BASIS_DIR.'/Templates/Menu.class.php';
+
 			TemplateTools\Menu::adminMenu();
 			?>
 		</div>
@@ -95,7 +95,7 @@ use Tools\TmplTools as TmplTls;
 							Altersgruppen
 						</th>
 					</tr>
-					
+
 					<tr>
 						<td colspan="2">
 							<b>Jahren</b>
@@ -151,11 +151,11 @@ use Tools\TmplTools as TmplTls;
 			</form>
 		</div>
 		<!-- END OF CONTENT -->
-		
+
 		<!--JavaScript -->
 		<script>
 			var meldung = $('#meldung');
-			
+
 			$('.decimalSpiner').spinner({
 				min:0,
 				max:100,
@@ -163,13 +163,13 @@ use Tools\TmplTools as TmplTls;
 				step:1,
 				numberFormat: "n"
 			});
-			
+
 			$('form').submit(function (e){
 				e.preventDefault();
 				var postData = $(this).serializeArray();
-				
+
 				meldung.text(postData);
-				 
+
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/ajaxSaveNewKurs',
 					type:'POST',
@@ -181,7 +181,7 @@ use Tools\TmplTools as TmplTls;
 							$("form [name]").css({'background':''});
 							meldung.html(response.info);
 							meldung.append("<br>");
-							
+
 							for(var i in response.data)
 							{
 								meldung.append(i+" = ");

@@ -5,16 +5,9 @@ namespace Kunde;
  */
 use PDO as PDO;
 
-require_once BASIS_DIR.'/Tools/TmplTools.php';
 use Tools\TmplTools as TmplTls;
-require_once BASIS_DIR.'/BLogic/Kurse/KursSelector.php';
 use Kurse\KursSelector as KurSel;
-
-require_once BASIS_DIR.'/BLogic/Kurse/Seasons.php';
 use Kurse\Seasons as Seasons;
-
-//twig
-require_once BASIS_DIR . '/Vendor/autoload.php';
 
 class ClientsCourses
 {
@@ -28,13 +21,16 @@ class ClientsCourses
 		$vars['editMode']	= $editMode ? true : false;
 		$vars['s_season']	= TmplTls::getSeasonsSelector("s_season", "s_season", $curSeason, "Season", 1);
 		$vars['changeCourseSelector']	= KurSel::getKursSelector("newKurId", "changeKurs_newKurId",  "10", "/admin/ajaxKursSelectorUpdate", 1);
-
+/*
 		$options	= []; #array('cache' => TWIG_CACHE_DIR);
 		$loader		= new \Twig_Loader_Filesystem(TWIG_TEMPLATE_DIR);
 		$twig		= new \Twig_Environment($loader, $options);
 		$twigTmpl	= $twig->load('/Module/Client/ClientsCourseModule.twig');
 
 		return $twigTmpl->render($vars);
+*/
+		$viewer = new \Viewer\Viewer();
+		return $viewer->render('/Module/Client/ClientsCourseModule.twig', $vars);
 	}
 
 	public static function getCoursesData($clientId, $curSeasonId=false)
@@ -66,6 +62,9 @@ class ClientsCourses
 			$sth = $dbh->prepare($q);
 			$sth->execute(array(":kndId" => $clientId));
 			$res = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+			$stdModel = new \Stundenplan\StundenplanModel();
+			$res = $stdModel->updateSeasonalData($res);
 		} catch (Exception $ex) {
 			print $ex;
 			return FALSE;
@@ -83,12 +82,15 @@ class ClientsCourses
 		$vars['lessons']	= self::getCoursesData($clientId, $seasonId);
 		$vars['client_id']	= $clientId;
 		$vars['editMode']	= $editMode ? true : false;
-
+/*
 		$options	= []; #array('cache' => TWIG_CACHE_DIR);
 		$loader		= new \Twig_Loader_Filesystem(TWIG_TEMPLATE_DIR);
 		$twig		= new \Twig_Environment($loader, $options);
 		$twigTmpl	= $twig->load('/Module/Client/ClientsCourseTable.twig');
 		$content	= $twigTmpl->render($vars);
+*/
+		$viewer 	= new \Viewer\Viewer();
+		$content	= $viewer->render('/Module/Client/ClientsCourseTable.twig', $vars);
 
 		exit($content);
 	}

@@ -5,12 +5,12 @@
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" media="screen" />
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/jquery-2.1.1.min.js"></script>
-		
+
 		<script src="<?=BASIS_URL?>/Public/jquery-ui/jquery-ui.min.js"></script>
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/jquery-ui/jquery-ui.min.css">
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/zebra_datepicker.js"></script>
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/zebra_default.css">
 
@@ -18,7 +18,7 @@
 	<body>
 		<div id="horizontalMenu">
 			<?php
-			require_once BASIS_DIR.'/Templates/Menu.class.php';
+
 			TemplateTools\Menu::adminMenu();
 			?>
 		</div>
@@ -287,7 +287,7 @@
 				format: 'd.m.Y',	//  note that becase there's no day in the format
 				offset:	[0,200],			//  users will not be able to select a day!
 			});
-			
+
 		    $('#saveNewClientForm').submit(function (e){
 				e.preventDefault();
 				var postData = $(this).serializeArray();

@@ -4,23 +4,22 @@
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" media="screen" />
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/jquery-2.1.1.min.js"></script>
-		
+
 		<style>
 			#groups{overflow:hidden;}
 			#grpList{list-style-type:none;text-decoration:none;padding:0;}
 			#grpList li {display:block;float:left;margin-left:10px;border:1px solid black;border-radius:5px;padding:5px;cursor:pointer;}
-			
+
 			#users{margin-top:20px;}
-			
+
 			#infoBox{}
 		</style>
 	</head>
 	<body>
 		<div id="horizontalMenu">
 			<?php
-			require_once BASIS_DIR.'/Templates/Menu.class.php';
 			TemplateTools\Menu::adminMenu();
 			?>
 		</div>
@@ -37,7 +36,7 @@
 				<?php
 				foreach ($groups as $g) {
 					echo "<li><span class='grpName'>".$g['grpName']."</span>(".$g['grpId'].")<br>"
-						."<button class='renameGroup' grpId='".$g['grpId']."' >Umbenennen</button><br>"	
+						."<button class='renameGroup' grpId='".$g['grpId']."' >Umbenennen</button><br>"
 						."<button class='deleteGroup' grpId='".$g['grpId']."' >Löschen</button>"
 						."</li>";
 				}
@@ -73,7 +72,7 @@
 				</table>
 			</div>
 		</div>
-		
+
 		<div id="infoBox" class="messageBox">
 			<div id="infoBoxTitle"></div>
 			<div id="infoBoxDisplay"></div>
@@ -82,18 +81,18 @@
 				<button id="infoBoxButtonCancel">Cancel</button>
 			</div>
 		</div>
-		
+
 		<script>
 //Gruppe Umbenennen
 		$('.renameGroup').click(function(){
 			var grpId = $(this).attr('grpId');
 			var oldName = $(this).parent().children('.grpName').first().text();
 			var newName = prompt("Please enter new name", oldName);
-			
+
 			if(newName === oldName || newName === '' || newName == null){
 				return;
 			}
-			
+
 			$.ajax({
 				url:'<?=BASIS_URL?>/admin/users/renameGroup',
 				type:'POST',
@@ -114,11 +113,11 @@
 //neue Gruppe
 		$('#addGroup').click(function(){
 			var newGroup = prompt("Please enter new group");
-			
+
 			if(newGroup === '' || newGroup == null){
 				return;
 			}
-			
+
 			$.ajax({
 				url:'<?=BASIS_URL?>/admin/users/createGroup',
 				type:'POST',
@@ -140,7 +139,7 @@
 		$('.deleteGroup').click(function(){
 			var grpId = $(this).attr('grpId');
 			var grpName = $(this).parent().children('.grpName').first().text();
-			
+
 			if(confirm("Die Gruppe "+grpName+" löschen?")){
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/users/deleteGroup',
@@ -163,7 +162,7 @@
 //get Userlist JSON
 		$('#addUser').click(function(){
 			$('#infoBoxTitle').html("Wählen Sie einen Mitarbeiter.");
-			
+
 			$.ajax({
 				url:'<?=BASIS_URL?>/admin/users/getMitarbeiterListJson',
 				type:'POST',
@@ -180,14 +179,14 @@
 					alert("Error: "+errorThrown);
 				}
 			});
-			
+
 			$('#infoBox').slideDown();
 		});
-		
+
 //MitarbeiterJSON to Radio-List
 		function MitarbeiterToRadioButton(jsonList){
 			var listLength = jsonList.length;
-			
+
 			for(var i=0; i<listLength; i++){
 				var txt = '<input type="radio" name="mitarbeiter" value="'+jsonList[i]['mtId']+'">'+jsonList[i]['vorname']+' '+jsonList[i]['name']+'<br>';
 				$('#infoBoxDisplay').append(txt);
@@ -195,7 +194,7 @@
 			$('#infoBoxButtonOk').off('click');
 			$('#infoBoxButtonOk').click(function(){
 				var mtId = $('input[name=mitarbeiter]:checked').val();
-				
+
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/users/getMitarbeiterInfoJson',
 					type:'POST',
@@ -213,7 +212,7 @@
 						alert("Error: "+errorThrown);
 					}
 				});
-				
+
 			});
 		}
 //send dates to server
@@ -226,17 +225,17 @@
 			$form.append("Password:");
 			$pswd = $("<input type='text' name='pswd' id='nu_pswd'/>");
 			$form.append($pswd);
-			
+
 			$('#infoBoxDisplay').empty();
 			$('#infoBoxDisplay').append($form);
-			
+
 			var mtId = userInfo['mtId'];
 			$('#infoBoxButtonOk').off('click');
 			$('#infoBoxButtonOk').click(function(){
 				var login = $login.val();
 				var pswd = $pswd.val();
 				alert("mtId="+mtId+" login="+login+" pswd="+pswd);
-				
+
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/users/insertNewLoginPswdJson',
 					type:'POST',
@@ -255,15 +254,15 @@
 						alert("Error: "+errorThrown);
 					}
 				});
-				
+
 			});
 		}
-		
+
 //add Group to user
 		$('.addGroupToUser').click(function(){
 			$('#infoBoxTitle').html("Wählen Sie eine Gruppe aus.");
 			var mtId = $(this).attr('mtId');
-			
+
 			$.ajax({
 					url:'<?=BASIS_URL?>/admin/users/getGroupListJson',
 					type:'POST',
@@ -280,21 +279,21 @@
 						alert("Error: "+errorThrown);
 					}
 				});
-			
+
 			$('#infoBox').slideDown();
 		});
 		function GroupsToRadioButton(jsonList, mtId, actionUrl){
 			var listLength = jsonList.length;
-			
+
 			for(var i=0; i<listLength; i++){
 				var txt = '<input type="radio" name="group" value="'+jsonList[i]['grpId']+'">'+jsonList[i]['grpName']+'<br>';
 				$('#infoBoxDisplay').append(txt);
 			}
 			$('#infoBoxButtonOk').off('click');
-			
+
 			$('#infoBoxButtonOk').click(function(){
 				var grpId = $('input[name=group]:checked').val();
-				
+
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/users'+actionUrl,
 					type:'POST',
@@ -313,15 +312,15 @@
 						alert("Error: "+errorThrown);
 					}
 				});
-				
+
 			});
-			
+
 		}
 //remove User From Group
 		$('.removeUserFromGroup').click(function(){
 			$('#infoBoxTitle').html("Wählen Sie eine Gruppe aus.");
 			var mtId = $(this).attr('mtId');
-			
+
 			$.ajax({
 					url:'<?=BASIS_URL?>/admin/users/getUsersGroupJson',
 					type:'POST',
@@ -339,29 +338,29 @@
 						alert("Error: "+errorThrown);
 					}
 				});
-			
+
 			$('#infoBox').slideDown();
 		});
 //Password ändern
 		$('.updatePassword').click(function(){
 			$('#infoBoxTitle').html("Neues Passwort eingeben.");
 			var mtId = $(this).attr('mtId');
-			
+
 			$form = $("<form id=updatePassword></form>");
 			$form.append("Password:");
 			$pswd = $("<input type='text' name='pswd' id='nu_pswd'/>");
 			$form.append($pswd);
-			
+
 			$('#infoBoxDisplay').empty();
 			$('#infoBoxDisplay').append($form);
-			
+
 			$('#infoBox').slideDown();
-			
+
 			$('#infoBoxButtonOk').off('click');
 			$('#infoBoxButtonOk').click(function(){
 				var pswd = $pswd.val();
 				alert("mtId="+mtId+" pswd="+pswd);
-				
+
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/users/updatePassword',
 					type:'POST',
@@ -380,9 +379,9 @@
 						alert("Error: "+errorThrown);
 					}
 				});
-				
+
 			});
-			
+
 		});
 //button cancel in infoBox
 		$('#infoBoxButtonCancel').click(function(){

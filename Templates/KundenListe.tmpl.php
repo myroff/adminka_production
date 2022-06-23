@@ -12,14 +12,14 @@ use Tools\TmplTools as TmplTls;
 
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" media="screen" />
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style-print.css" type="text/css" media="print" />
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/jquery-2.1.1.min.js"></script>
 
 	</head>
 	<body>
 		<div id="horizontalMenu" class="dont-print">
 			<?php
-			require_once BASIS_DIR.'/Templates/Menu.class.php';
+
 			TemplateTools\Menu::adminMenu();
 			?>
 		</div>
@@ -174,14 +174,14 @@ use Tools\TmplTools as TmplTls;
 								break;
 						}
 						$isCash = "<img src='".BASIS_URL."/Public/img/".$bild."' style='height:100px;'/>";
-						
+
 					//Kunde hat keine Kurse mehr
 						$stl = is_null($r['kndIdInKhk']) ? "background:yellow;" : "";
 					//wenn der kundenNummer fängt mit "i" an. (Für Integra)
 						$stl = (substr($r['kundenNummer'], 0, 1) === 'i') ? "background:Khaki;" : "";//Fuchsia
 						$stl .= $r['istFotoErlaubt'] === "0" ? "border-left:5px solid red;" : "";
 						echo "<tr style='$stl'>";
-						
+
 						echo "<td><a href='".BASIS_URL."/admin/kundeById/".$r['kndId']."'>Info</a><br>$isCash</td>";
 						echo "<td><a href='".BASIS_URL."/admin/bezahlenById/".$r['kndId']."'>Bezahlen</a></td>";
 						echo "<td>";
@@ -199,7 +199,7 @@ use Tools\TmplTools as TmplTls;
 						echo "<td>".$r['telefon']."</td>";
 						echo "<td>".$r['handy']."</td>";
 						echo "<td>".$r['email']."</td>";
-						
+
 						echo "</tr>";
 					}
 				}
@@ -208,7 +208,7 @@ use Tools\TmplTools as TmplTls;
 			</div>
 		</div>
 		<!-- END OF CONTENT -->
-		
+
 		<!--JavaScript -->
 		<script>
 var meldung = $('#meldung');

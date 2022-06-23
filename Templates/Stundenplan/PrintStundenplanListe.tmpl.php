@@ -10,20 +10,19 @@ use DateInterval as DateInterval;
 	<head>
 		<title>SWIFF: Print Stundenplan.</title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-		
+
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" media="screen" />
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style-print.css" type="text/css" media="print" />
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/jquery-2.1.1.min.js"></script>
-		
+
 		<style>
-			
+
 		</style>
 	</head>
 	<body>
 		<div id="horizontalMenu">
 			<?php
-			require_once BASIS_DIR.'/Templates/Menu.class.php';
 			TemplateTools\Menu::adminMenu();
 			?>
 		</div>
@@ -63,15 +62,15 @@ use DateInterval as DateInterval;
 			</div>
 
 			<?php
-			
+
 				$curTime = "";
 				$endTime = "";
 				$curDay = "";
 				$maxRaum = count($raum)+1;
-				
+
 				$oneLesson = DateInterval::createFromDateString('45 min'); // 1 Lesson = 45 minut
 				$oneHour = DateInterval::createFromDateString('1 hour'); // 1 hour
-				
+
 				$startTime = new DateTime('09:00');
 				$endOfHour = new DateTime('10:00');
 				$endTime = new DateTime('20:00');
@@ -128,32 +127,32 @@ use DateInterval as DateInterval;
 							?>
 						</tr>
 						<?php
-							
+
 						}
 						else{
 							++$curHour;
-							
+
 						}
 						$curHourTime = strtotime($curHour.':00');
 						echo "<tr >";
-						
+
 						echo "<td class='timeTR'>".$curHour.":00</td>"; //
-						
+
 						//for($r=2; $r<11; ++$r)
 						foreach ($raum as $r)
 						{
 							echo "<td>";
-							
+
 							if(isset($res[$i]))
 							{
 								while( $r['raum'] == $res[$i]['raum'] AND $curHour == date('G', strtotime($res[$i]['anfang'])) AND isset($res[$i])
 										AND $curDay === intval($res[$i]['wochentag']) )
 								{
 									$anfangTime = strtotime($res[$i]['anfang']);
-									
+
 									$style = "";
 									$class = "";
-									
+
 									if($res[$i]['countKnd'] > 0 AND $res[$i]['countKnd'] < $res[$i]['maxKnd'])
 									{
 										$class .= "belegt_mit_freien_plaetzen";
@@ -163,7 +162,7 @@ use DateInterval as DateInterval;
 										$class .= " belegt_voll";
 									}
 									else{
-										
+
 									}
 									$unterrichtsDauer = (strtotime($res[$i]['ende']) - strtotime($res[$i]['anfang']) ) / 60 ;
 						//Dauer in pixel -2px für border top & bottom
@@ -172,19 +171,19 @@ use DateInterval as DateInterval;
 									//$style .= "top:".( (($anfangTime - $curHourTime)/ 60 * $pixelsProMin) - 2)."px;";
 									echo "<div class='cursItem $class' style='$style'>";
 									echo $res[$i]['kurName']."<br>";
-									
+
 									if( '00' != date('i', strtotime($res[$i]['anfang'])) OR '45' != date('i', strtotime($res[$i]['ende'])) ){
 										echo date('G:i', strtotime($res[$i]['anfang']))."-".date('G:i', strtotime($res[$i]['ende']))."<br>";
 									}
-									
+
 									echo "Dauer: ".$unterrichtsDauer." Min.<br>";
-									
+
 									echo "</div>";
 									++$i;
 									if( !isset($res[$i]) ){
 										break;
 									}
-									
+
 								}
 							}
 							/*
@@ -199,7 +198,7 @@ use DateInterval as DateInterval;
 					}
 					?>
 				</table>
-			
+
 		</div><!-- Main Content Ende -->
 
 	</body>

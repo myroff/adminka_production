@@ -1,19 +1,13 @@
 <?php
 namespace Stundenplan;
+
 use PDO as PDO;
-
 use MVC\DBFactory as DBFactory;
-
-//twig
-require_once BASIS_DIR . '/Vendor/autoload.php';
-
-require_once BASIS_DIR.'/Tools/TmplTools.php';
 use Tools\TmplTools as TmplTls;
-
-require_once BASIS_DIR.'/Tools/User.php';
 use Tools\User as User;
 
-class Stundenplan {
+class Stundenplan
+{
 	public function showStundeplan()
 	{
 		$sArr = array();
@@ -31,6 +25,7 @@ class Stundenplan {
 		$this->loadTemplate($res, $raum, $sArr);
 		return;
 	}
+
 	public function loadTemplate($res, $raum, $sArr)
 	{
 		$vars['pageName']	= "Stundenplan";
@@ -47,21 +42,22 @@ class Stundenplan {
 		$vars['s_season']	= TmplTls::getSeasonsSelector("search_season", "s_season_id", $sArr[':season_id'], "Saisons", 1);
 
 		$vars['userGroups']	= User::getUserGroup();
-
+/*
 		$options = []; #array('cache' => TWIG_CACHE_DIR);
 		$loader = new \Twig_Loader_Filesystem(TWIG_TEMPLATE_DIR);
 		$twig = new \Twig_Environment($loader, $options);
 		$twigTmpl = $twig->load('/Stundenplan/StundenplanListe.twig');
 		echo $twigTmpl->render($vars);
-
-
-		#include_once  BASIS_DIR.'/Templates/Stundenplan/StundenplanListe.tmpl.php';
+*/
+		$viewer = new \Viewer\Viewer();
+		$viewer->display('/Stundenplan/StundenplanListe.twig', $vars);
 	}
 
-	/* @param array $lessons - array with lessons ordered by: day, hour, room in ASC order.
+	/**
+	 * @param array $lessons - array with lessons ordered by: day, hour, room in ASC order.
 	 * @return array: array('week_day' => array('hour' => array('room' =>'lesson info') ));
 	 */
-	public function sortStundenPlan($lessons)
+	public function sortStundenPlan(array $lessons)
 	{
 		$out = array();
 
@@ -76,7 +72,7 @@ class Stundenplan {
 		return $out;
 	}
 
-	public function searchDates($searchArr)
+	public function searchDates(array $searchArr)
 	{
 		$dbh = \MVC\DBFactory::getDBH();
 		if(!$dbh)
@@ -84,11 +80,16 @@ class Stundenplan {
 			return FALSE;
 		}
 
-		$where = " k.isKurInactive is NOT TRUE AND ";
-		$having = "";
-
 		//delete empty entries
 		$searchArr = array_filter($searchArr);
+		$stundenplanModel = new \Stundenplan\StundenplanModel();
+
+		$data = $stundenplanModel->getDataForScheduler($searchArr);
+
+		return $data;
+/*
+		$where = " k.isKurInactive is NOT TRUE AND ";
+		$having = "";
 
 		if(isset($searchArr[':raum']))
 		{
@@ -145,7 +146,6 @@ class Stundenplan {
 
 		try
 		{
-
 			$sth = $dbh->prepare($q);
 			$sth->execute($searchArr);
 			$rs = $sth->fetchAll(PDO::FETCH_ASSOC);
@@ -156,6 +156,7 @@ class Stundenplan {
 			//print $ex;
 			return FALSE;
 		}
+*/
 	}
 
 	private function getRaum()
@@ -178,8 +179,8 @@ class Stundenplan {
 			$rs = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 			return $rs;
-
-		} catch (Exception $ex) {
+		}
+		catch (Exception $ex) {
 			//print $ex;
 			return FALSE;
 		}

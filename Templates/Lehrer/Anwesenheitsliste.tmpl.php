@@ -14,12 +14,12 @@ use Tools\DateTools as DateTools;
 
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" media="screen" />
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style-print.css" type="text/css" media="print" />
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/jquery-2.1.1.min.js"></script>
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/zebra_datepicker.js"></script>
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/zebra_default.css">
-		
+
 		<style>
 			@page {
 				size: A4;
@@ -31,26 +31,25 @@ use Tools\DateTools as DateTools;
 					height: 210mm;
 					width: 297mm;
 				}
-				
+
 			}
-			
+
 			table.Anwesenheitsliste{table-layout:fixed;/*width:100%;*/}
 			table.Anwesenheitsliste col{overflow:hidden;}
 			table.Anwesenheitsliste tr{height:30px;}
 			table.resultsDiv td{padding:1px;border:1px solid black;height:18px;}
-			
+
 			.fach{font-size:14px;font-weight:bold;}
 			.nr{width:30px;}
 			.kndNr{width:40px;}
 			.vorname, .nachname{width:280px;}
 			.dates{width:30px;}
-			
+
 		</style>
 	</head>
 	<body>
 		<div id="horizontalMenu">
 			<?php
-			require_once BASIS_DIR.'/Templates/Menu.class.php';
 			TemplateTools\Menu::adminMenu();
 			?>
 		</div>
@@ -87,12 +86,12 @@ use Tools\DateTools as DateTools;
 					</table>
 				</form>
 			</div>
-			
+
 			<div >
 				<?php
 				if(!empty($res) AND isset($res)){
 					foreach($res as $r){
-						$z = 0; //children pro list 
+						$z = 0; //children pro list
 						$days_in_list = 20;
 						$days_arr = explode(',', $r['days']);
 						$str_days = "";
@@ -100,7 +99,7 @@ use Tools\DateTools as DateTools;
 							$str_days .= Fltr::indxToWeekday($d).", ";
 						}
 						$str_days = substr($str_days, 0, -2);
-						
+
 						$plan = DateTools::getDatesOfWeekdaysInMonthYear($days_arr, '%a.<br>%d.%m.%y');
 					?>
 						<table class='resultsDiv Anwesenheitsliste'>

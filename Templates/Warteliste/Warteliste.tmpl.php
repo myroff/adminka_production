@@ -1,7 +1,5 @@
 <?php
-require_once BASIS_DIR.'/Tools/TmplTools.php';
 use Tools\TmplTools as TmplTls;
-require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
 ?>
 <!DOCTYPE html>
@@ -12,20 +10,16 @@ use Tools\Filter as Fltr;
 
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" media="screen" />
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style-print.css" type="text/css" media="print" />
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/jquery-2.1.1.min.js"></script>
-		<!--
-		<script src="<?=BASIS_URL?>/Public/js/zebra_datepicker.js"></script>
-		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/zebra_default.css">
-		-->
+
 		<style>
-			
+
 		</style>
 	</head>
 	<body>
 		<div id="horizontalMenu">
 			<?php
-			require_once BASIS_DIR.'/Templates/Menu.class.php';
 			TemplateTools\Menu::adminMenu();
 			?>
 		</div>
@@ -50,7 +44,7 @@ use Tools\Filter as Fltr;
 					</table>
 				</form>
 			</div>
-			
+
 			<div id="kursListe">
 			<?php
 			if( isset($kurse) && !empty($kurse) ){

@@ -11,9 +11,9 @@ use Tools\TmplTools as TmplTls;
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" media="screen" />
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/jquery-2.1.1.min.js"></script>
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/zebra_datepicker.js"></script>
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/zebra_default.css">
 
@@ -21,7 +21,7 @@ use Tools\TmplTools as TmplTls;
 	<body>
 		<div id="horizontalMenu">
 			<?php
-			require_once BASIS_DIR.'/Templates/Menu.class.php';
+
 			TemplateTools\Menu::adminMenu();
 			?>
 		</div>
@@ -77,7 +77,7 @@ use Tools\TmplTools as TmplTls;
 					</table>
 				</form>
 			</div>
-			
+
 			<div id="resultsDiv">
 				<table id="kundenResTbl">
 					<tr>
@@ -132,7 +132,7 @@ use Tools\TmplTools as TmplTls;
 					foreach($res as $k=>$v)
 					{
 						echo "<tr>";
-						
+
 						echo "<td colspan='12' style='font-weight: bold;color:white;background:#575757;' >".Fltr::sqlDateToMonatYear($k).": ".count($v)." Teilnemern.<td></tr>";
 						foreach ($v as $r)
 						{
@@ -168,11 +168,11 @@ use Tools\TmplTools as TmplTls;
 			</div>
 		</div>
 		<!-- END OF CONTENT -->
-		
+
 		<!--JavaScript -->
 		<script>
 			var meldung = $('#meldung');
-			
+
 		//Monatspicker
 		$(".zebra_datepicker_my").Zebra_DatePicker({
 			offset: [10,200],

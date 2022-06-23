@@ -5,18 +5,18 @@
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" media="screen" />
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/jquery-2.1.1.min.js"></script>
-		
+
 		<script src="<?=BASIS_URL?>/Public/jquery-ui/jquery-ui.min.js"></script>
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/jquery-ui/jquery-ui.min.css">
-		
+
 		<style>
 			#updateItemTable
 			{
 				display:none;
 				border:2px solid #a1a1a1;
-				padding:20px; 
+				padding:20px;
 				background:#dddddd;
 				width:400px;
 				border-radius:20px;
@@ -31,7 +31,6 @@
 	<body>
 		<div id="horizontalMenu">
 			<?php
-			require_once BASIS_DIR.'/Templates/Menu.class.php';
 			TemplateTools\Menu::adminMenu();
 			?>
 		</div>
@@ -227,7 +226,7 @@
 			var updateTable_Form_Name = $('#updateItemTable_Form_Name');
 			var updateTable_Form_Value = $('#updateItemTable_Form_Value');
 			var updateTable_Form_ButtonAbbrechen = $('#updateItemTable_Form_ButtonAbbrechen');
-			
+
 			//$("form [name=vorname]").css({'background':'red'});
 			//$('form').attr("name", "plz").css({'background':'red'});
 			var itemName;
@@ -240,23 +239,23 @@
 				itemName = parent.children('.itemName').text().trim();
 				itemName = itemName.replace(/\s+/, '');
 				var itemValue = parent.children('.itemValue').text().trim();
-				
+
 				if(typeof(itemName) === "undefined")
 				{
 					meldung.html("itemName ist nicht definiert.");
 					return;
 				}
-				
+
 				if(itemName === "Anrede")
 				{
-					
+
 				updateTable_Form_Value.replaceWith(
 						"<select name='updateItemTable_Form_Value'>"+
 							"<option value='Frau'>Frau</option>"+
 							"<option value='Herr'>Herr</option>"+
 						"</select>");
 				}
-				
+
 				if(itemName === "Geburtsdatum(dd.mm.yyyy)" ||
 					itemName === "Eingestelltam" ||
 					itemName === "Entlassenam")
@@ -274,27 +273,27 @@
 						*/
 					});
 				}
-				
+
 				if(typeof(itemValue) === "undefined")
 				{
 					meldung.html("itemValue ist nicht definiert.");
 					return;
 				}
-				
+
 				updateTable_Title.text(itemName);
 				updateTable_Form_Value.val(itemValue);
 				updateTable_Form_Name.val(itemName);
-				
+
 				meldung.append("<br>"+itemName);
 				meldung.append("<br>"+itemValue);
 			});
-			
+
 			//close update pop-up
 			updateTable_Form_ButtonAbbrechen.click(function(e){
 				e.preventDefault();
 				meldung.append("<br> 'Abbrechen' is clicked.");
 				updateTable.slideUp('slow');
-				
+
 				if(itemName === "Geburtsdatum(dd.mm.yyyy)" ||
 					itemName === "Eingestelltam" ||
 					itemName === "Entlassenam")
@@ -306,7 +305,7 @@
 			$('form').submit(function (e){
 				e.preventDefault();
 				var postData = $(this).serializeArray();
-				
+
 				$.ajax({
 					url:'<?BASIS_URL?>/admin/ajaxSaveNewKunde',
 					type:'POST',
@@ -324,7 +323,7 @@
 								meldung.append(response.data[i]);
 								meldung.append("<br>");
 							}
-							
+
 						}
 						else
 						{
