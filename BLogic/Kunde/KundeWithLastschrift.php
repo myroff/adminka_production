@@ -28,14 +28,15 @@ class KundeWithLastschrift
 		$vars['sArr']		= $sArr;
 		$vars['s_season']	= TmplTls::getSeasonsSelector("s_season", "s_season", $sArr[':season'], "Season", 1);
 		$vars['payment']	= TmplTls::getPaymentSelector("payment", "payment", $sArr[':payment'], "Bezahlt mit:", 1);
-
+/*
 		$options = []; #array('cache' => TWIG_CACHE_DIR);
 		$loader = new \Twig_Loader_Filesystem(TWIG_TEMPLATE_DIR);
 		$twig = new \Twig_Environment($loader, $options);
 		$twigTmpl = $twig->load('/Kunde/KundeMitLastschrift.twig');
 		echo $twigTmpl->render($vars);
-
-		#include_once BASIS_DIR.'/Templates/Kunde/KundeWithLastschrift.tmpl.php';
+*/
+		$viewer = new \Viewer\Viewer();
+		$viewer->display('/Kunde/KundeMitLastschrift.twig', $vars);
 		return;
 	}
 

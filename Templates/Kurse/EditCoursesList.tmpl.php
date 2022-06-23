@@ -9,14 +9,14 @@ use Tools\Filter as Fltr;
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" media="screen" />
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/jquery-2.1.1.min.js"></script>
 
 	</head>
 	<body>
 		<div id="horizontalMenu">
 			<?php
-			require_once BASIS_DIR.'/Templates/Menu.class.php';
+
 			TemplateTools\Menu::adminMenu();
 			?>
 		</div>
@@ -61,7 +61,7 @@ use Tools\Filter as Fltr;
 					</table>
 				</form>
 			</div>
-			
+
 			<div id="resultsDiv">
 				<table id="kundenResTbl">
 					<tr>
@@ -114,12 +114,12 @@ use Tools\Filter as Fltr;
 					{
 						$alter = $r['kurMinAlter'];
 						$alter .= $r['kurMinAlter'] < $r['kurMaxAlter'] ? " bis ".$r['kurMaxAlter'] : '';
-						
+
 						$klasse = $r['kurMinKlasse'];
 						$klasse .= $r['kurMinKlasse'] < $r['kurMaxKlasse'] ? " bis ".$r['kurMaxKlasse'] : "";
-						
+
 						echo "<tr>";
-						
+
 						echo "<td><a href='".BASIS_URL."/admin/kurseBearbeitenById/".$r['kurId']."' />Bearbeiten</a></td>";
 						echo "<td>".$r['kurName']."</td>";
 						echo "<td>".$r['vorname']." ".$r['name']."</td>";
@@ -131,7 +131,7 @@ use Tools\Filter as Fltr;
 						echo "<td>".$alter."</td>";
 						echo "<td>".$klasse."</td>";
 						echo "<td>".$r['maxKnd']."</td>";
-						
+
 						echo "</tr>";
 					}
 				}
@@ -140,12 +140,12 @@ use Tools\Filter as Fltr;
 			</div>
 		</div>
 		<!-- END OF CONTENT -->
-		
+
 		<!--JavaScript -->
 		<script>
 			var meldung = $('#meldung');
-			
-			
+
+
 		</script>
 	</body>
 </html>

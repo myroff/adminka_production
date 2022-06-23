@@ -1,8 +1,6 @@
 {% extends "main.html.twig" %}
 {% block content %}
 <style>
-	.modal-trigger i {font-size:14px;cursor:pointer;}
-
 	#updateItemTable, #addKursTable, #updateItem_Anrede, #UpdateKur_Table, #Zahlungsformular, #updateItem_istFotoErlaubt,
 	#updateBankDates, #updateBankDates_payment_id, #editSonderPreis_Table, #editKundenKursKomm_Table, #changeKurs_Table, #changeKursConfirm_Table
 	{
@@ -306,7 +304,7 @@
 		</div>
 	</div>
 <!-- Kurse -->
-{{ clientsCourseModule|raw }}
+{{ clientsCourseModule | raw }}
 
 <!-- Update Anrede -->
 	<div id="edit_anrede" class="modal">

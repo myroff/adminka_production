@@ -5,17 +5,17 @@
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" media="screen" />
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/jquery-2.1.1.min.js"></script>
 
 		<script src="<?=BASIS_URL?>/Public/jquery-ui/jquery-ui.min.js"></script>
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/jquery-ui/jquery-ui.min.css">
-		
+
 	</head>
 	<body>
 		<div id="horizontalMenu">
 			<?php
-			require_once BASIS_DIR.'/Templates/Menu.class.php';
+
 			TemplateTools\Menu::adminMenu();
 			?>
 		</div>
@@ -148,13 +148,13 @@
 			</form>
 		</div>
 		<!-- END OF CONTENT -->
-		
+
 		<!--JavaScript -->
 		<script>
 			var meldung = $('#meldung');
 			//$("form [name=vorname]").css({'background':'red'});
 			//$('form').attr("name", "plz").css({'background':'red'});
-			
+
 			$('.datePicker').datepicker({
 						dateFormat: "dd.mm.yy",
 						changeMonth: true,
@@ -167,11 +167,11 @@
 						buttonText: "Geburtstag wählen"
 						*/
 					});
-			
+
 			$('form').submit(function (e){
 				e.preventDefault();
 				var postData = $(this).serializeArray();
-				
+
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/ajaxSaveNewLehrer',
 					type:'POST',
@@ -183,7 +183,7 @@
 							$("form [name]").css({'background':''});
 							meldung.html(response.info);
 							meldung.append("<br>");
-							
+
 							for(var i in response.data)
 							{
 								meldung.append(i+" = ");

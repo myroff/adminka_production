@@ -26,7 +26,7 @@ class KursLoeschen
 FROM rechnungen as r JOIN rechnungsdaten as rd USING(rnId) LEFT JOIN kurse as k USING(kurId) LEFT JOIN kunden as knd USING(kndId)
 WHERE rd.kurId=:kurId";
 
-		$qDelete = "DELETE FROM kurse WHERE kurId=:kurId;DELETE FROM stundenplan WHERE kurId=:kurId;";
+		$qDelete = "DELETE FROM kurse WHERE kurId=:kurId; DELETE FROM stundenplan WHERE kurId=:kurId;";
 
 		$dbh = DBFactory::getDBH();
 		if(!$dbh)

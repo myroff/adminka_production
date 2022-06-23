@@ -1,23 +1,22 @@
 <?php
 namespace Kurse;
 use PDO as PDO;
-require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
-//twig
-require_once BASIS_DIR . '/Vendor/autoload.php';
-
 
 class Seasons
 {
 	public function showEditList()
 	{
 		$res = $this->searchDates();
-
+/*
 		$options = []; #array('cache' => TWIG_CACHE_DIR);
 		$loader = new \Twig_Loader_Filesystem(TWIG_TEMPLATE_DIR);
 		$twig = new \Twig_Environment($loader, $options);
 		$twigTmpl = $twig->load('/Kurse/SeasonsBearbeitenListe.twig');
 		echo $twigTmpl->render(['seasons' =>$res]);
+*/
+		$viewer = new \Viewer\Viewer();
+		$viewer->display('/Courses/SeasonsBearbeitenListe.twig', ['seasons' =>$res]);
 	}
 
 	public function searchDates()
@@ -69,11 +68,9 @@ class Seasons
 		{
 			$response['status']  = "error";
 			$response['message'] = implode("\n", $errors);
-
 		}
 		else
 		{
-
 			$dbh = \MVC\DBFactory::getDBH();
 
 			if(!$editSeasonId)

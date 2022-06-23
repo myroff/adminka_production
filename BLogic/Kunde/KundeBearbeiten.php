@@ -1,22 +1,22 @@
 <?php
 namespace Kunde;
 use PDO as PDO;
-require_once BASIS_DIR.'/Tools/Filter.php';
+#require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
-require_once BASIS_DIR.'/BLogic/Kunde/Empfohlen.php';
+#require_once BASIS_DIR.'/BLogic/Kunde/Empfohlen.php';
 use Kunde\Empfohlen as Empf;
-require_once BASIS_DIR.'/BLogic/Kurse/KursSelector.php';
+#require_once BASIS_DIR.'/BLogic/Kurse/KursSelector.php';
 use Kurse\KursSelector as KurSel;
-require_once BASIS_DIR.'/BLogic/Kunde/CommentToolsHtml.php';
+#require_once BASIS_DIR.'/BLogic/Kunde/CommentToolsHtml.php';
 use Kunde\CommentToolsHtml as CmntTlsHtml;
 
-require_once BASIS_DIR.'/Tools/TmplTools.php';
+#require_once BASIS_DIR.'/Tools/TmplTools.php';
 use Tools\TmplTools as TmplTls;
 
-require_once BASIS_DIR.'/BLogic/Payment/PaymentApi.php';
+#require_once BASIS_DIR.'/BLogic/Payment/PaymentApi.php';
 use Payment\PaymentApi as PaymentApi;
 
-require_once BASIS_DIR.'/BLogic/Kunde/ClientsCourses.php';
+#require_once BASIS_DIR.'/BLogic/Kunde/ClientsCourses.php';
 use Kunde\ClientsCourses as ClientsCourses;
 
 //twig
@@ -162,14 +162,15 @@ class KundeBearbeiten
 
 		$bezahlMethoden					= PaymentApi::getSelectorData();
 		$vars['zahlenMitSelector']		= TmplTls::printMaterializeSelector($bezahlMethoden, "updateBankDates_Form_Value", "zahlenMit", "", "", 0);
-
+/*
 		$options = []; #array('cache' => TWIG_CACHE_DIR);
 		$loader = new \Twig_Loader_Filesystem(TWIG_TEMPLATE_DIR);
 		$twig = new \Twig_Environment($loader, $options);
 		$twigTmpl = $twig->load('/KundeBearbeiten/KundeBearbeitenById.twig');
 		echo $twigTmpl->render($vars);
-		/**/
-		#include_once BASIS_DIR .'/Templates/KundeBearbeiten/KundeBearbeitenById.tmpl.php';
+*/
+		$viewer = new \Viewer\Viewer();
+		$viewer->display('/KundeBearbeiten/KundeBearbeitenById.twig', $vars);
 		return;
 	}
 

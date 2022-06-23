@@ -31,13 +31,15 @@ class neueKunde
 		$vars		= [];
 		$vars['zahlenMitSelector'] = TmplTls::printMaterializeSelector($bezahlMethoden, "zahlenMit", "zahlenMit", "", "Bezahlen mit", 1);
 		$vars['anredeSelector'] = TmplTls::printMaterializeSelector($anreden, "anrede", "anrede", "", "Anrede", 1);
-
+/*
 		$options	= []; #array('cache' => TWIG_CACHE_DIR);
 		$loader		= new \Twig_Loader_Filesystem(TWIG_TEMPLATE_DIR);
 		$twig		= new \Twig_Environment($loader, $options);
 		$twigTmpl	= $twig->load('/Kunde/KundeNeu.twig');
 		echo $twigTmpl->render($vars);
-		#include_once BASIS_DIR.'/Templates/KundeNeu.tmpl.php';
+*/
+		$viewer = new \Viewer\Viewer();
+		$viewer->display('/Kunde/KundeNeu.twig', $vars);
 		return;
     }
 

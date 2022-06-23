@@ -1,6 +1,6 @@
 <?php
 namespace Kunde;
-require_once BASIS_DIR.'/Tools/Filter.php';
+#require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
 
 use MVC\DBFactory as DBFactory;

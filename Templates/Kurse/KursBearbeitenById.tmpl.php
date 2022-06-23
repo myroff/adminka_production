@@ -11,19 +11,19 @@ use Tools\Filter as Fltr;
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" media="screen" />
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/jquery-2.1.1.min.js"></script>
-		
+
 		<script src="<?=BASIS_URL?>/Public/jquery-ui/jquery-ui.min.js"></script>
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/jquery-ui/jquery-ui.min.css">
-		
+
 		<style>
 			#updateItemTable, #updateAlterTable, #updateKlassenTable, #updateBeschreibungTable, #addTermin,
 			#updateLehrerTable, #updateTerminTable, #updateZahlungstypeTable, #messageBox, #updateIsKurInactiveTable
 			{
 				display:none;
 				border:2px solid #a1a1a1;
-				padding:20px; 
+				padding:20px;
 				background:#dddddd;
 				width:460px;
 				border-radius:20px;
@@ -33,16 +33,16 @@ use Tools\Filter as Fltr;
 				left:30%;
 				z-index:100;
 			}
-			
+
 			.kurTrmDiv{border-top:1px solid black;padding:3px 0px;width:400px;}
 		</style>
 	</head>
 	<body>
 		<div id="horizontalMenu">
 			<?php
-			require_once BASIS_DIR.'/Templates/Menu.class.php';
+
 			TemplateTools\Menu::adminMenu();
-			
+
 			$alter = $res['kurMinAlter'];
 			$alter .= $res['kurMinAlter'] < $res['kurMaxAlter'] ? " bis ".$res['kurMaxAlter'] : '';
 
@@ -203,7 +203,7 @@ use Tools\Filter as Fltr;
 						echo "Raum ".$t['raum']."<br>";
 						echo Fltr::indxToWeekday($t['wochentag'])."<br>";
 						echo Fltr::sqlTimeToStr($t['anfang'])." - ".Fltr::sqlTimeToStr($t['ende']);
-						
+
 						echo "<button type='button' class='editTermin editItemButton' stnPlId='".$t['stnPlId']."' raum='".$t['raum']."'"." season_id=".$t['season_id']
 								. " wochentag='".$t['wochentag']."' anfang='".Fltr::sqlTimeToStr($t['anfang'])."' ende='".Fltr::sqlTimeToStr($t['ende'])."' >1</button>";
 						echo "<button type='button' class='deleteTermin deleteButton' stnPlId='".$t['stnPlId']."' >2</button>";
@@ -428,7 +428,7 @@ use Tools\Filter as Fltr;
 			var updateTable_Form_Value = $('#updateItemTable_Form_Value');
 			var updateTable_Form_ButtonAbbrechen = $('#updateItemTable_Form_ButtonAbbrechen');
 			var itemName;
-			
+
 			//click at button "Bearbeiten"
 			$('.editItem').click(function()
 			{
@@ -436,17 +436,17 @@ use Tools\Filter as Fltr;
 				itemName = parent.children('.itemName').text().trim();
 				itemName = itemName.replace(/\s+/, '');
 				var itemValue = parent.children('.itemValue').text().trim();
-				
+
 				updateTable_Title.text(itemName);
 				updateTable_Form_Value.val(itemValue);
 				updateTable_Form_Name.val(itemName);
-				
+
 				if(typeof(itemName) == "undefined")
 				{
 					meldung.html("itemName ist nicht definiert.");
 					return;
 				}
-				
+
 				if(itemName == "Zahlungstype")
 				{
 					$('#updateZahlungstypeTable').slideDown(1000);
@@ -455,28 +455,28 @@ use Tools\Filter as Fltr;
 				{
 					updateTable.slideDown(1000);
 				}
-				
+
 				if(typeof(itemValue) === "undefined")
 				{
 					meldung.html("itemValue ist nicht definiert.");
 					return;
 				}
 			});
-			
+
 		//close update pop-up
 			updateTable_Form_ButtonAbbrechen.click(function(e)
 			{
 				e.preventDefault();
-				
+
 				updateTable.slideUp('slow');
 			});
-			
+
 		//close Zahlungstype
 			$('#updateZahlungstypeTable_Form_ButtonAbbrechen').click(function(e){
 				e.preventDefault();
 				$('#updateZahlungstypeTable').slideUp(1000);
 			});
-			
+
 		//update Lehrer
 			$('#updateLehrer').click(function(){
 				meldung.text("click");
@@ -492,9 +492,9 @@ use Tools\Filter as Fltr;
 			{
 				parent = $(this).parent().parent();
 				itemValue = parent.children('.itemValue').text().trim();
-				
+
 				$('#Beschreibung_Form_Value').val(itemValue);
-				
+
 				$('#updateBeschreibungTable').slideDown(1000);
 			});
 			$('#closeUpdateBeschreibung').click(function(e)
@@ -512,7 +512,7 @@ use Tools\Filter as Fltr;
 					step:1,
 					numberFormat: "n"
 				});
-				
+
 				$('#updateAlterTable').slideDown(1000);
 			});
 			$('#closeUpdateAlter').click(function(e)
@@ -544,11 +544,11 @@ use Tools\Filter as Fltr;
 			{
 				$('#addTermin').slideDown(1000);
 			};
-			
+
 			$('#addTerminForm').submit(function (e){
 				e.preventDefault();
 				var postData = $(this).serializeArray();
-				 
+
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/ajaxAddNewTermin',
 					type:'POST',
@@ -560,7 +560,7 @@ use Tools\Filter as Fltr;
 							$("#addTerminForm [name]").css({'background':''});
 							meldung.html(response.info);
 							meldung.append("<br>");
-							
+
 							for(var i in response.data)
 							{
 								meldung.append(i+" = ");
@@ -604,7 +604,7 @@ use Tools\Filter as Fltr;
 				$('#updateTerminForm_Anfang').val($button.attr('anfang'));
 				$('#updateTerminForm_Ende').val($button.attr('ende'));
 				$('#updateTerminForm_Wochentag').val($button.attr('wochentag'));
-				
+
 				$('#updateTerminTable').slideDown(1000);
 			});
 			$('#closeUpdateTermin').click(function(e)
@@ -612,11 +612,11 @@ use Tools\Filter as Fltr;
 				e.preventDefault();
 				$('#updateTerminTable').slideUp(1000);
 			});
-			
+
 			$('#updateTerminForm').submit(function (e){
 				e.preventDefault();
 				var postData = $(this).serializeArray();
-				 
+
 				$.ajax({
 					url:'<?=BASIS_URL?>/admin/ajaxUpdateTermin',
 					type:'POST',
@@ -638,7 +638,7 @@ use Tools\Filter as Fltr;
 					}
 				});
 			});
-			
+
 			$('.deleteTermin').click(function(e){
 				if(confirm('Wollen Sie wirklich diesen Termin löschen?')){
 					stnId = $(this).attr('stnPlId');
@@ -664,14 +664,14 @@ use Tools\Filter as Fltr;
 					});
 				}
 				else{
-					
+
 				}
 			});
-			
+
 			$('.deleteKurs').click(function(e){
 				if(confirm('Wollen Sie wirklich diesen Termin löschen?')){
 					krId = $(this).attr('kurId');
-					
+
 					$.ajax({
 						url:'<?=BASIS_URL?>/admin/ajaxDeleteKurs',
 						type:'POST',
@@ -696,7 +696,7 @@ use Tools\Filter as Fltr;
 					});
 				}
 				else{
-					
+
 				}
 			});
 		//message box schliessen
@@ -704,12 +704,12 @@ use Tools\Filter as Fltr;
 				$('#messageBox').slideUp(1000);
 				$('#messageBox_message').html("");
 			});
-			
+
 		//update isKurInactive
 			$('#updateIsKurInactive').click(function(){
 				$('#updateIsKurInactiveTable').slideDown(1000);
 			});
-			
+
 			$('#closeUpdateIsKurActiveTable').click(function(e){
 				e.preventDefault();
 				$('#updateIsKurInactiveTable').slideUp(1000);

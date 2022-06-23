@@ -77,7 +77,6 @@ class TmplTools {
 
 	public static function getWeekdaySelector($selectorName="", $selectorId="", $selectedValue="", $label="", $meterializeOn=FALSE)
 	{
-
 		$data = array("" => "", 1 => "Montag", 2 => "Dienstag", 3 => "Mittwoch", 4 => "Donnerstag"
 					, 5 => "Freitag", 6 => "Samstag", 7 => "Sonntag");
 
@@ -88,7 +87,6 @@ class TmplTools {
 
 	public static function getUnterrichtSelect($selectorName="", $selectorId="", $size="")
 	{
-
 		$dbh = \MVC\DBFactory::getDBH();
 		if(!$dbh)
 		{

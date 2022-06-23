@@ -12,7 +12,7 @@ use Tools\TmplTools as TmplTls;
 
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" media="screen" />
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style-print.css" type="text/css" media="print" />
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/jquery-2.1.1.min.js"></script>
 		<style>
 			.kundenResTbl{border:1px solid black;width:70%;margin-top:20px;}
@@ -21,7 +21,7 @@ use Tools\TmplTools as TmplTls;
 	<body>
 		<div id="horizontalMenu" >
 			<?php
-			require_once BASIS_DIR.'/Templates/Menu.class.php';
+
 			TemplateTools\Menu::adminMenu();
 			?>
 		</div>
@@ -58,7 +58,7 @@ use Tools\TmplTools as TmplTls;
 					</table>
 				</form>
 			</div>
-			
+
 			<div class="resultsDiv">
 				<?php
 				if(!empty($res)){
@@ -85,7 +85,7 @@ use Tools\TmplTools as TmplTls;
 							$curKurName = $r['kurName'];
 							$curDay = $r['wochentag'];
 							$curAnfang = $r['anfang'];
-							$curLehrer = $curLehrId === $r['lehrId'] ? $curLehrer : $r['lVorname']." ".$r['lName'] ; 
+							$curLehrer = $curLehrId === $r['lehrId'] ? $curLehrer : $r['lVorname']." ".$r['lName'] ;
 							?>
 							</table>
 							<table class="kundenResTbl">
@@ -105,7 +105,7 @@ use Tools\TmplTools as TmplTls;
 					echo "</table>"; //end table
 				}
 				//phpinfo();
-				?>	
+				?>
 			</div>
 		</div>
 	</body>

@@ -8,10 +8,10 @@ use Tools\TmplTools as TmplTls;
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" media="screen" />
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/jquery-2.1.1.min.js"></script>
 		<script src="<?=BASIS_URL?>/Public/js/Chart.js/Chart.min.js"></script>
-		
+
 		<style>
 			.standardTable{float:left;margin-left: 10px;}
 			#tables{float:left;}
@@ -21,13 +21,12 @@ use Tools\TmplTools as TmplTls;
 	<body>
 		<div id="horizontalMenu">
 			<?php
-			require_once BASIS_DIR.'/Templates/Menu.class.php';
 			TemplateTools\Menu::adminMenu();
 			?>
 		</div>
 		<!-- START OF CONTENT -->
 		<div id="mainContent">
-			
+
 			<table>
 				<tr>
 					<td>Saison</td>
@@ -41,7 +40,7 @@ use Tools\TmplTools as TmplTls;
 					</td>
 				</tr>
 			</table>
-			
+
 			<h3>Teilnehmer-Statistik</h3>
 			<div id="tables">
 				<table >
@@ -107,7 +106,7 @@ use Tools\TmplTools as TmplTls;
 					?>
 				</table>
 			</div>
-			
+
 			<div id="ChartJS">
 				<div class="buttons">
 					<button id="button_gender">Gender-Statistik</button>
@@ -118,16 +117,16 @@ use Tools\TmplTools as TmplTls;
 				<canvas id="myChart" width="800" height="600"></canvas>
 			</div>
 		</div><!-- Main Content Ende -->
-		
+
 		<script>
 			// Get context with jQuery - using jQuery's .get() method.
 			//var ctx = $("#myChart").get(0).getContext("2d");
 			var ctx = document.getElementById("myChart").getContext("2d");
-			
+
 			var seasonId = '<?= $sArr[':season'] ?: '' ?>';
-			
+
 			var actualChart;
-			
+
 			var options = {
 				///Boolean - Whether grid lines are shown across the chart
 				scaleShowGridLines : true,
@@ -185,7 +184,7 @@ use Tools\TmplTools as TmplTls;
 				// Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
 				scaleBeginAtZero: false,
 			};
-			
+
 		//Doughnut,Line,Bar
 		//gender statistik
 			$("#button_gender").click(function(){
@@ -206,7 +205,7 @@ use Tools\TmplTools as TmplTls;
 					}
 				});
 			});
-			
+
 		//Bebölkerung statistik
 			$("#button_population").click(function(){
 				$.ajax({
@@ -225,7 +224,7 @@ use Tools\TmplTools as TmplTls;
 					}
 				});
 			});
-			
+
 		//Bebölkerung statistik
 			$("#button_ageStat").click(function(){
 				$.ajax({
@@ -244,7 +243,7 @@ use Tools\TmplTools as TmplTls;
 					}
 				});
 			});
-		
+
 		//Klassen-statistik
 			$("#button_klassesStat").click(function(){
 				$.ajax({
@@ -263,7 +262,7 @@ use Tools\TmplTools as TmplTls;
 					}
 				});
 			});
-			
+
 		</script>
 	</body>
 </html>

@@ -2,9 +2,9 @@
 namespace Kurse;
 
 use PDO as PDO;
-require_once BASIS_DIR.'/Tools/TmplTools.php';
+#require_once BASIS_DIR.'/Tools/TmplTools.php';
 use Tools\TmplTools as TmplTls;
-require_once BASIS_DIR.'/Tools/Filter.php';
+#require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
 
 class KursSelector
@@ -205,9 +205,12 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 		}
 
 		$where = "";
-
+		$seasonalWhere = "";
 		//delete empty entries
 		$searchArr = array_filter($searchArr);
+		$seasonalSearch = [];
+		$searchInfo = [];
+
 		$q = "SELECT k.*, l.vorname, l.name, se.season_id, se.season_name"
 			. ", group_concat('{\"wochentag\":\"',wochentag,'\",\"time\":\"', TIME_FORMAT(anfang, '%H:%i'),' - ', TIME_FORMAT(ende, '%H:%i'),'\"}' SEPARATOR',') as termin"
 			. " FROM kurse as k LEFT JOIN stundenplan as st USING(kurId) LEFT JOIN lehrer as l USING(lehrId)"
@@ -223,10 +226,14 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 			if(isset($searchArr[':kurAlter']))
 			{
 				$where .= " :kurAlter BETWEEN kurMinAlter AND kurMaxAlter AND";
+				$seasonalWhere .= " :kurAlter BETWEEN kurMinAlter AND kurMaxAlter AND";
+				$seasonalSearch[':kurAlter'] = $searchArr[':kurAlter'];
 			}
 			if(isset($searchArr[':kurKlasse']))
 			{
 				$where .= " :kurKlasse BETWEEN kurMinKlasse AND kurMaxKlasse AND";
+				$seasonalWhere .= " :kurKlasse BETWEEN kurMinKlasse AND kurMaxKlasse AND";
+				$seasonalSearch[':kurKlasse'] = $searchArr[':kurKlasse'];
 			}
 			if(isset($searchArr[':wochentag']))
 			{
@@ -235,10 +242,54 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 			if(isset($searchArr[':season_id']))
 			{
 				$where .= " season_id=:season_id AND";
+				$seasonalWhere .= " season_id=:season_id AND";
+				$seasonalSearch[':season_id'] = $searchArr[':season_id'];
 			}
 
 			$where = substr($where, 0, -4);
-			$q .= empty($where) ? '' : " WHERE " . $where;
+			$seasonalWhere = substr($seasonalWhere, 0, -4);
+
+			$matchedKurId = [];
+
+			if(!empty($where)) {
+				// check course_to_seasons if season_id is set and there is some else requirements
+				$filterKurId = '';
+				$seasonalKurId = [];
+
+				if(isset($seasonalSearch[':season_id']) and count($seasonalSearch) > 1) {
+					$qSeasonalKurId = "SELECT kurId FROM course_to_seasons WHERE ".$seasonalWhere;
+					$sth = $dbh->prepare($qSeasonalKurId);
+					$sth->execute($seasonalSearch);
+					$seasonalKurId = $sth->fetchAll(PDO::FETCH_COLUMN);
+				}
+
+				//filter
+				$qDefaultKurId = "
+ SELECT k.kurId
+ FROM kurse as k
+ JOIN stundenplan as std USING(kurId)
+ WHERE ".$where;
+
+				if(isset($searchArr[':season_id'])) {
+					$qDefaultKurId .= " AND k.kurId NOT IN (SELECT kurId FROM course_to_seasons WHERE season_id = :season_id)";
+				}
+
+				$sth = $dbh->prepare($qDefaultKurId);
+				$sth->execute($searchArr);
+				$matchedKurId = $sth->fetchAll(PDO::FETCH_COLUMN);
+
+				$matchedKurId = array_merge($matchedKurId, $seasonalKurId);
+			}
+
+			if(!empty($matchedKurId)) {
+
+				$q .= " WHERE k.kurId IN('".implode("','", $matchedKurId)."')";
+
+				if(isset($searchArr[':season_id'])) {
+					$q .= " AND st.season_id=:season_id";
+					$searchInfo[':season_id'] = $searchArr[':season_id'];
+				}
+			}
 		}
 
 		$q .= " GROUP BY k.kurId";
@@ -246,8 +297,11 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 		try
 		{
 			$sth = $dbh->prepare($q);
-			$sth->execute($searchArr);
+			$sth->execute($searchInfo);
 			$rs = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+			$stdModel = new \Stundenplan\StundenplanModel();
+			$rs = $stdModel->updateSeasonalData($rs);
 
 			return $rs;
 

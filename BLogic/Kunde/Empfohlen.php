@@ -1,7 +1,7 @@
 <?php
 namespace Kunde;
 use PDO as PDO;
-require_once BASIS_DIR.'/Tools/Filter.php';
+#require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
 
 use MVC\DBFactory as DBFactory;

@@ -15,21 +15,21 @@ use Kunde\CommentToolsHtml as CmntTlsHtml;
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" media="screen" />
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/jquery-2.1.1.min.js"></script>
-		
+
 		<script src="<?=BASIS_URL?>/Public/jquery-ui/jquery-ui.min.js"></script>
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/jquery-ui/jquery-ui.min.css">
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/zebra_datepicker.js"></script>
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/zebra_default.css">
-		
+
 		<style>
 			#updateItemTable, #addUnterrichtTable, #updateItem_Anrede, #UpdateUnt_Table
 			{
 				display:none;
 				border:2px solid #a1a1a1;
-				padding:20px; 
+				padding:20px;
 				background:#dddddd;
 				width:300px;
 				border-radius:20px;
@@ -40,7 +40,7 @@ use Kunde\CommentToolsHtml as CmntTlsHtml;
 				z-index:100;
 			}
 			.zebra_datepicker{width:50px;}
-			
+
 			#privateDates, #chooseUnterricht{}
 			#privateDates table{border:1px solid black;}
 			table th, td{border-right:1px solid black;} table th:last-child, td:last-child{border-right:none;}
@@ -50,7 +50,7 @@ use Kunde\CommentToolsHtml as CmntTlsHtml;
 	<body>
 		<div id="horizontalMenu">
 			<?php
-			require_once BASIS_DIR.'/Templates/Menu.class.php';
+
 			TemplateTools\Menu::adminMenu();
 			?>
 		</div>
@@ -120,7 +120,7 @@ use Kunde\CommentToolsHtml as CmntTlsHtml;
 							<?=$res['kundenNummer']?>
 						</td>
 						<!--<td>
-							 ElternInfo 
+							 ElternInfo
 						</td>-->
 						<td class="itemValue">
 							<?=$res['anrede']?>
@@ -149,7 +149,7 @@ use Kunde\CommentToolsHtml as CmntTlsHtml;
 						<td class="itemValue">
 							<?=$res['strNr']?>
 						</td>
-						
+
 						<td class="itemValue">
 							<?=$res['stadt']?>
 						</td>
@@ -268,15 +268,15 @@ use Kunde\CommentToolsHtml as CmntTlsHtml;
 					{
 						$alter = $r['kurMinAlter'];
 						$alter .= $r['kurMinAlter'] < $r['kurMaxAlter'] ? " bis ".$r['kurMaxAlter'] : '';
-						
+
 						$klasse = $r['kurMinKlasse'];
 						$klasse .= $r['kurMinKlasse'] < $r['kurMaxKlasse'] ? " bis ".$r['kurMaxKlasse'] : "";
-						
+
 						$vonVal = Fltr::sqlDateToStr($r['von']);
 						$bisVal = Fltr::sqlDateToStr($r['bis']);
-						
+
 						echo "<tr>";
-						
+
 						echo "<td>";
 						echo "<b>".$r['kurName']."</b><br>";
 						echo "<i>".$r['lVorname']." ".$r['lName']."</i><br>";
@@ -289,7 +289,7 @@ use Kunde\CommentToolsHtml as CmntTlsHtml;
 						echo "<td>".$klasse."</td>";
 						echo "<td>". $vonVal."</td>";
 						echo "<td>".$bisVal."</td>";
-						
+
 						echo "</tr>";
 					}
 				}
@@ -314,7 +314,7 @@ use Kunde\CommentToolsHtml as CmntTlsHtml;
 			</div>
 		</div><!--main content -->
 		<!-- END OF CONTENT -->
-		
+
 		<!--JavaScript -->
 		<script>
 	//Kommentaren newKndCmntTable

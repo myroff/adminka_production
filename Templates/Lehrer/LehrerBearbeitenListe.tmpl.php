@@ -5,13 +5,13 @@
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 		<link rel="stylesheet" href="<?=BASIS_URL?>/Public/css/style.css" type="text/css" media="screen" />
-		
+
 		<script src="<?=BASIS_URL?>/Public/js/jquery-2.1.1.min.js"></script>
 	</head>
 	<body>
 		<div id="horizontalMenu">
 			<?php
-			require_once BASIS_DIR.'/Templates/Menu.class.php';
+
 			TemplateTools\Menu::adminMenu();
 			?>
 		</div>
@@ -50,7 +50,7 @@
 					</table>
 				</form>
 			</div>
-			
+
 			<div id="resultsDiv">
 				<table id="kundenResTbl">
 					<tr>
@@ -137,14 +137,14 @@
 			</div>
 		</div>
 		<!-- END OF CONTENT -->
-		
+
 		<!--JavaScript -->
 		<script>
 			var meldung = $('#meldung');
 			//$("form [name=vorname]").css({'background':'red'});
 			//$('form').attr("name", "plz").css({'background':'red'});
-			
-			
+
+
 		</script>
 	</body>
 </html>
