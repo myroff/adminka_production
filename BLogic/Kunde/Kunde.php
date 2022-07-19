@@ -131,12 +131,16 @@ class Kunde
 		{
 			unset($searchArr[':abgemeldet']);
 		}else{
-			$where .= " NOW() BETWEEN kndKurse.von AND kndKurse.bis AND";
+			// das selektiert nur die Kunden mit akutellen Kursen. Wir wolen Kunden in Season sehen.
+			//$where .= " NOW() BETWEEN kndKurse.von AND kndKurse.bis AND";
 		}
+
+		$khkWhere = "";
 
 		if(isset($searchArr[':season']))
 		{
-			$where .= " kndKurse.season_id=:season AND";
+			$where   .= " kndKurse.season_id=:season AND";
+			$khkWhere = "WHERE season_id = :season";
 		}
 
 		$where = substr($where, 0, -4);
@@ -164,13 +168,14 @@ LEFT JOIN
 (
 	SELECT kndId, season_id, von, bis
 	FROM kundehatkurse
-	WHERE EXTRACT(YEAR_MONTH FROM NOW()) BETWEEN EXTRACT(YEAR_MONTH FROM von) AND EXTRACT(YEAR_MONTH FROM bis)
+	$khkWhere
 	GROUP BY kndId
 ) as khk USING (kndId)
 LEFT JOIN
 (
 	SELECT kurId, wochentag, anfang, ende, group_concat('{\"wochentag\":\"',wochentag,'\",\"time\":\"', TIME_FORMAT(anfang, '%H:%i'),' - ', TIME_FORMAT(ende, '%H:%i'),'\"}' SEPARATOR',') as termin
 	FROM stundenplan
+	$khkWhere
 	GROUP BY kurId
 )
 as st USING (kurId)
