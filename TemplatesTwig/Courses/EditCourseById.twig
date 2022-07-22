@@ -218,7 +218,7 @@
                     {{ season.vorname }} {{ season.name }}
                 {% endif %}
             </div>
-            <div class="col m1 s12">{{ season.seasonal_price }}</div>
+            <div class="col m1 s12">{{ season.kurPreis }}</div>
             <div class="col m1 s12">
                 {% if course.kurIsStdPreis > 0 %}
                     pro Stunde
@@ -241,7 +241,7 @@
             <div class="col m1 s12">
                 <button type="button" class="waves-effect waves-light btn btn-small editSeasonsConfig"
                     kurId="{{season.kurId}}" season_id="{{season.season_id}}" lehrId="{{season.lehrId}}"
-                    course_name_suffix="{{ season.course_name_suffix }}" season_price="{{ season.seasonal_price }}"
+                    course_name_suffix="{{ season.course_name_suffix }}" season_price="{{ season.kurPreis }}"
                     kurMinAlter="{{season.kurMinAlter}}" kurMaxAlter="{{season.kurMaxAlter}}"
                     kurMinKlasse="{{season.kurMinKlasse}}" kurMaxKlasse="{{season.kurMaxKlasse}}"
                 >
@@ -546,7 +546,7 @@
                         Saisonale Preis
                     </th>
                     <td>
-                        <input name="seasonal_price" type="text" id="addSeasonsConfigForm-seasonal_price"/>
+                        <input name="kurPreis" type="text" id="addSeasonsConfigForm-kurPreis"/>
                     </td>
                 </tr>
                 <tr>
@@ -732,7 +732,7 @@ document.addEventListener('DOMContentLoaded', function()
         document.getElementById('addSeasonsConfigForm-season_id').value = '';
         document.getElementById('addSeasonsConfigForm-course_name_suffix').value = '';
         document.getElementById('addSeasonsConfigForm-lehrId').value = '';
-        document.getElementById('addSeasonsConfigForm-seasonal_price').value = '';
+        document.getElementById('addSeasonsConfigForm-kurPreis').value = '';
         document.getElementById('addSeasonsConfigForm-kurMinKlasse').value = '';
         document.getElementById('addSeasonsConfigForm-kurMaxKlasse').value = '';
         document.getElementById('addSeasonsConfigForm-kurMinAlter').value = '';
@@ -748,7 +748,7 @@ document.addEventListener('DOMContentLoaded', function()
             document.getElementById('addSeasonsConfigForm-season_id').value = this.getAttribute('season_id');
             document.getElementById('addSeasonsConfigForm-course_name_suffix').value = this.getAttribute('course_name_suffix');
             document.getElementById('addSeasonsConfigForm-lehrId').value = this.getAttribute('lehrId');
-            document.getElementById('addSeasonsConfigForm-seasonal_price').value = this.getAttribute('season_price');
+            document.getElementById('addSeasonsConfigForm-kurPreis').value = this.getAttribute('season_price');
             document.getElementById('addSeasonsConfigForm-kurMinKlasse').value = this.getAttribute('kurMinKlasse');
             document.getElementById('addSeasonsConfigForm-kurMaxKlasse').value = this.getAttribute('kurMaxKlasse');
             document.getElementById('addSeasonsConfigForm-kurMinAlter').value = this.getAttribute('kurMinAlter');

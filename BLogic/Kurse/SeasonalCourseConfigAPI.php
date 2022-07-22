@@ -89,13 +89,13 @@ class SeasonalCourseConfigAPI extends AbstractApi
         }
 
         //Preis des Unterrichts
-        if(!empty($_POST['seasonal_price'])) {
+        if(!empty($_POST['kurPreis'])) {
 
-            $_POST['seasonal_price'] = str_replace(" ", "", $_POST['seasonal_price']);
-            $_POST['seasonal_price'] = str_replace(",", ".", $_POST['seasonal_price']);
+            $_POST['kurPreis'] = str_replace(" ", "", $_POST['kurPreis']);
+            $_POST['kurPreis'] = str_replace(",", ".", $_POST['kurPreis']);
 
-            if(Fltr::isFloat($_POST['seasonal_price']) OR Fltr::isInt($_POST['seasonal_price'])) {
-                $dataPost['seasonal_price'] = $_POST['seasonal_price'];
+            if(Fltr::isFloat($_POST['kurPreis']) OR Fltr::isInt($_POST['kurPreis'])) {
+                $dataPost['kurPreis'] = $_POST['kurPreis'];
             }
             else {
                 $fehler[] = "Preis des Kurses ist falsch eingegeben.";
