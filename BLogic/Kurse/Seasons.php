@@ -158,7 +158,7 @@ class Seasons
 		exit(json_encode($response));
 	}
 
-	public static function getActiveSeason()
+	public static function getActiveSeasonData(): array
 	{
 		$q   = "SELECT * FROM seasons WHERE is_active = '1'";
 		$dbh = \MVC\DBFactory::getDBH();
@@ -176,5 +176,15 @@ class Seasons
 			print $ex;
 			return "Fehler bei SQL-Queries.";
 		}
+	}
+
+	/**
+	 * @return int|null
+	 */
+	public static function getActiveSeasonId():int
+	{
+		$seasonData = self::getActiveSeasonData();
+
+		return $seasonData['season_id'] ?? NULL;
 	}
 }

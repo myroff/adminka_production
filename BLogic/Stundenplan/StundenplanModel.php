@@ -120,4 +120,20 @@ class StundenplanModel
         return $data;
     }
 
+    /**
+     * get scheduler to course.
+     * @param int $kurId - course id
+     * @param int $seasonId - season id
+     * @return array - array with course dates
+     */
+    public function getStundenplanToKurId(int $kurId, int $seasonId) : array
+    {
+        $q = "SELECT * FROM stundenplan WHERE kurId = :kurId AND season_id = :seasonId";
+
+        $dbh = \MVC\DBFactory::getDBH();
+        $sth = $dbh->prepare($q);
+        $sth->execute([':kurId' => $kurId, ':seasonId' => $seasonId]);
+
+        return $sth->fetchAll(\PDO::FETCH_ASSOC) ?? [];
+    }
 }

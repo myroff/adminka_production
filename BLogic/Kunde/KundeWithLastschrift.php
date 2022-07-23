@@ -19,7 +19,7 @@ class KundeWithLastschrift
 		$sArr[':name']		= empty($_POST['name'])		? '' : $_POST['name'];
 		$sArr[':lehrId']	= empty($_POST['s_lehrId'])	? '' : $_POST['s_lehrId'];
 		$sArr[':wochentag']	= empty($_POST['wochentag'])? '' : $_POST['wochentag'];
-		$sArr[':season']	= empty($_POST['s_season'])	? Seasons::getActiveSeason()['season_id'] : $_POST['s_season'];
+		$sArr[':season']	= empty($_POST['s_season'])	? Seasons::getActiveSeasonData()['season_id'] : $_POST['s_season'];
 		$sArr[':payment']	= empty($_POST['payment'])	? '' : $_POST['payment'];
 
 		$vars['s_lehrId']	= TmplTls::getLehrerSelector("s_lehrId", "s_lehrId", $sArr[':lehrId'], "Lehrer", 1);

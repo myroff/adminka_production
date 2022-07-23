@@ -190,7 +190,7 @@ th {border-bottom:1px solid black;}
 .kundenResTbl tr:nth-child(2n+3){background-color: #ddd;}
 .columnAlter{font-weight:bold;}
 .kundenResTbl .isCashImg{height:50px;}
-.kundenResTbl .columnClientsCurses{font-size:11px;}
+.kundenResTbl .columnClientsCurses{font-size:12px;}
 /*KursListe*/
 #kurListe{margin:10px 0px;border:1px solid black;display:table;}
 

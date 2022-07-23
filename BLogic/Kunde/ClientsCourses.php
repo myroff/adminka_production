@@ -13,7 +13,7 @@ class ClientsCourses
 {
 	public static function getCourseModule($clientId, $editMode=false)
 	{
-		$activeSeason		= Seasons::getActiveSeason();
+		$activeSeason		= Seasons::getActiveSeasonData();
 		$lessonsData		= self::getCoursesData($clientId, $activeSeason['season_id']);
 		$curSeason			= empty($lessonsData[0]['season_id']) ? '' : $lessonsData[0]['season_id'];
 		$vars['lessons']	= $lessonsData;

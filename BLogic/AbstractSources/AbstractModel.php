@@ -88,21 +88,20 @@ abstract class AbstractModel
     /**
      * get entry from the rable matched values in $whereData .
      * the values from $whereData are merged with 'AND'-condition.
-     * @param string $tableName
      * @param array  $whereData
      * @return array
      */
-    public function getEntriesWhere(array $data) : array
+    public function getEntriesWhere(array $whereData) : array
     {
         $out = array();
 
-        if (empty($data)) {
+        if (empty($whereData)) {
             return $out;
         }
 
         $where = '';
 
-        foreach ($data as $key => $val) {
+        foreach ($whereData as $key => $val) {
             $where .= $key.' = :'.$key.' AND ';
         }
         $where = rtrim($where, ' AND ');
@@ -111,7 +110,7 @@ abstract class AbstractModel
 
         $dbh = \MVC\DBFactory::getDBH();
         $sth = $dbh->prepare($q);
-        $sth->execute($data);
+        $sth->execute($whereData);
         $res = $sth->fetchAll(\PDO::FETCH_ASSOC);
 
         return $res;

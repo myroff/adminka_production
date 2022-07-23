@@ -23,7 +23,7 @@ class Bezahlen
         }
         if(empty($_POST['s_season']))
         {
-            $curSeason = Seasons::getActiveSeason()['season_id'];
+            $curSeason = Seasons::getActiveSeasonData()['season_id'];
         }
         else
         {

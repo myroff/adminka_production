@@ -1,7 +1,7 @@
 {% extends "main.html.twig" %}
 {% block content %}
   <div id="searchPanel" class="dont-print">
-	<form id="searchFrom" class="col s12" method="POST">
+	<form id="searchFrom" class="col s12" method="GET">
 	  <div class="row">
 		<div class="input-field col s12 m2">
 		  <label for="first_name">Vorname</label>
@@ -12,15 +12,15 @@
 		  <label for="last_name">Nachname</label>
 		  <input name="name" type="text" value="{{ sArr[':name'] }}" id="last_name">
 		</div>
-		
+
 		<div class="input-field col s12 m2">
 		  {{ wochentag | raw }}
 		</div>
-		
+
 		<div class="input-field col s12 m2">
 		  {{ zeit | raw }}
 		</div>
-		
+
 		<div class="input-field col s12 m2">
 		  <label >
 			<input name="showIntegra" type="checkbox" value="1" {% if sArr[':showIntegra'] == 1 %}checked{% endif %} ><span>Integra.</span>
@@ -32,9 +32,9 @@
 			<input name="abgemeldet" type="checkbox" value="1" id="abgemeldet" {% if sArr[':abgemeldet'] == 1 %}checked{% endif %} ><span>Abgemeldet</span>
 		  </label>
 		</div>
-		
+
 	  </div>
-	
+
 	  <div class="row">
 		<div class="input-field col s12 m4">
 		  {{ s_kurId | raw }}
@@ -46,20 +46,20 @@
 		  {{ s_season | raw }}
 		</div>
 	  </div>
-	
+
 	  <div class="row">
 		<div class="input-field col s12 m2">
 		  <button type="submit" class="waves-effect waves-light btn-small">Suchen</button>
 		</div>
 	  </div>
-		
+
 	</form>
   </div>
   <!-- results -->
   <div id="anzDerKunden">
-	{{ clients|length }} Kunden
+	{{ data.clients|length }} Kunden
   </div>
-  
+
   <div id="resultsDiv">
 	<table class="kundenResTbl highlight">
 	  <thead>
@@ -106,7 +106,7 @@
 	  </tr>
 	  </thead>
 	  <tbody>
-	  {% for client in clients %}
+	  {% for client in data.clients %}
 		{% set stl = "" %}
 		{% if client.kndIdInKhk is null %}
 		  {% set stl = "background:yellow;" %}
@@ -125,7 +125,14 @@
 			<a href="{{constant('BASIS_URL')}}/admin/bezahlenById/{{client.kndId}}">Bezahlen</a>
 		  </td>
 		  <td class="columnClientsCurses">
-			{{ printSqlKursTermin(client.kurse) }}
+			{# printSqlKursTermin(client.kurse) #}
+			{% for courseId in client.courseIds %}
+				<b>{{ data.courses[courseId].kurName }}</b><br>
+				{% for plan in data.courses[courseId].stundenplan %}
+					{{ indxToWeekday(plan.wochentag) }} {{ plan.anfang | date('H:i') }} - {{ plan.ende | date('H:i') }}<br>
+					Raum: {{ plan.raum }}<br>
+				{% endfor %}
+			{% endfor %}
 		  </td>
 		  <td>
 			{{ client.kundenNummer }}

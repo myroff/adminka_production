@@ -17,7 +17,7 @@ class CourseToSeasonsModel extends AbstractModel
      * @param int $seasonId
      * @return array
      */
-    public function getEntryByKey($courseId, $seasonId)
+    public function getEntryByKey(int $courseId, int $seasonId) : array
     {
         $out = array();
 
@@ -26,8 +26,8 @@ class CourseToSeasonsModel extends AbstractModel
         }
 
         $where = ['kurId' => $courseId, 'season_id' => $seasonId];
-
-        return $this->getEntriesWhere($where);
+        $data = $this->getEntriesWhere($where);
+        return $data[0] ?? [];
     }
 
     /**
