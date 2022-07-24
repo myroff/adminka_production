@@ -106,7 +106,6 @@ class KundeWithLastschrift
 		{
 			$sth = $dbh->prepare($q);
 			$sth->execute($searchArr);
-			$sth->execute();
 			$rs = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 			return $rs;

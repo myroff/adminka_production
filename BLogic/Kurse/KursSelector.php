@@ -256,7 +256,7 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 				$filterKurId = '';
 				$seasonalKurId = [];
 
-				if(isset($seasonalSearch[':season_id']) and count($seasonalSearch) > 1) {
+				if (isset($seasonalSearch[':season_id']) and count($seasonalSearch) > 1) {
 					$qSeasonalKurId = "SELECT kurId FROM course_to_seasons WHERE ".$seasonalWhere;
 					$sth = $dbh->prepare($qSeasonalKurId);
 					$sth->execute($seasonalSearch);
@@ -269,11 +269,11 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
  FROM kurse as k
  JOIN stundenplan as std USING(kurId)
  WHERE ".$where;
-
+/*
 				if(isset($searchArr[':season_id'])) {
 					$qDefaultKurId .= " AND k.kurId NOT IN (SELECT kurId FROM course_to_seasons WHERE season_id = :season_id)";
 				}
-
+*/
 				$sth = $dbh->prepare($qDefaultKurId);
 				$sth->execute($searchArr);
 				$matchedKurId = $sth->fetchAll(PDO::FETCH_COLUMN);
@@ -293,7 +293,7 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 		}
 
 		$q .= " GROUP BY k.kurId";
-
+#var_dump($where);die();
 		try
 		{
 			$sth = $dbh->prepare($q);

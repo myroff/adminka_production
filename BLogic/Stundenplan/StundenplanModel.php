@@ -109,7 +109,7 @@ class StundenplanModel
 
                 foreach($seasonalData as $seasonKey => $seasonVal) {
 
-                    if (!empty($seasonVal) && isset($val[$seasonKey])) {
+                    if (!empty($seasonVal) && array_key_exists($seasonKey, $val) ) {
                         $data[$key][$seasonKey] = $seasonVal;
                     }
                 }

@@ -339,7 +339,7 @@ use Tools\TmplTools as TmplTls;
 
                         echo "<td>".$r['season_name']."</td>";
 
-                        echo "<td><i>".$r['lehrVorname']." ".$r['lehrName']."</i><br>";
+                        echo "<td><i>".$r['vorname']." ".$r['name']."</i><br>";
                         echo $r['kurName']."<br>";
                         echo Fltr::printSqlTermin($r['termin']);
                         echo "</td>";

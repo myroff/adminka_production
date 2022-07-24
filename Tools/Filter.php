@@ -229,9 +229,9 @@ class Filter
 
 		foreach ($termin as $i=>$t)
 		{
-			$out .= "<br>";
 			$out .= self::indxToWeekday(trim($t['wochentag']));
 			$out .= " ".$t['time'];
+			$out .= "<br>";
 		}
 
 		return $out;

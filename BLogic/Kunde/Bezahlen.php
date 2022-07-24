@@ -36,15 +36,15 @@ class Bezahlen
             . " LEFT JOIN kunden as empf ON empf.kndId=k.empfohlenId"
             . " WHERE k.kndId=:kndId";
 
-        $qk = "SELECT khk.*, k.*, l.name as 'lehrName', l.vorname as 'lehrVorname'"
+        $qk = "SELECT khk.*, k.*, l.name, l.vorname"
                 .", group_concat('{\"wochentag\":\"',st.wochentag,'\",\"time\":\"', TIME_FORMAT(st.anfang, '%H:%i'),' - ', TIME_FORMAT(st.ende, '%H:%i'),'\"}' SEPARATOR',') as termin"
                 .", season.season_name"
             . " FROM kundehatkurse as khk LEFT JOIN kurse as k USING(kurId) LEFT JOIN lehrer as l USING(lehrId)"
             . " LEFT JOIN stundenplan as st USING(kurId)"
             . " LEFT JOIN seasons as season ON season.season_id=khk.season_id"
-            . " WHERE khk.kndId=:kndId AND khk.season_id=:season"
-            . " GROUP BY khk.eintrId"
-            . " ORDER By khk.eintrId DESC";
+            . " WHERE khk.kndId=:kndId AND khk.season_id=:season AND st.season_id = :season"
+            . " GROUP BY khk.kurId"
+            . " ORDER By khk.kurId DESC";
 
         $qr = "SELECT r.*, SUM(rndBetrag) as summe, group_concat(k.kurName SEPARATOR '; ') as kurse"
             ." FROM rechnungen as r LEFT JOIN rechnungsdaten as rnd USING(rnId)"
@@ -65,6 +65,9 @@ class Bezahlen
             $sth = $dbh->prepare($qk);
             $sth->execute(array(":kndId" => $kId, ':season' => $curSeason));
             $ures = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+            $stundenplanModel = new \Stundenplan\StundenplanModel();
+            $ures = $stundenplanModel->updateSeasonalData($ures);
 
             $sth = $dbh->prepare($qr);
             $sth->execute($kndAr);
