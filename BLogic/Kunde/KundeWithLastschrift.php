@@ -20,7 +20,7 @@ class KundeWithLastschrift
 		$sArr[':lehrId']	= empty($_POST['s_lehrId'])	? '' : $_POST['s_lehrId'];
 		$sArr[':wochentag']	= empty($_POST['wochentag'])? '' : $_POST['wochentag'];
 		$sArr[':season']	= empty($_POST['s_season'])	? Seasons::getActiveSeasonData()['season_id'] : $_POST['s_season'];
-		$sArr[':payment']	= empty($_POST['payment'])	? '' : $_POST['payment'];
+		$sArr[':payment'] 	= empty($_POST['payment'])  ? '0': $_POST['payment'];
 
 		$vars['s_lehrId']	= TmplTls::getLehrerSelector("s_lehrId", "s_lehrId", $sArr[':lehrId'], "Lehrer", 1);
 		$vars['wochentag']	= TmplTls::getWeekdaySelector("wochentag", "wochentag", $sArr[':wochentag'], "Tag", 1);
@@ -51,8 +51,8 @@ class KundeWithLastschrift
 
 		$where = "";
 
-		//delete empty entries
-		$searchArr = array_filter($searchArr);
+		//don't remove zero int values
+		$searchArr = array_filter($searchArr, fn($val) => $val === '0' || !empty($val));
 
 		if(isset($searchArr[':vorname']))
 		{
@@ -77,7 +77,7 @@ class KundeWithLastschrift
 		{
 			$where .= " khk.season_id = :season AND";
 		}
-		if(!empty($searchArr[':payment']))
+		if(isset($searchArr[':payment']))
 		{
 			$where .= " pd.payment_id = :payment AND";
 		}
@@ -90,9 +90,11 @@ class KundeWithLastschrift
 		//echo "where = " . $where . "<br>";
 
 		$q = "SELECT k.*, GROUP_CONCAT(kr.kurName, ' [', DATE_FORMAT(khk.von, '%d.%m.%y'), '-', DATE_FORMAT(khk.bis, '%d.%m.%y'), ']' SEPARATOR ', ') as kurse"
+			.", pm.logo_file"
 			." FROM kunden as k JOIN kundehatkurse as khk USING(kndId) LEFT JOIN kurse as kr USING(kurId)"
 			#." LEFT JOIN stundenplan as stn USING(kurId)"
 			." LEFT JOIN payment_data as pd USING(kndId)"
+			." LEFT JOIN payment_methods as pm USING(payment_id)"
 			." LEFT JOIN lehrer as l USING(lehrId)"
 			." WHERE ";
 

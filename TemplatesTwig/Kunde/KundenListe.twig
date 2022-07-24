@@ -37,7 +37,8 @@
 
 	  <div class="row">
 		<div class="input-field col s12 m4">
-		  {{ s_kurId | raw }}
+		  <label for="kur_name">Kurse</label>
+		  <input name="kur_name" type="text" value="{{ sArr[':kur_name'] }}" id="kur_name">
 		</div>
 		<div class="input-field col s12 m2">
 		  {{ s_lehrId | raw }}

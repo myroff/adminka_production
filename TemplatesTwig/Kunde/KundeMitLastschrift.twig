@@ -3,11 +3,11 @@
   <div id="searchPanel" class="dont-print">
 	<form id="searchFrom" class="col s12" method="POST">
 	  <div class="row">
-		
+
 		<div class="input-field col s12 m2">
 		  {{ s_season | raw }}
 		</div>
-		
+
 		<div class="input-field col s12 m2">
 		  <label for="first_name">Vorname</label>
 		  <input name="vorname" type="text" value="{{ sArr[':vorname'] }}" id="first_name">
@@ -17,11 +17,11 @@
 		  <label for="last_name">Nachname</label>
 		  <input name="name" type="text" value="{{ sArr[':name'] }}" id="last_name">
 		</div>
-		
+
 		<div class="input-field col s12 m4">
 		  {{ s_lehrId | raw }}
 		</div>
-		
+
 		<div class="input-field col s12 m2">
 		  {{ wochentag | raw }}
 		</div>
@@ -38,12 +38,12 @@
 	  </div>
 	</form>
   </div>
-  
+
   <!-- results -->
   <div id="anzDerKunden">
 	{{ clients|length }} Kunden
   </div>
-  
+
   <div id="resultsDiv">
 	<table class="kundenResTbl highlight">
 	  <thead>
@@ -88,16 +88,17 @@
 	  </thead>
 	  <tbody>
 	  {% for client in clients %}
-		
+
 		<tr >
 		  <td>
 			<a href="{{constant('BASIS_URL')}}/admin/kundeById/{{client.kndId}}">Info</a><br>
+			<img class="isCashImg" src="{{constant('BASIS_URL')}}/Public/img/payment_logo/{{ client.logo_file }}">
 		  </td>
 		  <td>
 			<a href="{{constant('BASIS_URL')}}/admin/bezahlenById/{{client.kndId}}">Bezahlen</a>
 		  </td>
 		  <td class="columnClientsCurses">
-			{{ client.kurse }}
+			{{ client.kurse | replace({',' : ',<br>'}) | raw }}
 		  </td>
 		  <td>
 			{{ client.kundenNummer }}

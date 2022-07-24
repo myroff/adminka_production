@@ -20,7 +20,7 @@ class Kunde
         $sArr = array();
         $sArr[':vorname']     = empty($_GET['vorname'])     ? '' : $_GET['vorname'];
         $sArr[':name']        = empty($_GET['name'])        ? '' : $_GET['name'];
-        $sArr[':kurId']       = empty($_GET['s_kurId'])     ? '' : $_GET['s_kurId'];
+        $sArr[':kur_name']    = empty($_GET['kur_name'])    ? '' : $_GET['kur_name'];
         $sArr[':lehrId']      = empty($_GET['s_lehrId'])    ? '' : $_GET['s_lehrId'];
         $sArr[':wochentag']   = empty($_GET['wochentag'])   ? '' : $_GET['wochentag'];
         $sArr[':zeit']        = empty($_GET['zeit'])        ? '' : $_GET['zeit'];
@@ -39,7 +39,6 @@ class Kunde
 
         $vars['pageName']   = "Kundenliste";
         $vars['sArr']       = $sArr;
-        $vars['s_kurId']    = TmplTls::getKursSelectorById("s_kurId", "s_kurId", $sArr[':kurId'], "Kurse", 1);
         $vars['s_lehrId']   = TmplTls::getLehrerSelector("s_lehrId", "s_lehrId", $sArr[':lehrId'], "Lehrer", 1);
         $vars['wochentag']  = TmplTls::getWeekdaySelector("wochentag", "wochentag", $sArr[':wochentag'], "Tag", 1);
         $vars['zeit']       = TmplTls::getTimeSelector("zeit", "zeit", $sArr[':zeit'], "Zeit");
@@ -104,9 +103,10 @@ class Kunde
             $where .= " k.name LIKE :name AND";
             $searchArr[':name'] .= '%';
         }
-        if(isset($searchArr[':kurId']))
+        if(isset($searchArr[':kur_name']))
         {
-            $where .= " kndKurse.kurId = :kurId AND";
+            $where .= " kr.kurName LIKE :kur_name AND";
+            $searchArr[':kur_name'] .= '%';
         }
         if(isset($searchArr[':lehrId']))
         {
@@ -194,9 +194,11 @@ as st USING (kurId)
             $sth->execute($searchArr);
             $rs = $sth->fetchAll(PDO::FETCH_ASSOC);
 
+            $kursData = [];
+
             if (!empty($rs)) {
 
-                $kursData = [];
+
 
                 foreach ($rs as $key => $val) {
 
@@ -218,8 +220,6 @@ as st USING (kurId)
                             }
                         }
 
-                        #var_dump($kursData);
-                        #die("<br> bla Kunde!");
                     }
 
                 }
