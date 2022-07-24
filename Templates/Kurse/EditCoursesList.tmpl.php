@@ -31,7 +31,7 @@ use Tools\Filter as Fltr;
 				?>
 			</div>
 			<div id="searchPanel">
-				<form method="POST">
+				<form method="GET">
 					<table>
 						<tr>
 							<th>

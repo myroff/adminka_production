@@ -71,6 +71,8 @@ class SeasonalCourseConfigAPI extends AbstractApi
                 $fehler[] = "lehrId für Unterricht soll ein Integer sein.";
                 $fehlerInput[] = 'lehrId';
             }
+        } else {
+            $dataPost['lehrId'] = NULL;
         }
 
         //kurName - Name des Kurses
@@ -86,6 +88,8 @@ class SeasonalCourseConfigAPI extends AbstractApi
                 $fehler[] = "Der Name des Kurses ist falsch eingegeben.<br>Erlaubt sind Ziffern 0 bis 9, Buchstaben, Leerzeichen, Symbolen (. , : ; ! ? ' * = # / \ \" - + _).";
                 $fehlerInput[] = 'kurName';
             }
+        } else {
+            $dataPost['course_name_suffix'] = NULL;
         }
 
         //Preis des Unterrichts
@@ -101,21 +105,25 @@ class SeasonalCourseConfigAPI extends AbstractApi
                 $fehler[] = "Preis des Kurses ist falsch eingegeben.";
                 $fehlerInput[] = 'kurPreis';
             }
+        } else {
+            $dataPost['kurPreis'] = NULL;
         }
 
         //Preis-Typ: pro Monat oder Stunde
-        if(!empty($_POST['isHourPrice'])) {
+        if(!empty($_POST['kurIsStdPreis'])) {
 
-            $_POST['isHourPrice'] = Fltr::deleteSpace($_POST['isHourPrice']);
-            if(Fltr::isRowString($_POST['isHourPrice']))
+            $_POST['kurIsStdPreis'] = Fltr::deleteSpace($_POST['kurIsStdPreis']);
+            if(Fltr::isRowString($_POST['kurIsStdPreis']))
             {
-                $dataPost['isHourPrice'] = $_POST['isHourPrice'] === 'proStunde' ? 1 : 0;
+                $dataPost['kurIsStdPreis'] = $_POST['kurIsStdPreis'] === 'proStunde' ? 1 : 0;
             }
             else
             {
                 $fehler[] = "Zahlungstyp ist falsch eingegeben. Erlaubt sind nur die Buchstaben.";
-                $fehlerInput[] = 'isHourPrice';
+                $fehlerInput[] = 'kurIsStdPreis';
             }
+        } else {
+            $dataPost['kurIsStdPreis'] = NULL;
         }
 
         // Alter
@@ -148,6 +156,11 @@ class SeasonalCourseConfigAPI extends AbstractApi
             $fehlerInput[] = 'kurMaxAlter';
         }
 
+        if (!isset($dataPost['kurMinAlter'])) {
+            $dataPost['kurMinAlter'] = NULL;
+            $dataPost['kurMaxAlter'] = NULL;
+        }
+
         // Klasse
         $seasonMinClass = empty($_POST['kurMinKlasse']) ? '' : Fltr::deleteSpace($_POST['kurMinKlasse']);
         $seasonMaxClass = empty($_POST['kurMaxKlasse']) ? '' : Fltr::deleteSpace($_POST['kurMaxKlasse']);
@@ -178,6 +191,11 @@ class SeasonalCourseConfigAPI extends AbstractApi
         elseif(!empty($seasonMaxClass)) {
             $fehler[] =  "Älteste Klasse ist falsch eingegeben.";
             $fehlerInput[] = 'kurMaxKlasse';
+        }
+
+        if (!isset($dataPost['kurMinKlasse'])) {
+            $dataPost['kurMinKlasse'] = NULL;
+            $dataPost['kurMaxKlasse'] = NULL;
         }
 
         if(empty($fehler)) {

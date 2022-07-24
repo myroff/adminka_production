@@ -220,7 +220,9 @@
             </div>
             <div class="col m1 s12">{{ season.kurPreis }}</div>
             <div class="col m1 s12">
-                {% if course.kurIsStdPreis > 0 %}
+                {% if season.kurIsStdPreis is null %}
+
+                {% elseif season.kurIsStdPreis > 0 %}
                     pro Stunde
                 {% else %}
                     pro Monat
@@ -241,7 +243,8 @@
             <div class="col m1 s12">
                 <button type="button" class="waves-effect waves-light btn btn-small editSeasonsConfig"
                     kurId="{{season.kurId}}" season_id="{{season.season_id}}" lehrId="{{season.lehrId}}"
-                    course_name_suffix="{{ season.course_name_suffix }}" season_price="{{ season.kurPreis }}"
+                    course_name_suffix="{{ season.course_name_suffix }}"
+                    season_price="{{ season.kurPreis }}" kurIsStdPreis="{{ season.kurIsStdPreis }}"
                     kurMinAlter="{{season.kurMinAlter}}" kurMaxAlter="{{season.kurMaxAlter}}"
                     kurMinKlasse="{{season.kurMinKlasse}}" kurMaxKlasse="{{season.kurMaxKlasse}}"
                 >
@@ -554,19 +557,12 @@
                         Saisonal Zahlungstype
                     </th>
                     <td>
-                       <select name="isHourPrice" id="addSeasonsConfigForm-isHourPrice">
+                       <select name="kurIsStdPreis" id="addSeasonsConfigForm-kurIsStdPreis" class="browser-default">
+                            <option value=""></option>
                             <option value="proMonat">pro Monat</option>
                             <option value="proStunde">pro Stunde</option>
                         </select>
-                        <script>
-                            var Zahlungstype_Selector = document.getElementById('addSeasonsConfigForm-isHourPrice');
-                            if(typeof(M) !== 'undefined'){
-                                var instances = M.FormSelect.init(Zahlungstype_Selector);
-                            }
-                            else {
-                                Zahlungstype_Selector.classList.add('browser-default');
-                            }
-                        </script>
+
                     </td>
                 </tr>
                 <tr>
@@ -733,6 +729,7 @@ document.addEventListener('DOMContentLoaded', function()
         document.getElementById('addSeasonsConfigForm-course_name_suffix').value = '';
         document.getElementById('addSeasonsConfigForm-lehrId').value = '';
         document.getElementById('addSeasonsConfigForm-kurPreis').value = '';
+        document.getElementById('addSeasonsConfigForm-kurIsStdPreis').value = '';
         document.getElementById('addSeasonsConfigForm-kurMinKlasse').value = '';
         document.getElementById('addSeasonsConfigForm-kurMaxKlasse').value = '';
         document.getElementById('addSeasonsConfigForm-kurMinAlter').value = '';
@@ -744,11 +741,19 @@ document.addEventListener('DOMContentLoaded', function()
     for(var i=0; i < editSeasonConfigButtons.length; i++) {
 
         editSeasonConfigButtons[i].onclick = function(e){
-
+            var kurIsStdPriceValue = '';
+            if (this.getAttribute('kurIsStdPreis') > 0) {
+                kurIsStdPriceValue = 'proStunde';
+            } else if (this.getAttribute('kurIsStdPreis') === '0') {
+                kurIsStdPriceValue = 'proMonat';
+            }
+console.log(this.getAttribute('kurisstdpreis'));
+console.log(kurIsStdPriceValue);
             document.getElementById('addSeasonsConfigForm-season_id').value = this.getAttribute('season_id');
             document.getElementById('addSeasonsConfigForm-course_name_suffix').value = this.getAttribute('course_name_suffix');
             document.getElementById('addSeasonsConfigForm-lehrId').value = this.getAttribute('lehrId');
             document.getElementById('addSeasonsConfigForm-kurPreis').value = this.getAttribute('season_price');
+            document.getElementById('addSeasonsConfigForm-kurIsStdPreis').value = kurIsStdPriceValue;
             document.getElementById('addSeasonsConfigForm-kurMinKlasse').value = this.getAttribute('kurMinKlasse');
             document.getElementById('addSeasonsConfigForm-kurMaxKlasse').value = this.getAttribute('kurMaxKlasse');
             document.getElementById('addSeasonsConfigForm-kurMinAlter').value = this.getAttribute('kurMinAlter');

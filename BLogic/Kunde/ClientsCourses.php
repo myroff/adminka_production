@@ -37,7 +37,8 @@ class ClientsCourses
 	{
 		if((int)$curSeasonId)
 		{
-			$whereSeason = " AND khk.season_id = ".(int)$curSeasonId;
+			$whereSeason  = " AND khk.season_id = ".(int)$curSeasonId;
+			$whereSeason .= " AND st.season_id = ".(int)$curSeasonId;
 		}
 		else
 		{

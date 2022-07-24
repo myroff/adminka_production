@@ -154,8 +154,7 @@ class Kunde
         }
         else{
             $select =
-"khk.kndId as kndIdInKhk,k.*, khk.courses, pd.payment_id, pm.logo_file, TIMESTAMPDIFF(YEAR,k.geburtsdatum,CURDATE()) as 'alter',
-    GROUP_CONCAT('{\"name\":\"',l.name, '\",\"vorname\":\"',l.vorname, '\",\"kurName\":\"', kr.KurName,'\",\"von\":\"',kndKurse.von,'\",\"bis\":\"',kndKurse.bis,'\",\"termin\":[', st.termin, ']}' SEPARATOR ',') as kurse";
+"khk.kndId as kndIdInKhk,k.*, khk.courses, pd.payment_id, pm.logo_file, TIMESTAMPDIFF(YEAR,k.geburtsdatum,CURDATE()) as 'alter'";
         }
 
         $q =
@@ -175,7 +174,7 @@ LEFT JOIN
 ) as khk USING (kndId)
 LEFT JOIN
 (
-    SELECT kurId, wochentag, anfang, ende, group_concat('{\"wochentag\":\"',wochentag,'\",\"time\":\"', TIME_FORMAT(anfang, '%H:%i'),' - ', TIME_FORMAT(ende, '%H:%i'),'\"}' SEPARATOR',') as termin
+    SELECT *
     FROM stundenplan
     $khkWhere
     GROUP BY kurId

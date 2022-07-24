@@ -2,16 +2,16 @@
 namespace Kurse;
 use PDO as PDO;
 require_once BASIS_DIR.'/Tools/Filter.php';
-use Tools\Filter as Fltr;
+use \Tools\Filter as Fltr;
 
 class EditCourses
 {
     public function showList()
     {
         $sArr = array();
-        $sArr[':kurName'] = empty($_POST['kurName']) ? '' : $_POST['kurName'];
-        $sArr[':kurAlter'] = empty($_POST['kurAlter']) ? '' : $_POST['kurAlter'];
-        $sArr[':kurKlasse'] = empty($_POST['kurKlasse']) ? '' : $_POST['kurKlasse'];
+        $sArr[':kurName']   = empty($_GET['kurName'])   ? '' : $_GET['kurName'];
+        $sArr[':kurAlter']  = empty($_GET['kurAlter'])  ? '' : $_GET['kurAlter'];
+        $sArr[':kurKlasse'] = empty($_GET['kurKlasse']) ? '' : $_GET['kurKlasse'];
 
         $res = $this->searchDates($sArr);
 
@@ -55,7 +55,8 @@ class EditCourses
             $q .= empty($where) ? '' : " WHERE " . $where;
         }
 
-        $q .= " ORDER BY wochentag, anfang, raum ";
+        $q .= " GROUP BY k.kurId"
+             ." ORDER BY wochentag, anfang, raum ";
 
         try
         {
@@ -119,8 +120,12 @@ class EditCourses
             return FALSE;
         }
 
-        $vars   = ['course' => $res, 'schedule' => $trm, 'seasonsConfigs' => $seasonsConfigs];
-        $vars['requestUri']	= $_SERVER['REQUEST_URI'];
+        $vars = [
+            'course' => $res,
+            'schedule' => $trm,
+            'seasonsConfigs' => $seasonsConfigs,
+            'requestUri' => $_SERVER['REQUEST_URI']
+        ];
 
         $viewer = new \Viewer\Viewer();
 		$viewer->display('/Courses/EditCourseById.twig', $vars);
