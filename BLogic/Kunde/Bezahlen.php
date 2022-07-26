@@ -126,6 +126,9 @@ class Bezahlen
             $sth = $dbh->query($qe);
             $res = $sth->fetchAll(PDO::FETCH_ASSOC);
 
+            $stdModel = new \Stundenplan\StundenplanModel();
+			$res = $stdModel->updateSeasonalData($res);
+
         } catch (Exception $ex) {
             $output['status'] = 'pdo: error';
             $output['message'] = $ex;

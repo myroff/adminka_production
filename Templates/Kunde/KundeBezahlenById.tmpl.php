@@ -433,7 +433,7 @@ use Tools\TmplTools as TmplTls;
             </form>
         </div>
         <div id="QuitPanel">
-            <div id="QuittungHolder" style="float:left;width:200px;"></div>
+            <div id="QuittungHolder" style="float:left;width:350px;"></div>
             <div id="QuitBut" style="float:left;margin-top:50px;margin-left:20px;">
                 <button id='Quit_Speichern' class="bzButton" >Speichern</button>
                 <button id='Quit_Abbrechen' class="bzButton" >Abbrechen</button>

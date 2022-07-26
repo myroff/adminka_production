@@ -2,7 +2,7 @@
 <?=$tln['vorname']?> <?=$tln['name']?><br>
 <?=$_POST['rnMonat']?>
 </div>
-<div style="float:left;width:200px;">
+<div style="float:left;width:350px;">
 	<table class="quitTable">
 		<tr>
 			<th>Schuljahr</th><th>Kurs</th><th>Betrag</th>
