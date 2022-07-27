@@ -1,9 +1,6 @@
 <?php
-require_once BASIS_DIR.'/Tools/TmplTools.php';
 use Tools\TmplTools as TmplTls;
-require_once BASIS_DIR.'/Tools/Filter.php';
 use Tools\Filter as Fltr;
-require_once BASIS_DIR.'/Tools/DateTools.php';
 use Tools\DateTools as DateTools;
 ?>
 <!DOCTYPE html>
@@ -34,17 +31,17 @@ use Tools\DateTools as DateTools;
 
 			}
 
-			table.Anwesenheitsliste{table-layout:fixed;/*width:100%;*/}
+			table.Anwesenheitsliste{table-layout:fixed;font: 25px Arial sans-serif;/*width:100%;*/}
 			table.Anwesenheitsliste col{overflow:hidden;}
 			table.Anwesenheitsliste tr{height:30px;}
 			table.resultsDiv td{padding:1px;border:1px solid black;height:18px;}
 
-			.fach{font-size:14px;font-weight:bold;}
+			.fach{font-size:18px;font-weight:bold;}
 			.nr{width:30px;}
 			.kndNr{width:40px;}
 			.vorname, .nachname{width:280px;}
 			.dates{width:30px;}
-
+			.name_val{font-size:28px;}
 		</style>
 	</head>
 	<body>
@@ -92,13 +89,20 @@ use Tools\DateTools as DateTools;
 				if(!empty($res) AND isset($res)){
 					foreach($res as $r){
 						$z = 0; //children pro list
-						$days_in_list = 20;
-						$days_arr = explode(',', $r['days']);
-						$str_days = "";
-						foreach ($days_arr as $d) {
-							$str_days .= Fltr::indxToWeekday($d).", ";
+						$days_in_list = 8;
+
+						$days_arr = [];
+						$termine = "";
+
+						foreach ($r['termine'] as $termin) {
+
+							$days_arr[] = $termin['wochentag'];
+							$termine .= Fltr::indxToWeekday($termin['wochentag']);
+							$termine .= " ". Fltr::sqlTimeToStr($termin['anfang']);
+							$termine .= " - ". Fltr::sqlTimeToStr($termin['ende']);
+							$termine .= ", ";
 						}
-						$str_days = substr($str_days, 0, -2);
+						$termine = rtrim($termine, ', ');
 
 						$plan = DateTools::getDatesOfWeekdaysInMonthYear($days_arr, '%a.<br>%d.%m.%y');
 					?>
@@ -110,7 +114,7 @@ use Tools\DateTools as DateTools;
 								}
 							?>
 							<tr>
-								<td colspan="4" class="fach"><?=$r['vorname']?> <?=$r['name']?> : <?=$r['kurName']?> [<?=$str_days?>]</td>
+								<td colspan="4" class="fach"><?=$r['vorname']?> <?=$r['name']?> : <?=$r['kurName']?> [<?=$termine?>]</td>
 								<?php
 								for($d=0; $d<$days_in_list; $d++){
 									echo "<td class='dates' rowspan='2'></td>";
@@ -125,7 +129,7 @@ use Tools\DateTools as DateTools;
 								$z++;
 							?>
 								<tr>
-									<td><?=$z?></td><td><?=$n['kundenNummer']?></td><td><?=$n['vorname']?></td><td><?=$n['name']?></td>
+									<td><?=$z?></td><td><?=$n['kundenNummer']?></td><td class="name_val"><?=$n['vorname']?></td><td class="name_val"><?=$n['name']?></td>
 							<?php
 								for($d=0; $d<$days_in_list; $d++){
 									echo "<td ></td>";
@@ -135,7 +139,7 @@ use Tools\DateTools as DateTools;
 							<?php
 							}
 							/*placeholder for new children*/
-							for(; $z<19; ++$z){
+							for(; $z<12; ++$z){
 								echo "<tr>";
 								for($d=0; $d<$days_in_list+4; $d++){
 									echo "<td></td>";

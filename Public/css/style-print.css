@@ -42,15 +42,16 @@ table td, table th {padding: 1px;border-bottom:1px solid black;text-align:left;w
 /*Anwesenheitsliste*/
 
 table.resultsDiv td{padding:1px;border:1px solid black;}
-table.Anwesenheitsliste{table-layout:fixed;margin-bottom:0px;/*width:100%;*/}
+table.Anwesenheitsliste{table-layout:fixed;margin-bottom:0px;font: 25px Arial sans-serif;/*width:100%;*/}
 table.Anwesenheitsliste col{overflow:hidden;}
 table.Anwesenheitsliste tr{height:30px;}
 
-table.Anwesenheitsliste .fach{font-size:12px;}
+table.Anwesenheitsliste .fach{}
 table.Anwesenheitsliste .nr{width:30px !important;}
 table.Anwesenheitsliste .kndNr{width:50px;}
 table.Anwesenheitsliste .vorname, table.Anwesenheitsliste .nachname{width:300px !important;padding:0;margin:0;}
 table.Anwesenheitsliste .dates{width:40px !important;}
+table.Anwesenheitsliste .name_val{font-size:28px;}
 
 /*Bezahlungen Table*/
 #mntListe td {border:1px solid black;vertical-align:top; background:#C2D6D6;}
