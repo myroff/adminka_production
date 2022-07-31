@@ -91,13 +91,24 @@ class KursSelector
 			$klasse .= $r['kurMinKlasse'] < $r['kurMaxKlasse'] ? " bis ".$r['kurMaxKlasse'] : "";
 			$klasse .= empty($klasse) ? '' : " Klasse.";
 
+			$background = "";
+
+			if ( (int)$r['kunden_in_kurs'] >= (int)$r['maxKnd']) {
+				$background = "background-color: red;";
+			}
+			elseif ((int)$r['kunden_in_kurs'] >= ($r['maxKnd'] - 2 ) && (int)$r['maxKnd'] > 3) {
+				$background = "background-color: yellow;";
+			}
+
 			//echo"<option value='".$r['kurId']."'>".$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."</option>";
 
-			echo"<option value='".$r['kurId']."' season_id='".$r['season_id']."'>".$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."<br>"
+			echo"<option value='".$r['kurId']."' season_id='".$r['season_id']."' style='$background'>"
+					.$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."<br>"
 					. " ".$r['season_name']
 					. " Termine: <br>"
-					. Fltr::printSqlTermin($r['termin'], ";", "->", "<br>")
-					. " </option>";
+					. Fltr::printSqlTermin($r['termin'], ";", "->", "<br>")."<br>"
+					." (".$r['kunden_in_kurs']."/".$r['maxKnd'].")"
+				. "</option>";
 		}
 	?>
 	</select>
@@ -180,12 +191,23 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 				$klasse .= $r['kurMinKlasse'] < $r['kurMaxKlasse'] ? " bis ".$r['kurMaxKlasse'] : "";
 				$klasse .= empty($klasse) ? '' : " Klasse.";
 
+				$background = "";
+
+				if ( (int)$r['kunden_in_kurs'] >= (int)$r['maxKnd']) {
+					$background = "background-color: red;";
+				}
+				elseif ((int)$r['kunden_in_kurs'] >= ($r['maxKnd'] - 2 ) && (int)$r['maxKnd'] > 3) {
+					$background = "background-color: yellow;";
+				}
+
 				//echo "<option value='".$r['kurId']."'>".$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."</option>";
-				echo"<option value='".$r['kurId']."' season_id='".$r['season_id']."'>".$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."<br>"
-					. " ".$r['season_name']
-					. " Termine: <br>"
-					. Fltr::printSqlTermin($r['termin'], ";", "->", "; <br>")
-					. " </option>";
+				echo "<option value='".$r['kurId']."' season_id='".$r['season_id']."' style='$background'>"
+						.$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."<br>"
+						. " ".$r['season_name']
+						. " Termine: <br>"
+						. Fltr::printSqlTermin($r['termin'], ";", "->", "; <br>")."<br>"
+						." (".$r['kunden_in_kurs']."/".$r['maxKnd'].")"
+					. "</option>";
 			}
 
 			$output = ob_get_contents();
@@ -213,8 +235,11 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 
 		$q = "SELECT k.*, l.vorname, l.name, se.season_id, se.season_name"
 			. ", group_concat('{\"wochentag\":\"',wochentag,'\",\"time\":\"', TIME_FORMAT(anfang, '%H:%i'),' - ', TIME_FORMAT(ende, '%H:%i'),'\"}' SEPARATOR',') as termin"
+			. ", khk.kunden_in_kurs"
 			. " FROM kurse as k LEFT JOIN stundenplan as st USING(kurId) LEFT JOIN lehrer as l USING(lehrId)"
-			. " LEFT JOIN seasons as se USING(season_id)";
+			. " LEFT JOIN seasons as se USING(season_id)"
+			. " LEFT JOIN (SELECT kurId, COUNT(kurId) as kunden_in_kurs FROM kundehatkurse WHERE season_id=:season_id GROUP BY kurId) as khk on k.kurId = khk.kurId"
+			;
 
 		if(!empty($searchArr))
 		{
