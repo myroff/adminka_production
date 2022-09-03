@@ -45,14 +45,14 @@ table.resultsDiv td{padding:2px 5px;border:1px solid black;}
 table.Anwesenheitsliste{table-layout:fixed;margin-bottom:10px;font: 25px Arial sans-serif;/*width:100%;*/}
 table.Anwesenheitsliste col{overflow:hidden;}
 table.Anwesenheitsliste tr{height:30px;}
-/*
+
 table.Anwesenheitsliste .fach{}
 table.Anwesenheitsliste .nr{width:40px !important;}
 table.Anwesenheitsliste .kndNr{width:60px;}
 table.Anwesenheitsliste .vorname, table.Anwesenheitsliste .nachname{width:300px !important;}
 table.Anwesenheitsliste .dates{width:40px !important;}
-table.Anwesenheitsliste .name_val{font-size:28px;}
-*/
+table.Anwesenheitsliste .name_val{font-size:28px; width:300px !important;}
+
 /*Bezahlungen Table*/
 #mntListe td {border:1px solid black;vertical-align:top; background:#C2D6D6;}
 

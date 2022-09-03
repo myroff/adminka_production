@@ -68,7 +68,16 @@ class Anwesensheitsliste
             for($i=0; $i<count($rs); $i++) {
                 //kids
                 $sth2->execute( array( ":kurId"=>$rs[$i]['kurId'], ":season"=>$searchArr[':season']) );
-                $rs[$i]['kids'] = $sth2->fetchAll(PDO::FETCH_ASSOC);
+
+                $_kids = $sth2->fetchAll(PDO::FETCH_ASSOC);
+
+                if (empty($_kids)) {
+                    unset($rs[$i]);
+                    continue;
+                }
+
+                $rs[$i]['kids'] = $_kids;
+
                 //termine
                 $sth3->execute( array( ":kurId"=>$rs[$i]['kurId'], ":season"=>$searchArr[':season']) );
                 $rs[$i]['termine'] = $sth3->fetchAll(PDO::FETCH_ASSOC);

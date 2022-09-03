@@ -39,9 +39,9 @@ use Tools\DateTools as DateTools;
 
 			.fach{font-size:18px;font-weight:bold;}
 			.nr{width:30px;}
-			.kndNr{width:40px;}
+			.kndNr{width:60px;}
 			.vorname, .nachname{width:300px;}
-			.dates{width:30px;}
+			.dates{width:40px;}
 			.name_val{font-size:28px;}
 		</style>
 	</head>
@@ -108,12 +108,6 @@ use Tools\DateTools as DateTools;
 						$plan = DateTools::getDatesOfWeekdaysInMonthYear($days_arr, '%a.<br>%d.%m.%y');
 					?>
 						<table class='resultsDiv Anwesenheitsliste'>
-							<col width="20 pixels"/><col width="70 pixels"/><col width="300 pixels"/><col width="300 pixels"/>
-							<?php
-								for ($i=0; $i<count($plan); $i++) {
-									echo "<col width=\"20 pixels\"/>";
-								}
-							?>
 							<tr>
 								<td colspan="4" class="fach"><?=$r['vorname']?> <?=$r['name']?> : <?=$r['kurName']?> [<?=$termine?>]</td>
 								<?php
