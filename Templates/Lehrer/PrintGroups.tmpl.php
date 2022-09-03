@@ -61,7 +61,7 @@ use Tools\TmplTools as TmplTls;
 
 			<div class="resultsDiv">
 				<?php
-				if(!empty($res)){
+				if (!empty($res)) {
 					$curKurId = $res[0]['kurId'];
 					$curDay = $res[0]['wochentag'];
 					$curAnfang = $res[0]['anfang'];
@@ -78,8 +78,8 @@ use Tools\TmplTools as TmplTls;
 							<th>#</th><th>Anrede</th><th>Vorname</th><th>Name</th><th>Alter</th>
 						</tr>
 					<?php
-					foreach($res as $r){
-						if($curKurId !== $r['kurId']){
+					foreach ($res as $r) {
+						if ($curKurId !== $r['kurId']) {
 							$peopleCounter = 0;
 							$curKurId = $r['kurId'];
 							$curKurName = $r['kurName'];

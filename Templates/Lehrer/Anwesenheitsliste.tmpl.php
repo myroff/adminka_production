@@ -22,24 +22,25 @@ use Tools\DateTools as DateTools;
 				size: A4;
 				margin: 10px;
 				margin-top:120px;
+				padding-left: 100px;
 			}
 			@media print {
 				html, body {
 					height: 210mm;
 					width: 297mm;
 				}
-
+				#content-container{margin-left:150px;}
 			}
 
 			table.Anwesenheitsliste{table-layout:fixed;font: 25px Arial sans-serif;/*width:100%;*/}
 			table.Anwesenheitsliste col{overflow:hidden;}
 			table.Anwesenheitsliste tr{height:30px;}
-			table.resultsDiv td{padding:1px;border:1px solid black;height:18px;}
+			table.resultsDiv td{padding:2px 5px;border:1px solid black;height:18px;}
 
 			.fach{font-size:18px;font-weight:bold;}
 			.nr{width:30px;}
 			.kndNr{width:40px;}
-			.vorname, .nachname{width:280px;}
+			.vorname, .nachname{width:300px;}
 			.dates{width:30px;}
 			.name_val{font-size:28px;}
 		</style>
@@ -84,7 +85,7 @@ use Tools\DateTools as DateTools;
 				</form>
 			</div>
 
-			<div >
+			<div id="content-container">
 				<?php
 				if(!empty($res) AND isset($res)){
 					foreach($res as $r){
@@ -107,10 +108,10 @@ use Tools\DateTools as DateTools;
 						$plan = DateTools::getDatesOfWeekdaysInMonthYear($days_arr, '%a.<br>%d.%m.%y');
 					?>
 						<table class='resultsDiv Anwesenheitsliste'>
-							<col width="20"/><col width="25"/><col width="150"/><col width="150"/>
+							<col width="20 pixels"/><col width="70 pixels"/><col width="300 pixels"/><col width="300 pixels"/>
 							<?php
-								for($i=0; $i<count($plan); $i++){
-									echo "<col width=\"20\"/>";
+								for ($i=0; $i<count($plan); $i++) {
+									echo "<col width=\"20 pixels\"/>";
 								}
 							?>
 							<tr>

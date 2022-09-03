@@ -20,7 +20,8 @@ class Anwesensheitsliste
         return;
     }
 
-    private function searchDates($searchArr){
+    private function searchDates($searchArr)
+    {
         $searchArr = array_filter($searchArr);
         if(empty($searchArr) || count($searchArr) < 3){
             return false;
@@ -48,13 +49,13 @@ class Anwesensheitsliste
         $qGroups = "SELECT l.lehrId, l.vorname, l.name, ku.kurId, ku.kurName"
                 ." FROM kurse as ku LEFT JOIN lehrer as l USING(lehrId) JOIN stundenplan as stdn USING(kurId)"
                 ." WHERE l.lehrId=:lehrId AND stdn.season_id = :season"
-                ." GROUP BY ku.kurId";
+                ." GROUP BY stdn.wochentag ASC, stdn.anfang ASC, stdn.raum ASC";
         // Termine
         $qTermine = "SELECT * FROM stundenplan WHERE season_id = :season AND kurId = :kurId ORDER BY wochentag ASC";
 
         $rs = array();
 
-        try{
+        try {
             $sth = $dbh->prepare($qGroups);
             $sth->execute( array(":lehrId"=>$searchArr[':lehrId'], ":season"=>$searchArr[':season']) );//
             $rs = $sth->fetchAll(PDO::FETCH_ASSOC);
