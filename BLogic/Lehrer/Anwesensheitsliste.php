@@ -65,7 +65,9 @@ class Anwesensheitsliste
 
             $sth3 = $dbh->prepare($qTermine);
 
-            for($i=0; $i<count($rs); $i++) {
+            $length = count($rs);
+
+            for($i=0; $i < $length; $i++) {
                 //kids
                 $sth2->execute( array( ":kurId"=>$rs[$i]['kurId'], ":season"=>$searchArr[':season']) );
 
