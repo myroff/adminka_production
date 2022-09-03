@@ -23,10 +23,10 @@ class Anwesensheitsliste
     private function searchDates($searchArr)
     {
         $searchArr = array_filter($searchArr);
-        if(empty($searchArr) || count($searchArr) < 3){
+
+        if (empty($searchArr) || count($searchArr) < 3) {
             return false;
         }
-
 
         $dbh = \MVC\DBFactory::getDBH();
         if(!$dbh)
@@ -45,17 +45,18 @@ class Anwesensheitsliste
             ." WHERE khk.kurId=:kurId AND season_id = :season AND ".$whereKids
             //." "//GROUP BY khk.kndId
             ." ORDER BY k.name, k.vorname";
-#die($qKids);
+
         $qGroups = "SELECT l.lehrId, l.vorname, l.name, ku.kurId, ku.kurName"
                 ." FROM kurse as ku LEFT JOIN lehrer as l USING(lehrId) JOIN stundenplan as stdn USING(kurId)"
                 ." WHERE l.lehrId=:lehrId AND stdn.season_id = :season"
-                ." GROUP BY stdn.wochentag ASC, stdn.anfang ASC, stdn.raum ASC";
+                ." GROUP BY ku.kurId"
+                ." ORDER BY stdn.wochentag ASC, stdn.anfang ASC, stdn.raum ASC";
         // Termine
         $qTermine = "SELECT * FROM stundenplan WHERE season_id = :season AND kurId = :kurId ORDER BY wochentag ASC";
 
         $rs = array();
 
-        try {
+        try{
             $sth = $dbh->prepare($qGroups);
             $sth->execute( array(":lehrId"=>$searchArr[':lehrId'], ":season"=>$searchArr[':season']) );//
             $rs = $sth->fetchAll(PDO::FETCH_ASSOC);
@@ -72,7 +73,6 @@ class Anwesensheitsliste
                 $sth3->execute( array( ":kurId"=>$rs[$i]['kurId'], ":season"=>$searchArr[':season']) );
                 $rs[$i]['termine'] = $sth3->fetchAll(PDO::FETCH_ASSOC);
             }
-
 
         } catch (Exception $ex) {
             print $ex;
