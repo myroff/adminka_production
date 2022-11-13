@@ -71,6 +71,7 @@ class Kunde
         $selectArr[] = isset($_POST['print_email']) ? "k.email as 'Email'" : '';
 
         $arrayToPrint = $this->searchDates($sArr, $selectArr);
+
 //add title over table
         if( isset($_POST['print_titel']) && !empty($_POST['print_titel']) ){
             $arrayToPrint['print_titel'] = $_POST['print_titel'];
@@ -154,7 +155,7 @@ class Kunde
         }
         else{
             $select =
-"khk.kndId as kndIdInKhk,k.*, khk.courses, pd.payment_id, pm.logo_file, TIMESTAMPDIFF(YEAR,k.geburtsdatum,CURDATE()) as 'alter'";
+"k.*, pd.payment_id, pm.logo_file, TIMESTAMPDIFF(YEAR,k.geburtsdatum,CURDATE()) as 'alter'";
         }
 
         $q =
@@ -165,27 +166,14 @@ LEFT JOIN kurse as kr USING(kurId)
 LEFT JOIN lehrer as l USING(lehrId)
 LEFT JOIN payment_data as pd USING(kndId)
 LEFT JOIN payment_methods as pm USING(payment_id)
-LEFT JOIN
-(
-    SELECT kndId, GROUP_CONCAT(kurId SEPARATOR '|') as courses, season_id, von, bis
-    FROM kundehatkurse
-    $khkWhere
-    GROUP BY kndId
-) as khk USING (kndId)
-LEFT JOIN
-(
-    SELECT *
-    FROM stundenplan
-    $khkWhere
-    GROUP BY kurId
-)
-as st USING (kurId)
 ";
 
         $q .= empty($where) ? '' : " WHERE " . $where;
         $q .= " GROUP BY k.kndId";
         //$q .= empty($where) ? '' : " HAVING " . $where;
         $q .= " ORDER BY LENGTH(k.kundenNummer) DESC, k.kundenNummer DESC";
+
+        $rs = array();
 
         try
         {
@@ -198,37 +186,19 @@ as st USING (kurId)
 
             if (!empty($rs)) {
 
-
+                $coursesModel = new Models\ClientsCourses();
 
                 foreach ($rs as $key => $val) {
 
-                    if (!empty($val['courses'])) {
-
-                        $courseIds = explode('|', $val['courses']);
-                        $rs[$key]['courseIds'] = $courseIds;
-
-                        $kursModel = new \Kurse\KurseModel();
-                        $stundenplanModel = new \Stundenplan\StundenplanModel();
-
-
-                        foreach ($courseIds as $cid) {
-
-                            if (!isset($kursData[$cid])) {
-
-                                $kursData[$cid] = $kursModel->getSeasonalCourseData($cid, $seasonId);
-                                $kursData[$cid]['stundenplan'] = $stundenplanModel->getStundenplanToKurId($cid, $seasonId);
-                            }
-                        }
-
-                    }
-
+                    $rs[$key]['courses'] = $coursesModel->getCourseData($val['kndId'], $seasonId);
                 }
             }
-            return ['clients' => $rs, 'courses' => $kursData];
 
         } catch (Exception $ex) {
             //print $ex;
             return FALSE;
         }
+
+        return $rs;
     }
 }

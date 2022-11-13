@@ -86,7 +86,7 @@ use Tools\DateTools as DateTools;
 			</div>
 
 			<div id="content-container">
-				<?php //var_dump($res);die;
+				<?php
 				if(!empty($res) AND isset($res)){
 					foreach($res as $r){
 						$z = 0; //children pro list

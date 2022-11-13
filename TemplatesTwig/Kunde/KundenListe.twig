@@ -58,7 +58,7 @@
   </div>
   <!-- results -->
   <div id="anzDerKunden">
-	{{ data.clients|length }} Kunden
+	{{ data|length }} Kunden
   </div>
 
   <div id="resultsDiv">
@@ -107,11 +107,11 @@
 	  </tr>
 	  </thead>
 	  <tbody>
-	  {% for client in data.clients %}
+	  {% for client in data %}
 		{% set stl = "" %}
-		{% if client.kndIdInKhk is null %}
+		{% if client.courses is empty %}
 		  {% set stl = "background:yellow;" %}
-		{% elseif client.kndIdInKhk|first == 'i' %}
+		{% elseif client.kundenNummer|first == 'i' %}
 		  {% set stl = "background:Khaki;" %}
 		{% endif %}
 		{%  if client.istFotoErlaubt == 0 %}
@@ -127,9 +127,10 @@
 		  </td>
 		  <td class="columnClientsCurses">
 			{# printSqlKursTermin(client.kurse) #}
-			{% for courseId in client.courseIds %}
-				<b>{{ data.courses[courseId].kurName }}</b><br>
-				{% for plan in data.courses[courseId].stundenplan %}
+			{% for course in client.courses %}
+				<b>{{ course.kurName }}</b><br>
+				[{{ course.von|date('d.m.Y') }} - {{ course.bis|date('d.m.Y') }}]<br>
+				{% for plan in course.stundenplan %}
 					{{ indxToWeekday(plan.wochentag) }} {{ plan.anfang | date('H:i') }} - {{ plan.ende | date('H:i') }}<br>
 					Raum: {{ plan.raum }}<br>
 				{% endfor %}
