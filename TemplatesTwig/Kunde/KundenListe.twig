@@ -109,7 +109,7 @@
 	  <tbody>
 	  {% for client in data %}
 		{% set stl = "" %}
-		{% if client.courses is empty %}
+		{% if (client.courses is empty) or (client.is_active_client == '0') %}
 		  {% set stl = "background:yellow;" %}
 		{% elseif client.kundenNummer|first == 'i' %}
 		  {% set stl = "background:Khaki;" %}

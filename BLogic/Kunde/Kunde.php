@@ -133,8 +133,8 @@ class Kunde
         {
             unset($searchArr[':abgemeldet']);
         } else {
-            // das selektiert nur die Kunden mit akutellen Kursen. Wir wolen Kunden in Season sehen.
-            //$where .= " NOW() BETWEEN kndKurse.von AND kndKurse.bis AND";
+            // das selektiert nur die Kunden mit akutellen Kursen.
+            $where .= " NOW() BETWEEN kndKurse.von AND kndKurse.bis AND";
         }
 
         $khkWhere = "";
@@ -155,7 +155,8 @@ class Kunde
         }
         else{
             $select =
-"k.*, pd.payment_id, pm.logo_file, TIMESTAMPDIFF(YEAR,k.geburtsdatum,CURDATE()) as 'alter'";
+"k.*, pd.payment_id, pm.logo_file, TIMESTAMPDIFF(YEAR,k.geburtsdatum,CURDATE()) as 'alter',
+IF(NOW() BETWEEN MIN(kndKurse.von) AND MAX(kndKurse.bis), '1', '0' ) as is_active_client";
         }
 
         $q =
