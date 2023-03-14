@@ -167,6 +167,7 @@ LEFT JOIN kurse as kr USING(kurId)
 LEFT JOIN lehrer as l USING(lehrId)
 LEFT JOIN payment_data as pd USING(kndId)
 LEFT JOIN payment_methods as pm USING(payment_id)
+LEFT JOIN stundenplan as st ON (kndKurse.season_id=st.season_id AND kndKurse.kurId=st.kurId)
 ";
 
         $q .= empty($where) ? '' : " WHERE " . $where;
