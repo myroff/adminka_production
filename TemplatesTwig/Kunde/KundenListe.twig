@@ -121,6 +121,11 @@
 		  <td>
 			<a href="{{constant('BASIS_URL')}}/admin/kundeById/{{client.kndId}}">Info</a><br>
 			<img class="isCashImg" src="{{constant('BASIS_URL')}}/Public/img/payment_logo/{{ client.logo_file }}">
+			<div class="clients-list-icons" style="width:100%; clear: both;">
+			{% if client.istFotoErlaubt is empty %}
+				<img class="icon" src="{{constant('BASIS_URL')}}/Public/img/icon.no-photo.svg" />
+			{% endif %}
+			</div>
 		  </td>
 		  <td>
 			<a href="{{constant('BASIS_URL')}}/admin/bezahlenById/{{client.kndId}}">Bezahlen</a>

@@ -125,6 +125,9 @@ use Tools\TmplTools as TmplTls;
                             PLZ
                         </th>
                         <th class="itemName">
+                            ist Foto erlaubt?
+                        </th>
+                        <th class="itemName">
                             Empfohlen durch
                         </th>
                     </tr>
@@ -168,6 +171,9 @@ use Tools\TmplTools as TmplTls;
                         </td>
                         <td class="itemValue">
                             <?=$res['plz']?>
+                        </td>
+                        <td class="itemValue">
+                            <?=!empty($res['istFotoErlaubt']) ? 'ja' : 'nein' ?>
                         </td>
                         <td class="itemValue">
                             <?=$res['empfohlenDurch']?>
