@@ -128,11 +128,17 @@ class KundeBearbeiten
 		$res = array();
 		$ures = array();
 
+		// get may kundenNummer
+		$qMaxKndId = "SELECT * FROM kunden ORDER BY kndId DESC LIMIT 1";
+
 		try
 		{
 			$sth = $dbh->prepare($q);
 			$sth->execute(array(":kndId" => $kndId));
 			$res = $sth->fetch(PDO::FETCH_ASSOC, 1);
+
+			$sthMaxKndId = $dbh->query($qMaxKndId);
+			$resMaxKndId = $sthMaxKndId->fetch(PDO::FETCH_ASSOC);
 
 			#$sth = $dbh->prepare($qu);
 			#$sth->execute(array(":kndId" => $kndId));
@@ -162,6 +168,8 @@ class KundeBearbeiten
 
 		$bezahlMethoden					= PaymentApi::getSelectorData();
 		$vars['zahlenMitSelector']		= TmplTls::printMaterializeSelector($bezahlMethoden, "updateBankDates_Form_Value", "zahlenMit", "", "", 0);
+
+		$vars['maxKundenNummer']		= $resMaxKndId['kundenNummer'];
 /*
 		$options = []; #array('cache' => TWIG_CACHE_DIR);
 		$loader = new \Twig_Loader_Filesystem(TWIG_TEMPLATE_DIR);
@@ -403,6 +411,20 @@ class KundeBearbeiten
 				else
 				{
 					return "Bei der istFotoErlaubt sind nur die Buchstaben erlaubt. Bspl.: Nein.<br>";
+				}
+				break;
+
+			case 'istDatenschutzAkzeptiert':
+				$in = "istDatenschutzAkzeptiert";
+
+				$itemVal = str_replace(" ", "", $itemVal);
+				if(Fltr::isRowString($itemVal))
+				{
+					$itemVal = $itemVal === 'ja' ? 1 : 0;
+				}
+				else
+				{
+					return "Bei der istDatenschutzAkzeptiert sind nur die Buchstaben erlaubt. Bspl.: Nein.<br>";
 				}
 				break;
 

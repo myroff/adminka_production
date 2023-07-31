@@ -10,7 +10,7 @@
 	<div class="row">
 	  <div class="col s12">
 		<label for="kundenNummer">Kunden-Nummer</label>
-		<input name="kundenNummer" type="text" id="kundenNummer">
+		<input name="kundenNummer" type="text" id="kundenNummer" placeholder="zuletzt: '{{ maxKundenNummer }}'">
 	  </div>
 	</div>
 
@@ -79,10 +79,16 @@
 
 	<div class="row">
 	  <h4>Weitere Angaben</h4>
-	  <div class="input-field col m3 s6">
+	  <div class="input-field col m1 s6">
 		<label for="istFotoErlaubt">
 		  <input name="istFotoErlaubt" type="checkbox" value="ja" id="istFotoErlaubt">
 		  <span>ist Foto erlaubt?</span>
+		</label>
+	  </div>
+	  <div class="input-field col m2 s6">
+		<label for="istDatenschutzAkzeptiert">
+		  <input name="istDatenschutzAkzeptiert" type="checkbox" value="ja" id="istDatenschutzAkzeptiert">
+		  <span>ist Datenschutz akzeptiert?</span>
 		</label>
 	  </div>
 	  <div class="input-field col m3 s6">

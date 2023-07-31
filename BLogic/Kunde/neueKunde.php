@@ -38,6 +38,15 @@ class neueKunde
 		$twigTmpl	= $twig->load('/Kunde/KundeNeu.twig');
 		echo $twigTmpl->render($vars);
 */
+
+		// getmax kundennummer
+		$dbh = \MVC\DBFactory::getDBH();
+		$qMaxKndId = "SELECT * FROM kunden ORDER BY kndId DESC LIMIT 1";
+		$sthMaxKndId = $dbh->query($qMaxKndId);
+		$resMaxKndId = $sthMaxKndId->fetch(PDO::FETCH_ASSOC);
+
+		$vars['maxKundenNummer'] = $resMaxKndId['kundenNummer'];
+
 		$viewer = new \Viewer\Viewer();
 		$viewer->display('/Kunde/KundeNeu.twig', $vars);
 		return;
@@ -325,6 +334,21 @@ class neueKunde
 			{
 				$fehler .= "'ist Foto erlaubt' ist falsch eingegeben. Erlaubt sind nur die Buchstaben<br>";
 				$fehlerInput[] = 'istFotoErlaubt';
+			}
+		}
+
+	//istDatenschutzAkzeptiert
+		if(!empty($_POST['istDatenschutzAkzeptiert']))
+		{
+			$_POST['istDatenschutzAkzeptiert'] = Fltr::deleteSpace($_POST['istDatenschutzAkzeptiert']);
+			if(Fltr::isRowString($_POST['istDatenschutzAkzeptiert']))
+			{
+				$dataPost[':istDatenschutzAkzeptiert'] = $_POST['istDatenschutzAkzeptiert'] === 'ja' ? 1 : 0;
+			}
+			else
+			{
+				$fehler .= "'ist Datenschutz akzeptiert?' ist falsch eingegeben. Erlaubt sind nur die Buchstaben<br>";
+				$fehlerInput[] = 'istDatenschutzAkzeptiert';
 			}
 		}
 
