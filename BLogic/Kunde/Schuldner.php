@@ -10,7 +10,7 @@ class Schuldner
 	{
 		$sArr = array();
 
-		$sArr['startMnt'] = empty($_POST['startMnt']) ? '2015-08' : trim($_POST['startMnt']);
+		$sArr['startMnt'] = empty($_POST['startMnt']) ? date('Y-m', strtotime('- 1 Month')) : trim($_POST['startMnt']);
 		$sArr['endMnt'] = empty($_POST['endMnt']) ? date('Y-m') : trim($_POST['endMnt']);//'2014-10'
 		$sArr['withLst'] = isset($_POST['withLst']) ? true : false;
 
@@ -50,9 +50,10 @@ class Schuldner
 		//$where = substr($where, 0, -4);
 
 		$q = "SELECT k.kundenNummer, k.kndId, khk.kurId, k.anrede, k.vorname, k.name, GROUP_CONCAT(ku.kurName SEPARATOR ';') as kurse"
-			." ,k.geburtsdatum, k.handy, k.telefon, k.email, k.strasse, k.strNr, k.plz, k.stadt, pd.payment_id"
+			." ,k.geburtsdatum, k.handy, k.telefon, k.email, k.strasse, k.strNr, k.plz, k.stadt, pd.payment_id, pm.logo_file"
 			." FROM kundehatkurse as khk LEFT JOIN kurse as ku USING(kurId) LEFT JOIN kunden as k USING(kndId)
 				LEFT JOIN payment_data as pd USING(kndId)
+				LEFT JOIN payment_methods as pm USING(payment_id)
 				WHERE EXTRACT(YEAR_MONTH FROM :curMonth) BETWEEN EXTRACT(YEAR_MONTH FROM khk.von) AND EXTRACT(YEAR_MONTH FROM khk.bis) "
 			." AND ".$where
 			." (k.kndId,kurId) NOT IN

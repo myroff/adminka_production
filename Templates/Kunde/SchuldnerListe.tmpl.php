@@ -79,7 +79,7 @@ use Tools\TmplTools as TmplTls;
 			</div>
 
 			<div id="resultsDiv">
-				<table id="kundenResTbl">
+				<table id="kundenResTbl" class="kundenResTbl">
 					<tr>
 						<th>
 							Info
@@ -145,7 +145,8 @@ use Tools\TmplTools as TmplTls;
 								echo "<tr style='background:yellow;'>";
 							}
 
-							echo "<td><a href='".BASIS_URL."/admin/kundeById/".$r['kndId']."'>Info</a></td>";
+							echo "<td><a href='".BASIS_URL."/admin/kundeById/".$r['kndId']."'>Info</a><br>".
+								"<img class=\"isCashImg\" src=\"".BASIS_URL."/Public/img/payment_logo/".$r['logo_file']."\"></td>";
 							echo "<td><a href='".BASIS_URL."/admin/bezahlenById/".$r['kndId']."'>Bezahlen</a></td>";
 							echo "<td>".$r['kurse']."</td>";
 							echo "<td>".$r['kundenNummer']."</td>";
