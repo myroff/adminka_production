@@ -149,6 +149,42 @@
 </div>
 
 <div class="row">
+    <div class="col s12 m2">
+        <p class="itemName">
+            Fachrichtung
+        </p>
+        <p>
+            <span class="itemValue">{{course.profile_name}}</span>
+            <a class="modal-trigger" href="#updateCourseProfile"><i class="material-icons blue-text lighten-1-text">edit</i></a>
+        </p>
+    </div>
+    <div class="col s12 m2">
+        <p class="itemName">
+            Frontend Stundenplan
+        </p>
+        <p>
+            <span class="itemValue">{{course.frontend_name}}</span>
+            <a class="modal-trigger" href="#edit_item"><i class="material-icons blue-text lighten-1-text editItem">edit</i></a>
+        </p>
+    </div>
+    <div class="col s12 m2">
+        <p class="itemName">
+            Zeigen Kurs in Frontend?
+        </p>
+        <p>
+            <span class="itemValue">
+                {% if course.show_in_frontend == 1 %}
+                    ja
+                {% else %}
+                    nein
+                {% endif %}
+            </span>
+            <a class="modal-trigger" href="#update_show_in_frontend"><i class="material-icons blue-text lighten-1-text">edit</i></a>
+        </p>
+    </div>
+</div>
+
+<div class="row">
     <div class="col s12 valign-wrapper">
         <h5 class="left" style="margin-right:10px;">Termine</h5>
         <a  class="waves-effect waves-light btn btn-small modal-trigger" style="top:7px;" href="#addTermin">Neuen Termin</a>
@@ -302,6 +338,23 @@
     </div>
 </div>
 
+<!-- Update für Fachrichtung -->
+<div id="updateCourseProfile" class="modal">
+    <form id="updateCourseProfile_form" method="post" action="{{ requestUri }}">
+        <div class="modal-content">
+            <h4>Fach</h4>
+            <input type="hidden" id="updateItemTable_Form_Name" name="updateItemTable_Form_Name" value="Fachrichtung"/>
+            <div>
+                {{ getCourseProfileSelector("updateItemTable_Form_Value", "updateCourseProfile_profile_id", "", "", true) }}
+            </div>
+        </div>
+    </form>
+    <div class="modal-footer">
+        <button form="updateCourseProfile_form" class="waves-effect waves-green btn" type='submit' >Speichern</button>
+        <a href="#!" class="modal-close waves-effect waves-red btn red">Abbrechen</a>
+    </div>
+</div>
+
 <!-- Update für Zahlungstype -->
 <div id="updateZahlungstypeTable" class="modal">
     <form id="upateZahlungstypeTable_form" method="post" action="{{ requestUri }}">
@@ -400,12 +453,41 @@
         <a href="#!" class="modal-close waves-effect waves-red btn red">Abbrechen</a>
     </div>
     <script>
-        var Zahlungstype_Selector = document.getElementById('updateIsKurInactiveTable_form_Value');
+        const Zahlungstype_Selector = document.getElementById('updateIsKurInactiveTable_form_Value');
         if(typeof(M) !== 'undefined'){
-            var instances = M.FormSelect.init(Zahlungstype_Selector);
+            const instances = M.FormSelect.init(Zahlungstype_Selector);
         }
         else {
             Zahlungstype_Selector.classList.add('browser-default');
+        }
+    </script>
+</div>
+
+<!-- Update für show_in_frontend -->
+<div id="update_show_in_frontend" class="modal">
+    <form id="update_show_in_frontend_form" method="post" action="{{ requestUri }}">
+        <div class="modal-content">
+            <h4>Zeigen in Frontend?</h4>
+            <input type="hidden" id="update_show_in_frontend_Form_Name" name="updateItemTable_Form_Name" value="show_in_frontend"/>
+            <div>
+                <select id="update_show_in_frontend_form_Value" name="updateItemTable_Form_Value" >
+                    <option value="ja">ja</option>
+                    <option value="nein">nein</option>
+                </select>
+            </div>
+        </div>
+    </form>
+    <div class="modal-footer">
+        <button form="update_show_in_frontend_form" class="waves-effect waves-green btn" type='submit' >Speichern</button>
+        <a href="#!" class="modal-close waves-effect waves-red btn red">Abbrechen</a>
+    </div>
+    <script>
+        const selector = document.getElementById('update_show_in_frontend_form_Value');
+        if (typeof(M) !== 'undefined') {
+            const instances = M.FormSelect.init(selector);
+        }
+        else {
+            selector.classList.add('browser-default');
         }
     </script>
 </div>

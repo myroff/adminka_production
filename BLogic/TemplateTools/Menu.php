@@ -46,6 +46,7 @@ class Menu
 				['group'=>['Administrator','Editor'], 'user'=>array(),'link'=>'/admin/neuerKurs', 'title'=>'neuer Kurs'],
 				['group'=>['Administrator','Editor'], 'user'=>array(),'link'=>'/admin/kurseBearbeitenListe', 'title'=>'Kurs bearbeiten'],
 				['group'=>['Administrator','Editor'], 'user'=>array(),'link'=>'/admin/seasonsEdit', 'title'=>'Seasons bearbeiten'],
+				['group'=>['Administrator','Editor'], 'user'=>array(),'link'=>'/admin/courseProfiles', 'title'=>'Kursfächer'],
 			]
 		],
 		['group'=>['Administrator','Editor'], 'user'=>array(),'link'=>'/admin/statistik', 'title'=>'Statistik',

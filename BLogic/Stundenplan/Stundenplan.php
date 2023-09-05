@@ -18,6 +18,7 @@ class Stundenplan
 		$sArr[':alter']		= !empty($_GET['search_alter'])		? trim($_GET['search_alter'])		: '';
 		$sArr[':klasse']	= !empty($_GET['search_klasse'])	? trim($_GET['search_klasse'])		: '';
 		$sArr[':season_id']	= !empty($_GET['search_season'])	? trim($_GET['search_season'])		: '';
+		$sArr[':course_profile'] = !empty($_GET['search_course_profile']) ? trim($_GET['search_course_profile']) : '';
 
 		$res = $this->searchDates($sArr);
 		$raum = $this->getRaum();
@@ -38,8 +39,9 @@ class Stundenplan
 		$vars['s_raum']		= TmplTls::getRaumSelector("search_raum", "search_raum", $sArr[':raum'], "Raum", 1);
 		$vars['s_klasse']	= TmplTls::getKlasseSelector("search_klasse", "search_klasse", $sArr[':klasse'], "Klasse", 1);
 		$vars['s_alter']	= TmplTls::getAlterSelector("search_alter", "search_alter", $sArr[':alter'], "Alter", 1);
-		$vars['editTerminForm_wochentag']	= TmplTls::getWeekdaySelector("wochentag", "editTerminForm_wochentag", $sArr[':wochentag'], "Tag", 1);
+		$vars['editTerminForm_wochentag'] = TmplTls::getWeekdaySelector("wochentag", "editTerminForm_wochentag", $sArr[':wochentag'], "Tag", 1);
 		$vars['s_season']	= TmplTls::getSeasonsSelector("search_season", "s_season_id", $sArr[':season_id'], "Saisons", 1);
+		$vars['s_course_profile'] = TmplTls::getCourseProfileSelector("search_course_profile", "search_course_profile", $sArr[':course_profile'], "Fachrichtung", 1);
 
 		$vars['userGroups']	= User::getUserGroup();
 /*

@@ -1,0 +1,123 @@
+{% extends "main.html.twig" %}
+
+{% block content %}
+<div class="row">
+    <div class="col s12 m3">
+        <ul class="collapsible" data-collapsible="accordion">
+            <li>
+                <div class="collapsible-header"><i class="material-icons">arrow_drop_down</i>neues Fach hinzufügen</div>
+                <div class="collapsible-body">
+                    <form method="POST">
+                        <label for="new_profile_name">Name für neues Fach</label>
+                        <input name="new_profile_name" type="text">
+                        <button type="submit" class="waves-effect waves-light btn-small">Hinzufügen</button>
+                    </form>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div id="resultsDiv">
+    <table class="kundenResTbl highlight">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Fachname</th>
+                <th>Bearbeiten</th>
+                <th>Löschen</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for profile in profiles %}
+            <tr>
+                <td>{{ profile.profile_id }}</td>
+                <td>{{ profile.profile_name }}</td>
+                <td>
+                    <a
+                        class="waves-effect waves-light btn modal-trigger"
+                        href="#edit_course_profile"
+                        data-handle="edit"
+                        data-profile_id="{{ profile.profile_id }}"
+                        data-profile_name="{{ profile.profile_name }}"
+                    >Bearbeiten</a>
+                </td>
+                <td>
+                    <a
+                        class="waves-effect waves-light btn-small modal-trigger"
+                        href="#delete_course_profile"
+                        data-handle="delete"
+                        data-profile_id="{{ profile.profile_id }}"
+                        data-profile_name="{{ profile.profile_name }}"
+                    >Löschen</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div id="edit_course_profile" class="modal">
+    <div class="modal-content">
+        <h4>Unterrichtsfach bearbeiten</h4>
+        <form id="edit_course_profile_form" method="post">
+            <input type="hidden" name="edit_course_profile_profile_id" id="edit_course_profile_profile_id"/>
+            <label for="edited_profile_name">Fachname bearbeiten</label>
+            <input type="text" name="edited_profile_name" id="edit_course_profile_profile_name">
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button
+            form="edit_course_profile_form"
+            class="waves-effect waves-green btn"
+            type='submit'
+        >Speichern</button>
+        <a href="#!" class="modal-close waves-effect waves-red btn red">Abbrechen</a>
+    </div>
+</div>
+
+<div id="delete_course_profile" class="modal">
+    <div class="modal-content">
+        <h4>Unterrichtsfach entfernen</h4>
+        <p>Möchten Sie wirklich das Fach <span id="delete_course_profile_name"></span> löschen?</p>
+        <form id="delete_course_profile_form" method="post">
+            <input type="hidden" name="delete_profile_id" id="delete_course_profile_form_profile_id"/>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button
+            form="delete_course_profile_form"
+            class="waves-effect waves-green btn"
+            type='submit'
+        >Löschen</button>
+        <a href="#!" class="modal-close waves-effect waves-red btn red">Abbrechen</a>
+    </div>
+</div>
+
+{% block javascript %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const options_accordion = {};
+    const elems_collapsible = document.querySelectorAll('.collapsible');
+    const instances_collapsible = M.Collapsible.init(elems_collapsible, options_accordion);
+
+    const options_modal = {
+        'onOpenStart': (modal, button) => {
+            if (button.dataset.handle === 'edit') {
+                document.getElementById('edit_course_profile_profile_id').value = button.dataset.profile_id;
+                document.getElementById('edit_course_profile_profile_name').value = button.dataset.profile_name;
+            }
+            else if (button.dataset.handle === 'delete') {
+                document.getElementById('delete_course_profile_form_profile_id').value = button.dataset.profile_id;
+                document.getElementById('delete_course_profile_name').innerText = button.dataset.profile_name;
+            }
+        }
+    };
+
+    const elems_modal = document.querySelectorAll('.modal');
+    const instances_modal = M.Modal.init(elems_modal, options_modal);
+});
+</script>
+{% endblock %}
+
+{% endblock %}

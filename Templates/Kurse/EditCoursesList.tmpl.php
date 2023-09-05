@@ -72,6 +72,9 @@ use Tools\Filter as Fltr;
 							Kurs
 						</th>
 						<th>
+							Fach
+						</th>
+						<th>
 							Lehrer
 						</th>
 						<th>
@@ -122,6 +125,7 @@ use Tools\Filter as Fltr;
 
 						echo "<td><a href='".BASIS_URL."/admin/kurseBearbeitenById/".$r['kurId']."' />Bearbeiten</a></td>";
 						echo "<td>".$r['kurName']."</td>";
+						echo "<td>".$r['profile_name']."</td>";
 						echo "<td>".$r['vorname']." ".$r['name']."</td>";
 						echo "<td>".$r['raum']."</td>";
 						echo "<td>".  Fltr::indxToWeekday($r['wochentag'])."</td>";

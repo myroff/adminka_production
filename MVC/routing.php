@@ -66,17 +66,19 @@ function getRoutingList()
         '/admin/ajaxStnPlKurInfo/$kurId'    => 'Stundenplan:KurInfo:ajaxGetInfo',
         '/admin/ajaxKursSelectorUpdate'     => 'Kurse:KursSelector:updateKursSelector',
         '/admin/ajaxAddKursToKunde'         => 'Kunde:addKursToKunde:ajaxAddKurs',
-        '/admin/ajaxUpdateKursToKunde'		=> 'Kunde:addKursToKunde:ajaxUpdateKurs',
+        '/admin/ajaxUpdateKursToKunde'      => 'Kunde:addKursToKunde:ajaxUpdateKurs',
         '/admin/ajaxEditSonderPreis'        => 'Kunde:SonderPreis:ajaxEdit',
         '/admin/ajaxDeleteSonderPreis'      => 'Kunde:SonderPreis:ajaxDelete',
         '/admin/seasonsEdit'                => 'Kurse:Seasons:showEditList',
         '/admin/addNewSeason'               => 'Kurse:Seasons:addNewSeason',
         '/admin/setActiveSeason'            => 'Kurse:Seasons:setActiveSeason',
         '/admin/insertUpdateCourseSeasonsConfig' => 'Kurse:SeasonalCourseConfigAPI:insertUpdateConfig',
-        '/admin/deleteCourseSeasonsConfig' => 'Kurse:SeasonalCourseConfigAPI:deleteConfig',
+        '/admin/deleteCourseSeasonsConfig'  => 'Kurse:SeasonalCourseConfigAPI:deleteConfig',
 //change Kurs
         '/admin/ajaxChangeKursInfo'         => 'Kurse:ChangeKurs:getInfoJson',
         '/admin/ajaxChangeKursReallyDo'     => 'Kurse:ChangeKurs:changeKursJson',
+// Kursfächer / course profiles
+        '/admin/courseProfiles'             => 'Kurse:CourseProfile:showListPage',
 //Stundenplan
         '/admin/stundenplan'                => 'Stundenplan:Stundenplan:showStundeplan',
         '/admin/print-stundenplan'          => 'Stundenplan:PrintStundenplan:showStundeplan',

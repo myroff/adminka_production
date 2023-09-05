@@ -32,8 +32,11 @@ class EditCourses
 
         //delete empty entries
         $searchArr = array_filter($searchArr);
-        $q = "SELECT k.*, l.vorname, l.name, st.raum, st.wochentag, TIME_FORMAT(anfang, '%H:%i') as anfang, TIME_FORMAT(ende, '%H:%i') as ende"
-                . " FROM kurse as k LEFT JOIN stundenplan as st USING(kurId) LEFT JOIN lehrer as l USING(lehrId) ";
+        $q = "SELECT k.*, l.vorname, l.name, st.raum, st.wochentag, TIME_FORMAT(anfang, '%H:%i') as anfang, TIME_FORMAT(ende, '%H:%i') as ende, cp.profile_name"
+                . " FROM kurse as k
+                    LEFT JOIN course_profiles as cp USING(profile_id)
+                    LEFT JOIN stundenplan as st USING(kurId)
+                    LEFT JOIN lehrer as l USING(lehrId) ";
 
         if(!empty($searchArr))
         {
@@ -93,7 +96,11 @@ class EditCourses
             $meldung = self::updateItemInDB($kurId,$itemName,$itemValue);
         }
 
-        $q = "SELECT k.*, l.name as 'lehrName', l.vorname as 'lehrVorname' FROM kurse as k LEFT JOIN lehrer as l USING(lehrId) WHERE kurId=:kurId";
+        $q = "SELECT k.*, l.name as 'lehrName', l.vorname as 'lehrVorname', cp.profile_name
+        FROM kurse as k
+        LEFT JOIN lehrer as l USING(lehrId)
+        LEFT JOIN course_profiles as cp USING(profile_id)
+        WHERE kurId=:kurId";
         $t = "SELECT std.*, sea.season_name, sea.season_id FROM stundenplan as std LEFT JOIN seasons as sea USING(season_id) WHERE kurId = :kurId";
         $qSeasonsConfigs = "SELECT cts.*, sea.season_name FROM course_to_seasons as cts JOIN seasons as sea USING(season_id) WHERE kurId = :kurId";
 
@@ -312,6 +319,25 @@ class EditCourses
                 else
                 {
                     return "Dateformat ist unbekannt: [$itemVal]";
+                }
+                break;
+            case 'Fachrichtung':
+                $set = " profile_id = :profile_id";
+                $dataPost[':profile_id'] = empty($itemVal) ?  0 : $itemVal;
+                break;
+            case 'FrontendStundenplan':
+                $set = " frontend_name = :frontend_name";
+                $dataPost[':frontend_name'] = empty($itemVal) ?  '' : $itemVal;
+                break;
+            case "show_in_frontend":
+                if($itemVal === "ja" OR $itemVal === "nein")
+                {
+                    $set = " show_in_frontend = :show_in_frontend";
+                    $dataPost[':show_in_frontend'] = ($itemVal === "ja") ? 1 : 0;
+                }
+                else
+                {
+                    return "Antwort auf die Frage \"Kurs aktiv?\" kann entweder 'ja' oder 'nein'.";
                 }
                 break;
 

@@ -17,6 +17,7 @@ class FunctionLoader extends \Twig\Extension\AbstractExtension
             new \Twig\TwigFunction('getLehrerSelector',  [$this, 'getLehrerSelector'], ['is_safe' => array('all')]),
             new \Twig\TwigFunction('getSeasonsSelector', [$this, 'getSeasonsSelector'], ['is_safe' => array('all')]),
             new \Twig\TwigFunction('getWeekdaySelector', [$this, 'getWeekdaySelector'], ['is_safe' => array('all')]),
+            new \Twig\TwigFunction('getCourseProfileSelector', [$this, 'getCourseProfileSelector'], ['is_safe' => array('all')]),
         ];
     }
 
@@ -105,5 +106,10 @@ class FunctionLoader extends \Twig\Extension\AbstractExtension
     public function getWeekdaySelector($selectorName="", $selectorId="", $selectedValue="", $label="", $meterializeOn=FALSE)
     {
         return \Tools\TmplTools::getWeekdaySelector($selectorName, $selectorId, $selectedValue, $label, $meterializeOn);
+    }
+
+    public function getCourseProfileSelector ($selectorName="", $selectorId="", $selectedValue="", $label="", $meterializeOn=FALSE)
+    {
+        return \Tools\TmplTools::getCourseProfileSelector($selectorName, $selectorId, $selectedValue, $label, $meterializeOn);
     }
 }

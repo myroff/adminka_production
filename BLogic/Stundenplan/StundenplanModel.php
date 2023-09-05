@@ -50,15 +50,21 @@ class StundenplanModel
             $curSeason = "stpl.season_id = :season_id";
         }
 
+        if (!empty($data[':course_profile'])) {
+            $where .= " cp.profile_id = :course_profile AND";
+        }
+
         $having = substr($having, 0, -4);
         $where = substr($where, 0, -4);
 
         $q = "SELECT ( (TIME_TO_SEC(ende) - TIME_TO_SEC(anfang) )/60 ) as kurLength,"
                 . " TIME_FORMAT(anfang, '%H:%i') as anfang, TIME_FORMAT(ende, '%H:%i') as ende, wochentag, raum,"
-                . " s.season_id, k.*, l.name, l.vorname, l.lehrId, count(khk.kndId) as countKnd, k.maxKnd, stpl.stnPlId"
+                . " s.season_id, k.*, l.name, l.vorname, l.lehrId, count(khk.kndId) as countKnd, k.maxKnd, stpl.stnPlId,"
+                . " cp.profile_name"
                 . " FROM stundenplan as stpl"
                 . " LEFT JOIN seasons as s ON s.season_id=stpl.season_id"
                 . " LEFT JOIN kurse as k USING(kurId)"
+                . " LEFT JOIN course_profiles as cp USING(profile_id)"
                 . " LEFT JOIN lehrer as l USING(lehrId)"
                 . " LEFT JOIN (SELECT * FROM kundehatkurse WHERE NOW() <= bis) as khk USING(kurId)"//BETWEEN von AND
                 . " WHERE ".$curSeason;

@@ -37,10 +37,11 @@
 
       <!-- START OF CONTENT -->
       <div id="mainContent">
+      {% if systemMessage is not empty %}
         <div id="systemMessage">
           {{ systemMessage }}
         </div>
-
+      {% endif %}
         {% block content %}{% endblock%}
 
       </div>

@@ -187,7 +187,7 @@ th {border-bottom:1px solid black;}
 
 /*Kunden-Table */
 .kundenResTbl th{text-align:left;}
-.kundenResTbl tr:nth-child(2n+3){background-color: #ddd;}
+.kundenResTbl tr:nth-child(2n+2){background-color: #ddd;}
 .columnAlter{font-weight:bold;}
 .kundenResTbl .isCashImg{height:50px;}
 .clients-list-icons {width:100%;clear:both;}

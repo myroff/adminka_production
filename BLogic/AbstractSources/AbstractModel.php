@@ -91,7 +91,7 @@ abstract class AbstractModel
      * @param array  $whereData
      * @return array
      */
-    public function getEntriesWhere(array $whereData) : array
+    public function getEntriesWhere(array $whereData): array
     {
         $out = array();
 
@@ -121,7 +121,7 @@ abstract class AbstractModel
      * @param  array $data - where-condition for entries to be deleted.
      * @return int         - quantity of inserted rows
      */
-    public function  deleteEntryWith(array $data) : int
+    public function deleteEntryWith(array $data): int
     {
         $res = 0;
 
@@ -144,6 +144,41 @@ abstract class AbstractModel
 
         $sth = $dbh->prepare($q);
         $res = $sth->execute($data);
+
+        return $res;
+    }
+
+    /**
+     * get all entries from the table
+     * array $orderedBy - [<column name> => <sort direction>]
+     *                    example: ['profile_name' => 'ASC']
+     *                    if the parameter is empty - results are sorted by table id in ASC direction.
+     */
+    public function getAllEntries(array $orderedBy=[], int $start=0, int $offset=0): array
+    {
+        $res = [];
+
+        $q = "SELECT * FROM " . $this->getTableName() . " ORDER BY";
+
+        if(empty($orderedBy)) {
+            foreach ($this->getKey() as $key) {
+                $orderedBy[$key] = 'ASC';
+            }
+        }
+
+        foreach ($orderedBy as $key => $sort) {
+            $q .= ' '.$key.' '.$sort;
+        }
+
+        if ($start || $offset) {
+            $q .= " LIMIT " . ($start ?? '0');
+            $q .= $offset ? ", ".$offset : "";
+        }
+
+        $dbh = \MVC\DBFactory::getDBH();
+
+        $sth = $dbh->query($q);
+        $res = $sth->fetchAll(\PDO::FETCH_ASSOC);
 
         return $res;
     }

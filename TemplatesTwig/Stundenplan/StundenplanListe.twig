@@ -29,6 +29,9 @@
 			<div class="input-field col s12 m1">
 				{{ s_alter | raw }}
 			</div>
+			<div class="input-field col s12 m1">
+				{{ s_course_profile | raw }}
+			</div>
 		</div>
 	</form>
 	<div class="row">
@@ -66,7 +69,7 @@
 	<div class="modal-content">
 		<h3>Termin bearbeiten
 			<button class="deleteButton" id="deleteButton_Termin" stnPlId="" style="float:right;">
-				
+
 			</button>
 		</h3>
 	<form id="editTerminForm" method="post" action="">
@@ -102,14 +105,14 @@
 	</div>
 	<div class="modal-footer" >
 		<button id="submitEditTerminForm" class="modal-close btn-floating waves-effect waves-light green darken-2">
-			<i class="material-icons" 
+			<i class="material-icons"
 			   style="font-size: 40px;"
 			>
 				done
 			</i>
 		</button>
 		<button id="closeEditTermin" class="modal-close btn-floating waves-effect waves-light grey lighten-5" >
-			<i class="material-icons red-text darken-3 accent-3" 
+			<i class="material-icons red-text darken-3 accent-3"
 			   style="font-size: 40px;"
 			>
 				do_not_disturb
@@ -128,11 +131,11 @@ var editTerminPopup = document.getElementById('editTermin');
 
 //submit form from modal footer buttons
 document.getElementById('submitEditTerminForm').onclick = function(){
-	
+
 	//var submit = new Event('submit');
 	//document.getElementById('editTerminForm').dispatchEvent(submit, {bubbles:true});
 	var postData = $('#editTerminForm').serializeArray();
-	
+
 	$.ajax({
 		url:'{{constant('BASIS_URL')}}/admin/ajaxUpdateTermin',
 		type:'POST',
@@ -158,13 +161,13 @@ document.getElementById('submitEditTerminForm').onclick = function(){
 //edit Termin
 $('.editTerminButton').click(function(){
 	$('#deleteButton_Termin').attr('stnPlId', this.dataset.stnplid);
-	
+
 	$('#editTerminForm_stnPlId').val(this.dataset.stnplid);
 	$('#editTerminForm_raum').val(this.dataset.raum);
 	$('#editTerminForm_wochentag').val(this.dataset.wtag);
 	$('#editTerminForm_anfang').val(this.dataset.anf);
 	$('#editTerminForm_ende').val(this.dataset.end);
-	
+
 	var modalInstance = M.Modal.init(editTerminPopup);
 	modalInstance.open();
 });
@@ -215,7 +218,7 @@ $('.get_info').click(function(){
 			modalInstance.open();
 		},
 		error:function(xhr, ajaxOptions, thrownError){
-			
+
 			//alert(xhr.status);
 			alert(thrownError);
 		}
@@ -224,12 +227,12 @@ $('.get_info').click(function(){
 
 $('.printButton').click(function(){
 	div = $(this).attr('printDiv');
-	
+
 	w=window.open();
 	//doc = document.implementation.createHTMLDocument("Test Print");
 	//doc.innerHTML = $('#'+div).html();
 	//w.document.write(doc);
-	
+
 	w.document.write('<link rel="stylesheet" href="{{constant('BASIS_URL')}}/Public/css/style.css" type="text/css" />');
 	w.document.write($('#'+div).html());
 	//w.print();
@@ -237,17 +240,17 @@ $('.printButton').click(function(){
 });
 
 function uploadStundenplan(){
-	
+
 	var ajax = new XMLHttpRequest();
 	ajax.onreadystatechange = function(){
 		if(ajax.readyState > 3 && ajax.status == 200){
 			alert(ajax.responseText);
 		}
 	};
-	
+
 	ajax.open("GET", '{{constant('BASIS_URL')}}/admin/ajaxUploadStundenplan');
 	ajax.send(null);
-	
+
 }
 
 </script>

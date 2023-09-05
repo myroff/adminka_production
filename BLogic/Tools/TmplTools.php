@@ -335,4 +335,17 @@ class TmplTools {
 
 		return $content;
 	}
+
+	public static function getCourseProfileSelector($selectorName="", $selectorId="", $selectedValue="", $label="", $meterializeOn=FALSE): string
+	{
+		$courses = (new \Kurse\CourseProfileModel)->getAllEntries(['profile_name' => 'ASC']);
+
+		$data = ["" => ""];
+
+		foreach ($courses as $c) {
+			$data[$c['profile_id']] = $c['profile_name'];
+		}
+
+		return self::printMaterializeSelector($data, $selectorName, $selectorId, $selectedValue, $label, $meterializeOn);
+	}
 }
