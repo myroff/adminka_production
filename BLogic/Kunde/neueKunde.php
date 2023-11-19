@@ -39,9 +39,9 @@ class neueKunde
 		echo $twigTmpl->render($vars);
 */
 
-		// getmax kundennummer
+		// get max kundennummer
 		$dbh = \MVC\DBFactory::getDBH();
-		$qMaxKndId = "SELECT * FROM kunden ORDER BY kndId DESC LIMIT 1";
+		$qMaxKndId = "SELECT * FROM kunden ORDER BY CONVERT (kundenNummer, UNSIGNED) DESC LIMIT 1";
 		$sthMaxKndId = $dbh->query($qMaxKndId);
 		$resMaxKndId = $sthMaxKndId->fetch(PDO::FETCH_ASSOC);
 
