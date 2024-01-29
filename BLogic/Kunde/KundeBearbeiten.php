@@ -128,8 +128,8 @@ class KundeBearbeiten
 		$res = array();
 		$ures = array();
 
-		// get may kundenNummer
-		$qMaxKndId = "SELECT * FROM kunden ORDER BY kndId DESC LIMIT 1";
+		// get max kundenNummer
+		$qMaxKndId = "SELECT * FROM kunden ORDER BY CONVERT (kundenNummer, UNSIGNED) DESC LIMIT 1";
 
 		try
 		{
@@ -197,7 +197,11 @@ class KundeBearbeiten
 		*/
 		// $in für $itemName
 		$in = "";
+
 		$itemVal = trim($itemVal);
+
+		// remove item description from the item name like "Kunden-Nummer\r\r\n(zuletzt:+'1457')"
+		$itemName = trim(explode(' ', $itemName)[0]);
 
 		switch ($itemName)
 		{
@@ -258,7 +262,7 @@ class KundeBearbeiten
 				}
 				break;
 
-			case "Geburtsdatum (dd.mm.yyyy)":
+			case "Geburtsdatum":
 				$in = "geburtsdatum";
 				$itemVal = str_replace(" ", "", $itemVal);
 				if(Fltr::isDate($itemVal))
