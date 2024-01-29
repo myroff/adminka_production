@@ -279,7 +279,8 @@ class TmplTools {
 		return $content;
 	}
 
-	public static function getSeasonsSelector($selectorName="", $selectorId="", $selectedValue="", $label="", $meterializeOn=FALSE)
+	public static function getSeasonsSelector($selectorName="", $selectorId="", $selectedValue="", $label="", $meterializeOn=FALSE,
+		$addValues=[])
 	{
 
 		$dbh = \MVC\DBFactory::getDBH();
@@ -298,6 +299,12 @@ class TmplTools {
 		}
 
 		$data = array("" => "");
+
+		if($addValues) {
+			foreach($addValues as $key => $label) {
+				$data[$key] = $label;
+			}
+		}
 
 		foreach($rs as $r){
 			$data[$r['season_id']] = $r['season_name']." (".$r['date_start']."-".$r['date_end'].")";

@@ -42,7 +42,7 @@ class Kunde
         $vars['s_lehrId']   = TmplTls::getLehrerSelector("s_lehrId", "s_lehrId", $sArr[':lehrId'], "Lehrer", 1);
         $vars['wochentag']  = TmplTls::getWeekdaySelector("wochentag", "wochentag", $sArr[':wochentag'], "Tag", 1);
         $vars['zeit']       = TmplTls::getTimeSelector("zeit", "zeit", $sArr[':zeit'], "Zeit");
-        $vars['s_season']   = TmplTls::getSeasonsSelector("s_season", "s_season", $sArr[':season'], "Season", 1);
+        $vars['s_season']   = TmplTls::getSeasonsSelector("s_season", "s_season", $sArr[':season'], "Season", 1, ['-1' => 'Alle']);
         #$vars['isCashImg'] = $this->isCashImg;
         /*
         $options = []; #array('cache' => TWIG_CACHE_DIR);
@@ -129,7 +129,10 @@ class Kunde
             $where .= " k.kundenNummer NOT LIKE 'i%' AND";
         }
 
-        if(isset($searchArr[':abgemeldet']))//showIntegra = "i"
+        if(isset($searchArr[':abgemeldet'])
+            //don't use 'abgemeldet' if 'Alle' is selected
+            || (isset($searchArr[':season']) && $searchArr[':season'] === '-1')
+        )
         {
             unset($searchArr[':abgemeldet']);
         } else {
@@ -141,9 +144,16 @@ class Kunde
         $seasonId = 0;
 
         if (isset($searchArr[':season'])) {
-            $where   .= " kndKurse.season_id=:season AND";
-            $khkWhere = "WHERE season_id = :season";
-            $seasonId = (int)$searchArr[':season'];
+            //don't use Season ID if 'Alle' is selected
+            if($searchArr[':season'] === '-1') {
+                unset($searchArr[':season']);
+            }
+            else {
+                $where   .= " kndKurse.season_id=:season AND";
+                $khkWhere = "WHERE season_id = :season";
+                $seasonId = (int)$searchArr[':season'];
+            }
+
         }
 
         $where = substr($where, 0, -4);

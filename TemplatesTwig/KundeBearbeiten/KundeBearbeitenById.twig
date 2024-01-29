@@ -465,6 +465,18 @@
 			</form>
 		</div>
 	</div>
+<!-- Message Box -->
+	<div id="messageBoxModal" class="modal">
+		<div class="modal-content">
+			<h4>Info</h4>
+			<div id="messageBox_message"></div>
+		</div>
+		<div class="modal-footer">
+			<div class="modal-footer">
+				<a href="#!" class="modal-close waves-effect waves-red btn red">Abbrechen</a>
+			</div>
+		</div>
+	</div>
 
 {% block javascript %}
 <script>
@@ -680,8 +692,11 @@
 						else
 						{
 							$('#messageBox_message').html(response.message);
-							$('#messageBox').slideDown(1000);
+							//$('#messageBox').slideDown(1000);
 							//alert("<b>Fehler1:</b> "+response.message);
+							let messageBox = document.getElementById('messageBoxModal');
+							let messageBoxInstances = M.Modal.init(messageBox);
+							messageBoxInstances.open();
 						}
 					},
 					error:function(errorThrown){
