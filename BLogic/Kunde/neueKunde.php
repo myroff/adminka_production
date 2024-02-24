@@ -145,6 +145,11 @@ class neueKunde
 				$dataPost[':geburtsdatum']		= Fltr::strToSqlDate($_POST['geburtsdatum']);
 				$checkKunde[':geburtsdatum']	= $dataPost[':geburtsdatum'];
 			}
+			elseif (Fltr::isSqlDate($_POST['geburtsdatum']))
+			{
+				$dataPost[':geburtsdatum']		= $_POST['geburtsdatum'];
+				$checkKunde[':geburtsdatum']	= $dataPost[':geburtsdatum'];
+			}
 			else
 			{
 				$fehler .= "Geburtsdatum ist falsch eingegeben.<br>";

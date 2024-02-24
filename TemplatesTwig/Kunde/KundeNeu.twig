@@ -31,14 +31,8 @@
 
 	  <div class="col m3 s6">
 		<label for="geburtsdatum">Geburtsdatum (dd.mm.yyyy)</label>
-		<input id="geburtsdatum" name="geburtsdatum" type="text" class="datepicker" >
+		<input id="geburtsdatum" name="geburtsdatum" type="date" >
 	  </div>
-	  <script>
-		document.addEventListener('DOMContentLoaded', function() {
-		  var geburtsdatum = document.getElementById('geburtsdatum');
-		  var instancesGeburtsdatum = M.Datepicker.init(geburtsdatum, {'format':'dd.mm.yyyy'});
-		});
-	  </script>
 	</div>
 
 	<div class="row">
