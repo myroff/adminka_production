@@ -16,11 +16,19 @@
 		left:30%;
 		z-index:100;
 	}
+	.message-status-error{background: #f65656; color: white}
+	.message-status-ok{background: green; color: white}
+	.message-status-error a,
+	.message-status-ok a {color: blue}
 </style>
-	<div id="meldung">
-		{% if meldung is not empty %}
-		{{ meldung }}
+	<div id="meldung"
+		{% if meldung.message is not empty %}
+		class="message-status-{{  meldung.status}}"
 		{% endif %}
+	>
+	{% if meldung.message is not empty %}
+		{{ meldung.message|raw }}
+	{% endif %}
 	</div>
 	<div class="row">
 		<div class="col s12">
