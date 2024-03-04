@@ -546,7 +546,8 @@ class KundeBearbeiten
         AND strasse=:strasse
         AND strNr=:strNr
         AND stadt=:stadt
-        AND plz=:plz";
+        AND plz=:plz
+        AND kndId != :kndId";
 
         // insert new item to current data
         $resClient[$itemName] = $itemVal;
@@ -562,6 +563,7 @@ class KundeBearbeiten
                 ':strNr'        => $resClient['strNr'],
                 ':stadt'        => $resClient['stadt'],
                 ':plz'          => $resClient['plz'],
+                ':kndId'        => $kId,
             ]);
 
             $resCheck = $sth->fetch(PDO::FETCH_ASSOC, 1);
