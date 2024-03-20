@@ -593,11 +593,23 @@
 		var kurId = $('#k_kurId').val();
 		var text = $('#k_kurId option:selected').text();
 		var seasonId = $('#k_kurId option:selected').attr('season_id');
+		const seasonEnd = $('#k_kurId option:selected').attr('date_end');
+		var seasonStart = $('#k_kurId option:selected').attr('date_start');
+
+		const dateStart = new Date(seasonStart);
+		const today = new Date();
+
+		if(dateStart < today){
+			seasonStart = '';
+		}
 
 		$('#addKursTable_KurName').html(text);
 		$('#addKursTable_Form_kndId').val(kndId);
 		$('#addKursTable_Form_kurId').val(kurId);
 		$('#addKursTable_Form_seasonId').val(seasonId);
+
+		$('#addKursTable_Form_von').val(seasonStart);
+		$('#addKursTable_Form_bis').val(seasonEnd);
 
 		$('#addKursTable').slideDown('slow');
 	}

@@ -102,7 +102,7 @@ class KursSelector
 
 			//echo"<option value='".$r['kurId']."'>".$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."</option>";
 
-			echo"<option value='".$r['kurId']."' season_id='".$r['season_id']."' style='$background'>"
+			echo"<option value='".$r['kurId']."' season_id='".$r['season_id']."' date_start='".$r['date_start']."' date_end='".$r['date_end']."' style='$background'>"
 					.$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."<br>"
 					. " ".$r['season_name']
 					. " Termine: <br>"
@@ -201,7 +201,7 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 				}
 
 				//echo "<option value='".$r['kurId']."'>".$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."</option>";
-				echo "<option value='".$r['kurId']."' season_id='".$r['season_id']."' style='$background'>"
+				echo "<option value='".$r['kurId']."' season_id='".$r['season_id']."' date_start='".$r['date_start']."' date_end='".$r['date_end']."' style='$background'>"
 						.$r['kurName'].": ".$r['vorname']." ".$r['name'].": ".$r['kurPreis']."€. ".$alter." ".$klasse."<br>"
 						. " ".$r['season_name']
 						. " Termine: <br>"
@@ -233,7 +233,7 @@ $('#<?=$SearchPanel_formId?>').submit(function (e){
 		$seasonalSearch = [];
 		$searchInfo = [];
 
-		$q = "SELECT k.*, l.vorname, l.name, se.season_id, se.season_name"
+		$q = "SELECT k.*, l.vorname, l.name, se.season_id, se.season_name, se.date_start, se.date_end"
 			. ", group_concat('{\"wochentag\":\"',wochentag,'\",\"time\":\"', TIME_FORMAT(anfang, '%H:%i'),' - ', TIME_FORMAT(ende, '%H:%i'),'\"}' SEPARATOR',') as termin"
 			. ", khk.kunden_in_kurs"
 			. " FROM kurse as k LEFT JOIN stundenplan as st USING(kurId) LEFT JOIN lehrer as l USING(lehrId)"
