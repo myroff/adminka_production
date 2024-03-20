@@ -331,7 +331,7 @@ class Bezahlen
             }
             else
             {
-                $fehler .= "Zahlungsmonat sit falsch eingegeben. (z.B. 09.2020)\n";
+                $fehler .= "Zahlungsmonat ist falsch eingegeben. (z.B. 09.2020)\n";
             }
         }
 

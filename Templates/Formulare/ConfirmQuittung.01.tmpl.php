@@ -13,12 +13,12 @@ foreach($res as $r)
 	echo '<tr>';
 	echo '<td>' . $r['season_name'] . '</td>';
 	echo '<td>' . $r['kurName'] . '</td>';
-	echo '<td>' . $kurId[$r['eintrId']] . ' €</td>';
+	echo '<td>' . number_format($kurId[$r['eintrId']], 2, ',', ' ' ) . ' €</td>';
 	echo '</tr>';
 }
 ?>
 		<tr>
-			<td><b>Summe:</b></td><td><b><?=$summe?> €</b></td>
+			<td><b>Summe:</b></td><td><b><?= number_format($summe, 2, ',', ' ') ?> €</b></td>
 		</tr>
 	</table>
 	<div style="margin:10px 0px"><?=$rnKomm?></div>

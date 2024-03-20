@@ -15,12 +15,12 @@ foreach($rd as $r)
 {
 	echo '<tr>';
 	echo '<td>' . $r['kurName'] . '</td>';
-	echo '<td>' . $r['rndBetrag'] . ' €</td>';
+	echo '<td>' . number_format($r['rndBetrag'], 2, ',', ' ') . ' €</td>';
 	echo '</tr>';
 }
 ?>
 		<tr>
-			<td><b>Summe:</b></td><td><b><?=$rn['summe']?> €</b></td>
+			<td><b>Summe:</b></td><td><b><?= number_format($rn['summe'], 2, ',', ' ') ?> €</b></td>
 		</tr>
 	</table>
 	<div style="margin:10px 0px"><?=$rn['rnKomm']?></div>
