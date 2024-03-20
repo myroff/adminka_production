@@ -34,18 +34,6 @@
 			</div>
 		</div>
 	</form>
-	<div class="row">
-	{% if 'Administrator' in userGroups %}
-		<div class="col s12 m2">
-			<label for="upload_stundenplan">Upload Stundenplan zu Website</label>
-			<button id="upload_stundenplan" class="waves-effect waves-light btn"
-					onclick="uploadStundenplan();">
-				<i class="material-icons left" >file_upload</i>
-				Upload
-			</button>
-		</div>
-	{% endif %}
-	</div>
 </div>
 <div id="stundenPlan">
 	{%  include 'Stundenplan/stundenPlanTabelleFull.twig' %}

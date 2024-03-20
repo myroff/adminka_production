@@ -43,7 +43,7 @@ class Stundenplan
 		$vars['s_season']	= TmplTls::getSeasonsSelector("search_season", "s_season_id", $sArr[':season_id'], "Saisons", 1);
 		$vars['s_course_profile'] = TmplTls::getCourseProfileSelector("search_course_profile", "search_course_profile", $sArr[':course_profile'], "Fachrichtung", 1);
 
-		$vars['userGroups']	= User::getUserGroup();
+		//$vars['userGroups']	= User::getUserGroup();
 /*
 		$options = []; #array('cache' => TWIG_CACHE_DIR);
 		$loader = new \Twig_Loader_Filesystem(TWIG_TEMPLATE_DIR);

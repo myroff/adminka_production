@@ -16,6 +16,7 @@
 </a>
 </div>
 <div class="lesson-title">{{ lesson.kurName }}</div>
+<div class="lesson-price">Preis: {{ lesson.kurPreis }} € / {{ lesson.kurIsStdPreis == '0' ? 'Mnt.' : 'Std.'}}</div>
 <div class="lesson-teacher">{{ lesson.vorname }} {{ lesson.name }}</div>
 <div class="lesson-time">Zeit: {{ lesson.anfang | date('H:i') }} - {{ lesson.ende | date('H:i') }}</div>
 <div class="lesson-duration">Dauer: {{ durationMinuts }} Min.</div>
