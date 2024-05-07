@@ -157,7 +157,11 @@ class addKursToKunde
 
 				if($resTest['count'] > 0)
 				{
-					$output = array('status' => 'error', 'info' => "Der Kunde ist schon zu diesem Unterricht zu diesem Zeitraum angemeldet.");
+					$output = array(
+						'status' => 'error',
+						'info' => "Der Kunde ist schon zu diesem Unterricht zu diesem Zeitraum angemeldet.\n"
+								."Bitte prüfen Sie die Kursliste zu gewähltem Season."
+					);
 
 					header("Content-type: application/json");
 					exit(json_encode($output));

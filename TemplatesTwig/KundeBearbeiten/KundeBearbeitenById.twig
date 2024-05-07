@@ -636,7 +636,11 @@
 				}
 				else
 				{
-					alert(response.status);
+					let msg = response.status + "\n";
+					if (typeof response.info !== 'undefined' && response.info.length > 0) {
+						msg += response.info;
+					}
+					alert(msg);
 				}
 				meldung.html(response.info);//response.dataPost
 			},
